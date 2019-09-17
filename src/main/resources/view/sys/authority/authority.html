@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 引入公用部分 -->
+    <script th:replace="head::static"></script>
+    <!-- 样式 -->
+    <link th:href="@{/css/sys/authority/authority.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="layui-row layui-col-space15">
+    <!-- 树 -->
+    <div class="layui-col-md6">
+        <div class="layui-card">
+            <div class="layui-card-header">权限列表</div>
+            <div class="layui-card-body">
+                <!-- 表格主体 -->
+                <table class="layui-hide" id="authorityTable" lay-filter="test"></table>
+                <!-- 模板 -->
+                <script type="text/html" id="authorityTableToolbarDemo">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn layui-btn-sm" lay-event="addData">新增</button>
+                        <input type="text" id="queryByAuthorityName" name="queryByAuthorityName" autocomplete="off"
+                               placeholder="请输入权限名称" class="layui-input layui-btn-sm">
+                        <button class="layui-btn layui-btn-sm" lay-event="query">查询</button>
+                    </div>
+                </script>
+                <script type="text/html" id="authorityTableBarDemo">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                </script>
+            </div>
+        </div>
+    </div>
+    <!-- 操作表单 -->
+    <div class="layui-col-md6">
+        <div class="layui-card">
+            <div class="layui-card-header">操作表单</div>
+            <div class="layui-card-body">
+                <form id="authorityForm" class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">权限名称，ROLE_开头，全大写</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="authorityName" autocomplete="off" placeholder="权限名称，ROLE_开头，全大写"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">权限内容，可访问的url，多个时用,隔开</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="authorityContent" autocomplete="off" placeholder="权限内容，可访问的url，多个时用,隔开"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">权限描述</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="authorityRemark" autocomplete="off" placeholder="权限描述"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn" onclick="authorityFormSave()">保存</a>
+                        </div>
+                    </div>
+                    <!-- 隐藏域 -->
+                    <input type="text" name="authorityId" hidden="hidden"/>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- js -->
+<script th:src="@{/js/sys/authority/authority.js}"></script>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 引入公用部分 -->
+    <script th:replace="head::static"></script>
+    <!-- 样式 -->
+    <link th:href="@{/css/sys/setting/setting.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="layui-row layui-col-space15">
+    <!-- 操作表单 -->
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">系统设置</div>
+            <div class="layui-card-body">
+                <form id="sysForm" class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">系统名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sysName" th:value="${sys.sysName}" autocomplete="off"
+                                   placeholder="系统名称"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">系统logo图片</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sysLogo" th:value="${sys.sysLogo}" autocomplete="off"
+                                   placeholder="系统logo图片"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">系统公告</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sysNoticeText" th:value="${sys.sysNoticeText}" autocomplete="off"
+                                   placeholder="系统公告"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">系统底部信息</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sysBottomText" th:value="${sys.sysBottomText}" autocomplete="off"
+                                   placeholder="系统底部信息"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户管理：初始、重置密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="userInitPassword" th:value="${sys.userInitPassword}" autocomplete="off"
+                                   placeholder="用户管理：初始、重置密码"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="updateTime" th:value="${sys.updateTime}" autocomplete="off"
+                                   placeholder="更新时间"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn" onclick="sysFormSave()">修改</a>
+                        </div>
+                    </div>
+                    <!-- 隐藏域 -->
+                    <input type="text" name="id"  th:value="${sys.id}" hidden="hidden"/>
+                    <input type="text" name="createTime"  th:value="${sys.createTime}" hidden="hidden"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- js -->
+<script th:src="@{/js/sys/setting/setting.js}"></script>
+</html>

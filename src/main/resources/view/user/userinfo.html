@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 引入公用部分 -->
+    <script th:replace="head::static"></script>
+    <!-- 样式 -->
+    <link th:href="@{/css/user/user.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="layui-row layui-col-space15">
+    <!-- 操作表单 -->
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">用户详情表单</div>
+            <div class="layui-card-body">
+                <form id="userForm" class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="userName" th:value="${user.userName}" autocomplete="off"
+                                   placeholder="用户名"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="loginName" th:value="${user.loginName}" autocomplete="off"
+                                   placeholder="登录名"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-block">
+                            <a class="layui-btn layui-btn-sm" onclick="updatePassword()">修改密码</a>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否允许登录系统（软删除）</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="valid" th:attr="checked=${user.valid == 'Y' ? true : false}"
+                                   value="Y" title="是" readonly="readonly" disabled="disabled">
+                            <input type="radio" name="valid" th:attr="checked=${user.valid == 'N' ? true : false}"
+                                   value="N" title="否" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否允许多人在线</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="limitMultiLogin"
+                                   th:attr="checked=${user.limitMultiLogin == 'Y' ? true : false}" value="Y" title="是"
+                                   readonly="readonly" disabled="disabled">
+                            <input type="radio" name="limitMultiLogin"
+                                   th:attr="checked=${user.limitMultiLogin == 'N' ? true : false}" value="N" title="否"
+                                   readonly="readonly"  disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">限制允许登录的IP集合（用,隔开）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="limitedIp" th:value="${user.limitedIp}" autocomplete="off"
+                                   placeholder="限制允许登录的IP集合（多个IP用英文逗号隔开）"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">账号失效时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="expiredTime" th:value="${user.expiredTime}" autocomplete="off"
+                                       class="layui-input" readonly="readonly" disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">最近修改密码时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="lastChangePwdTime" th:value="${user.lastChangePwdTime}"
+                                       autocomplete="off" class="layui-input"
+                                       readonly="readonly" disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="createTime" th:value="${user.createTime}" autocomplete="off"
+                                   placeholder="创建时间"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="updateTime" th:value="${user.updateTime}" autocomplete="off"
+                                   placeholder="更新时间"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn" onclick="userFormSave()">保存</a>
+                        </div>
+                    </div>
+                    <!-- 隐藏域 -->
+                    <input type="text" name="userId" hidden="hidden"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- js -->
+<script th:src="@{/js/user/userinfo.js}"></script>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 引入公用部分 -->
+    <script th:replace="head::static"></script>
+    <!-- 样式 -->
+    <link th:href="@{/css/user/shortcutmenu.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="layui-row layui-col-space15">
+    <!-- 树 -->
+    <div class="layui-col-md4">
+        <div class="layui-card">
+            <div class="layui-card-header">个性化菜单树</div>
+            <div class="layui-card-body">
+                <div id="shortcutMenuTree" class="demo-tree demo-tree-box"
+                     style="height: 450px; overflow: scroll;"></div>
+            </div>
+        </div>
+    </div>
+    <!-- 操作表单 -->
+    <div class="layui-col-md8">
+        <div class="layui-card">
+            <div class="layui-card-header">操作表单</div>
+            <div class="layui-card-body">
+                <form id="shortcutMenuForm" class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上级节点</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="shortcutMenuParentName" autocomplete="off" placeholder="上级节点"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">节点名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="shortcutMenuName" autocomplete="off" placeholder="节点名称"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">节点路径</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="shortcutMenuPath" autocomplete="off" placeholder="节点路径"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <!-- 隐藏域 -->
+                    <input type="text" name="shortcutMenuId" hidden="hidden"/>
+                    <input type="text" name="shortcutMenuParentId" hidden="hidden"/>
+                    <input type="text" name="createTime" hidden="hidden"/>
+                    <input type="text" name="updateTime" hidden="hidden"/>
+                    <!-- treeId，用于更新HTML-->
+                    <input type="text" name="treeId" hidden="hidden"/>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a class="layui-btn" onclick="shortcutMenuFormSave()">保存</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- js -->
+<script th:src="@{/js/user/shortcutmenu.js}"></script>
+</html>

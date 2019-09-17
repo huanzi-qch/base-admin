@@ -1,0 +1,23 @@
+body {
+    padding: 20px;
+    background-color: #F2F2F2;
+}
+
+.layui-form-label {
+    width: 280px !important;
+}
+
+.layui-input-block {
+    display: -webkit-box !important;
+}
+
+.layui-table-tool-temp {
+    padding-right: 0;
+}
+
+#queryByAuthorityName {
+    width: 100px;
+    display: unset;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

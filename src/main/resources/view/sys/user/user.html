@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 引入公用部分 -->
+    <script th:replace="head::static"></script>
+    <!-- 样式 -->
+    <link th:href="@{/css/sys/user/user.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="layui-row layui-col-space15">
+    <!-- 树 -->
+    <div class="layui-col-md6">
+        <div class="layui-card">
+            <div class="layui-card-header">用户列表</div>
+            <div class="layui-card-body">
+                <!-- 表格主体 -->
+                <table class="layui-hide" id="userTable" lay-filter="test"></table>
+                <!-- 模板 -->
+                <script type="text/html" id="userTableToolbarDemo">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn layui-btn-sm" lay-event="addData">新增<i class="layui-icon layui-icon-add-1"></i></button>
+                        <input type="text" id="queryByUserName" name="queryByUserName" autocomplete="off"
+                               placeholder="请输入用户名" class="layui-input layui-btn-sm">
+                        <button class="layui-btn layui-btn-sm" lay-event="query">查询<i class="layui-icon layui-icon-search"></i></button>
+                    </div>
+                </script>
+                <script type="text/html" id="userTableBarDemo">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑<i class="layui-icon layui-icon-edit"></i></a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除<i class="layui-icon layui-icon-close"></i></a>
+                </script>
+            </div>
+        </div>
+    </div>
+    <!-- 操作表单 -->
+    <div class="layui-col-md6">
+        <div class="layui-card">
+            <div class="layui-card-header">操作表单</div>
+            <div class="layui-card-body">
+                <form id="userForm" class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="userName" autocomplete="off" placeholder="用户名"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="loginName" autocomplete="off" placeholder="登录名"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-block">
+                            <a class="layui-btn layui-btn-sm" onclick="resetPassword()">重置密码</a>
+                            <div class="layui-form-mid layui-word-aux" style="float: unset; margin-left: 10px;">
+                                初始、重置密码：<span th:text="${initPassword}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否允许登录系统（软删除）</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="valid" value="Y" title="是">
+                            <input type="radio" name="valid" value="N" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否允许多人在线</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="limitMultiLogin" value="Y" title="是">
+                            <input type="radio" name="limitMultiLogin" value="N" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">限制允许登录的IP集合（用,隔开）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="limitedIp" autocomplete="off" placeholder="限制允许登录的IP集合（多个IP用英文逗号隔开）"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">账号失效时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="expiredTime" id="expiredTimeDate" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">最近修改密码时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="lastChangePwdTime" autocomplete="off" class="layui-input"
+                                       readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="createTime" autocomplete="off" placeholder="创建时间"
+                                   class="layui-input" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">更新时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="updateTime" autocomplete="off" placeholder="更新时间"
+                                   class="layui-input" readonly="readonly" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <!-- 隐藏域 -->
+                    <input type="text" name="userId" hidden="hidden"/>
+                </form>
+
+                <div class="layui-form-item">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>用户菜单</legend>
+                    </fieldset>
+                    <div id="userMenuTree" class="demo-tree demo-tree-box layui-col-md6"
+                         style="height: 300px; overflow: scroll;"></div>
+                </div>
+                <div class="layui-form-item">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>用户权限</legend>
+                    </fieldset>
+                    <div id="userAuthorityTree" class="demo-tree demo-tree-box layui-col-md6"
+                         style="height: 300px; overflow: scroll;"></div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <a class="layui-btn" onclick="userFormSave()">保存</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- js -->
+<script th:src="@{/js/sys/user/user.js}"></script>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>实时日志</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="head::static"></script>
+</head>
+<body>
+<!-- 标题 -->
+<h1 style="text-align: center;">实时日志</h1>
+
+<!-- 显示区 -->
+<div id="loggingText" contenteditable="true"
+     style="width:100%;height: 500px;background-color: ghostwhite; overflow: auto;"></div>
+
+<!-- 操作栏 -->
+<div style="text-align: center;">
+    <button onclick="$('#loggingText').text('')" style="color: green; height: 35px;">清屏</button>
+    <button onclick="$('#loggingText').animate({scrollTop:$('#loggingText')[0].scrollHeight});"
+            style="color: green; height: 35px;">滚动至底部
+    </button>
+    <button onclick="if(window.loggingAutoBottom){$(this).text('开启自动滚动');}else{$(this).text('关闭自动滚动');};window.loggingAutoBottom = !window.loggingAutoBottom"
+            style="color: green; height: 35px; ">开启自动滚动
+    </button>
+</div>
+</body>
+<script th:inline="javascript">
+    let port = [[${port}]];//端口
+
+    //websocket对象
+    let websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:" + port + "/websocket/logging");
+    } else {
+        console.error("不支持WebSocket");
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function (e) {
+        console.error("WebSocket连接发生错误");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function () {
+        console.log("WebSocket连接成功")
+    };
+
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        //追加
+        if (event.data) {
+
+            //日志内容
+            let $loggingText = $("#loggingText");
+            $loggingText.append(event.data);
+
+            //是否开启自动底部
+            if (window.loggingAutoBottom) {
+                //滚动条自动到最底部
+                $loggingText.scrollTop($loggingText[0].scrollHeight);
+            }
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        console.log("WebSocket连接关闭")
+    };
+</script>
+</html>
