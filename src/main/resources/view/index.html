@@ -89,6 +89,10 @@
         © XXX系统
     </div>
 </div>
+<script th:inline="javascript">
+    //获取后端RSA公钥并存到sessionStorage
+    sessionStorage.setItem('javaPublicKey', [[${publicKey}]]);
+</script>
 <script>
     layui.use('element', function () {
         let element = layui.element;

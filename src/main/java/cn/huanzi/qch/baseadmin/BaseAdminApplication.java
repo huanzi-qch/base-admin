@@ -136,6 +136,11 @@ class IndexController {
         //登录用户快捷菜单
         List<SysShortcutMenuVo> shortcutMenuVoList= sysShortcutMenuService.findByUserId(sysUserVo.getUserId()).getData();
         modelAndView.addObject("shortcutMenuList",shortcutMenuVoList);
+
+        //后端公钥
+        String publicKey = RsaUtil.getPublicKey();
+        log.info("后端公钥：" + publicKey);
+        modelAndView.addObject("publicKey", publicKey);
         return modelAndView;
     }
 
