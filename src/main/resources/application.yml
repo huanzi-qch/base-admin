@@ -3,6 +3,9 @@
 #内置Tomcat容器配置
 server:
   port: 8888
+  servlet:
+    session:
+      timeout: 1800 #session有效时长 单位秒
 
 #基础配置
 spring:

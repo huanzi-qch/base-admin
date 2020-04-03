@@ -76,6 +76,7 @@ public class CaptchaFilterConfig implements Filter {
                 parameterRequestWrapper.addParameter("password", hashMap.get("password"));
 
                 servletRequest = parameterRequestWrapper;
+                request = (HttpServletRequest) servletRequest;
             } catch (Throwable e) {
                 e.printStackTrace();
             }

@@ -43,6 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyFilterInvocationSecurityMetadataSource myFilterInvocationSecurityMetadataSource;
 
+    @Autowired
+    private MyInvalidSessionStrategy myInvalidSessionStrategy;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -88,6 +91,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //其他接口需要登录后才能访问
                 .anyRequest().authenticated()
+                .and();
+
+        http.sessionManagement()
+                //session无效处理策略
+                .invalidSessionStrategy(myInvalidSessionStrategy)
+//                .invalidSessionUrl("/logout")
+
                 .and();
     }
 

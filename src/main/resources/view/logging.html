@@ -35,7 +35,9 @@
 
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:" + port + "/websocket/logging");
+        //动态获取域名或ip
+        let url = window.location.href.split("//")[1].split("/")[0].split(":")[0];
+        websocket = new WebSocket("ws://"+url+":" + port + "/websocket/logging");
     } else {
         console.error("不支持WebSocket");
     }
