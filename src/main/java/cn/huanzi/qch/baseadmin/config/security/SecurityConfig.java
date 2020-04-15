@@ -96,8 +96,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 //session无效处理策略
                 .invalidSessionStrategy(myInvalidSessionStrategy)
-//                .invalidSessionUrl("/logout")
-
                 .and();
     }
 

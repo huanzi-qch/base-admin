@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -37,6 +38,13 @@ public class UserConfig implements UserDetailsService {
                 authorityList.append(",");
             }
         }
+
+        //查无此用户
+        if(StringUtils.isEmpty(sysUserVo.getUserId())){
+            sysUserVo.setLoginName("查无此用户");
+            sysUserVo.setPassword("查无此用户");
+        }
+
         // 封装用户信息，并返回。参数分别是：用户名，密码，用户权限
         return new User(sysUserVo.getLoginName(), sysUserVo.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList(authorityList.toString()));
     }
