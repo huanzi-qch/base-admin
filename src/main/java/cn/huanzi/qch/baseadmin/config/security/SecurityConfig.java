@@ -12,7 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyInvalidSessionStrategy myInvalidSessionStrategy;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -97,6 +103,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //session无效处理策略
                 .invalidSessionStrategy(myInvalidSessionStrategy)
                 .and();
+
+        http
+                //开启记住我
+                .rememberMe()
+                .tokenValiditySeconds(3600 * 24 * 7)//七天免登陆
+                .tokenRepository(persistentTokenRepository())
+                .userDetailsService(userConfig)
+                .and();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
+        persistentTokenRepository.setDataSource(dataSource);
+        return persistentTokenRepository;
     }
 
     //配置filter

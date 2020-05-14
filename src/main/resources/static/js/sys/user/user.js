@@ -71,22 +71,23 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate', 'tree', 'util'], func
                 layer.msg("请填写右边的表单并保存！");
                 break;
             case 'query':
-                let queryByUserName = $("#queryByUserName").val();
+                let queryByLoginName = $("#queryByLoginName").val();
                 let query = {
                     page: {
                         curr: 1 //重新从第 1 页开始
                     }
                     , done: function (res, curr, count) {
                         //完成后重置where，解决下一次请求携带旧数据
-                        this.where = {};
+                        // this.where = {};
                     }
                 };
-                if (queryByUserName) {
-                    //设定异步数据接口的额外参数
-                    query.where = {userName: queryByUserName};
+                if (!queryByLoginName) {
+                    queryByLoginName = "";
                 }
+                //设定异步数据接口的额外参数
+                query.where = {loginName: queryByLoginName};
                 tableIns.reload(query);
-                $("#queryByUserName").val(queryByUserName);
+                $("#queryByLoginName").val(queryByLoginName);
                 break;
         }
     });

@@ -43,6 +43,10 @@
             </div>
         </div>
         <div class="layui-form-item">
+            <!-- 我直接写死，需要开启选择请自行调整前端代码 -->
+            <input id="remember-me" type="checkbox" name="remember-me" value="true" style="display: none">
+        </div>
+        <div class="layui-form-item">
             <div class="layui-input-block">
                 <a class="layui-btn" style="margin-left: -50px;margin-right: 50px;" onclick="formSubmit()">登录</a>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -57,9 +61,10 @@
 
     function formSubmit() {
         $.post(ctx + "/login", {
-            username: $("#username").val(),
-            password: $("#password").val(),
-            captcha: $("#captcha").val(),
+            "username": $("#username").val(),
+            "password": $("#password").val(),
+            "captcha": $("#captcha").val(),
+            "remember-me": $("#remember-me").val(),
         }, function (data) {
             layui.use('layer', function () {
                 var layer = layui.layer;

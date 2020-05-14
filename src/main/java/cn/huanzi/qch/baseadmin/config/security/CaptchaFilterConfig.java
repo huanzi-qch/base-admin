@@ -71,9 +71,9 @@ public class CaptchaFilterConfig implements Filter {
                 //new一个自定义RequestWrapper
                 HashMap hashMap = mapper.readValue(decrypt, HashMap.class);
                 ParameterRequestWrapper parameterRequestWrapper = new ParameterRequestWrapper(request);
-                parameterRequestWrapper.addParameter("captcha", hashMap.get("captcha"));
-                parameterRequestWrapper.addParameter("username", hashMap.get("username"));
-                parameterRequestWrapper.addParameter("password", hashMap.get("password"));
+                for (Object key : hashMap.keySet()) {
+                    parameterRequestWrapper.addParameter((String) key,  hashMap.get(key));
+                }
 
                 servletRequest = parameterRequestWrapper;
                 request = (HttpServletRequest) servletRequest;

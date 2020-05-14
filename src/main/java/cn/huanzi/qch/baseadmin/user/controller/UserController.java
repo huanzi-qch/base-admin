@@ -91,7 +91,17 @@ public class UserController {
         SysShortcutMenuVo sysShortcutMenuVo = new SysShortcutMenuVo();
         sysShortcutMenuVo.setUserId(sysUserVo.getUserId());
         List<SysShortcutMenuVo> sysShortcutMenuVoList = sysShortcutMenuService.list(sysShortcutMenuVo).getData();
-        if(sysShortcutMenuVoList.contains(id)){
+
+        //判断是不是自己的便捷菜单
+        boolean flag = false;
+        for (SysShortcutMenuVo shortcutMenuVo : sysShortcutMenuVoList) {
+            if (shortcutMenuVo.getShortcutMenuId().equals(id)) {
+                flag = true;
+                break;
+            }
+        }
+
+        if(flag){
             return sysShortcutMenuService.delete(id);
         }else{
             return Result.of(null,false,"请不要删除别人个性菜单！");
