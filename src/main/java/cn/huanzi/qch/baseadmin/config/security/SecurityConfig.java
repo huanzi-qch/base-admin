@@ -107,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 //开启记住我
                 .rememberMe()
-                .tokenValiditySeconds(3600 * 24 * 7)//七天免登陆
+                .tokenValiditySeconds(604800)//七天免登陆
                 .tokenRepository(persistentTokenRepository())
                 .userDetailsService(userConfig)
                 .and();

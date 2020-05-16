@@ -13,7 +13,7 @@
 <div class="layui-layout layui-layout-admin">
 
     <!-- 头部区域（可配合layui已有的水平导航） -->
-    <div class="layui-header">
+    <div class="layui-header"  th:style="${' background-color:' + sys.sysColor + ' !important;'}">
         <div class="layui-logo"><img th:src='${sys.sysLogo}' class="layui-nav-img"/> <span th:text="${sys.sysName}"></span></div>
         <ul class="layui-nav layui-layout-left">
             <!-- 动态读取加载用户快捷菜单 -->
@@ -46,9 +46,9 @@
     </div>
 
     <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-    <div class="layui-side layui-bg-black">
+    <div class="layui-side layui-bg-black"  th:style="${' background-color:' + sys.sysColor + ' !important;'}">
         <div class="layui-side-scroll">
-            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test"  th:style="${' background-color:' + sys.sysColor + ' !important;'}">
                 <!-- 动态读取加载系统菜单 -->
                 <div th:each="menu,iterStat : ${menuList}">
                     <li class="layui-nav-item" th:unless="${#lists.size(menu.children)} eq 0">

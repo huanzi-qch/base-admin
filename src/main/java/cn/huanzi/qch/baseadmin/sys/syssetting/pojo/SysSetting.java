@@ -18,6 +18,8 @@ public class SysSetting implements Serializable {
 
     private String sysBottomText;//系统底部信息
 
+    private String sysColor;//系统颜色
+
     private String sysNoticeText;//系统公告
 
     private Date createTime;//创建时间

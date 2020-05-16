@@ -1,6 +1,22 @@
 let sysNoticeTextEdit;
-layui.use(['form'], function () {
+layui.use(['colorpicker','form'], function () {
     let form = layui.form;//select、单选、复选等依赖form
+    let colorpicker = layui.colorpicker;
+
+    //开启全功能
+    colorpicker.render({
+        elem: '#test-form-sysColor'
+        ,color: $('#sysColor').val()
+        ,format: 'rgb'
+        ,predefine: true
+        ,alpha: true
+        ,done: function(color){
+            $('#sysColor').val(color);
+        }
+        ,change: function(color){
+
+        }
+    });
 
     //建立编辑器
     sysNoticeTextEdit = UE.getEditor('sysNoticeTextEdit');
