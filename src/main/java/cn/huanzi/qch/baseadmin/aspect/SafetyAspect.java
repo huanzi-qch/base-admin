@@ -34,13 +34,12 @@ public class SafetyAspect {
     /**
      * Pointcut 切入点
      * 匹配
-     * cn.huanzi.qch.baseadmin.sys.sysauthority.controller、
-     * cn.huanzi.qch.baseadmin.user.controller包下面的所有方法
+     * cn.huanzi.qch.baseadmin.sys.*.controller、
+     * cn.huanzi.qch.baseadmin.*.controller包下面的所有方法
      */
     @Pointcut(value = "execution(public * cn.huanzi.qch.baseadmin.sys.*.controller.*.*(..)) || " +
             "execution(public * cn.huanzi.qch.baseadmin.*.controller.*.*(..))")
-    public void safetyAspect() {
-    }
+    public void safetyAspect() {}
 
     /**
      * 环绕通知

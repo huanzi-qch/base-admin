@@ -14,7 +14,8 @@ layui.use(['colorpicker','form'], function () {
             $('#sysColor').val(color);
         }
         ,change: function(color){
-
+            //给当前页面头部和左侧设置主题色
+            $('.header-demo,.layui-side .layui-nav').css('background-color', color);
         }
     });
 

@@ -32,16 +32,17 @@ public class CaptchaFilterConfig implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        //前端公钥
-        String publicKey = null;
-
-        //jackson
-        ObjectMapper mapper = new ObjectMapper();
-        //jackson 序列化和反序列化 date处理
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
         //只拦截登录请求，且开发环境下不拦截
         if ("POST".equals(request.getMethod()) && "/login".equals(request.getRequestURI())) {
+            //前端公钥
+            String publicKey = null;
+
+            //jackson
+            ObjectMapper mapper = new ObjectMapper();
+            //jackson 序列化和反序列化 date处理
+            mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
             //解密
             try {
                 //AES加密后的数据

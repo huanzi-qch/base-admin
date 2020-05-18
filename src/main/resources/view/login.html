@@ -4,9 +4,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${sys.sysName} + '登录页面'"></title>
+    <title th:text="${sys.sysName} + '  登录页面'"></title>
+    <link rel="shortcut icon" th:href='${sys.sysLogo}' th:mce_href='${sys.sysLogo}' type="image/x-icon">
     <!-- 引入公用部分 -->
-    <script th:replace="head::static"></script>
+    <script th:replace="common/head::static"></script>
     <style>
         /*上下左右居中*/
         .main {
@@ -32,6 +33,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">密码<i class="layui-icon layui-icon-password"></i></label>
             <div class="layui-input-block">
+                <!-- 为了方便测试，密码类型设置成text，发布生产前记得改回来 -->
                 <input type="text" id="password" name="password" placeholder="请输入密码" class="layui-input">
             </div>
         </div>

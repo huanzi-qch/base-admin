@@ -4,9 +4,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <!-- 引入公用部分 -->
-        <script th:replace="head::static"></script>
+        <script th:replace="common/head::static"></script>
         <!-- 样式 -->
-        <link th:href="@{/css/sys/menu/menu.css}" rel="stylesheet" type="text/css"/>
+        <link th:href="@{/sys/menu/css/menu.css}" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div class="layui-row layui-col-space15">
@@ -67,5 +67,5 @@
         </div>
     </body>
     <!-- js -->
-    <script th:src="@{/js/sys/menu/menu.js}"></script>
+    <script th:src="@{/sys/menu/js/menu.js}"></script>
 </html>

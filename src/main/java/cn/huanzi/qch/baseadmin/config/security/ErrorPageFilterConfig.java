@@ -34,16 +34,16 @@ public class ErrorPageFilterConfig implements Filter {
 class ErrorPageController {
     @GetMapping("/error/403")
     public ModelAndView error403(){
-        return new ModelAndView("error/403");
+        return new ModelAndView("common/error/403");
     }
 
     @GetMapping("/error/404")
     public ModelAndView error404(){
-        return new ModelAndView("error/404");
+        return new ModelAndView("common/error/404");
     }
 
     @GetMapping("/error/500")
     public ModelAndView error500(){
-        return new ModelAndView("error/500");
+        return new ModelAndView("common/error/500");
     }
 }

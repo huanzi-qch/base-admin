@@ -115,6 +115,15 @@ class IndexController {
     /**
      * 跳转首页
      */
+    @GetMapping("")
+    public void index1(HttpServletResponse response){
+        //内部重定向
+        try {
+            response.sendRedirect("/index");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @GetMapping("index")
     public ModelAndView index(){
         ModelAndView modelAndView = new ModelAndView("index");

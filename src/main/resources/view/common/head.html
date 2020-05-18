@@ -1,0 +1,33 @@
+<!--此页面用于放置页面的公共片段（fragment）-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="static">
+    <!-- thymeleaf内联js-->
+    <head>
+        <script th:inline="javascript">
+            //项目根路径
+            // ctx = /*[[@{/}]]*/'';
+            ctx = [[${#request.getContextPath()}]];//应用路径
+        </script>
+    </head>
+
+    <!-- 引入公用库 -->
+    <head>
+        <!-- Jquery -->
+        <script th:src="@{/common/jquery/jquery.js}"></script>
+
+        <!-- Layui -->
+        <link th:href="@{/common/layui/css/layui.css}" rel="stylesheet" type="text/css"/>
+        <script th:src="@{/common/layui/layui.js}"></script>
+
+        <!--CryptoJS jsencrypt -->
+        <script th:src="@{/common/encrypt/cryptojs.js}"></script>
+        <script th:src="@{/common/encrypt/jsencrypt.js}"></script>
+    </head>
+
+    <!-- 最后引入common.js、common.css -->
+    <head>
+        <link th:href="@{/common/common.css}" rel="stylesheet" type="text/css"/>
+        <script th:src="@{/common/common.js}"></script>
+    </head>
+</html>

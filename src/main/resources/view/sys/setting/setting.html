@@ -4,13 +4,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- 引入公用部分 -->
-    <script th:replace="head::static"></script>
+    <script th:replace="common/head::static"></script>
     <!-- 样式 -->
-    <link th:href="@{/css/sys/setting/setting.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/sys/setting/css/setting.css}" rel="stylesheet" type="text/css"/>
 
     <!-- 百度富文本 -->
-    <script type="text/javascript" th:src="@{/ueditor/ueditor.config.js}"></script>
-    <script type="text/javascript" th:src="@{/ueditor/ueditor.all.js}"></script>
+    <script type="text/javascript" th:src="@{/common/ueditor/ueditor.config.js}"></script>
+    <script type="text/javascript" th:src="@{/common/ueditor/ueditor.all.js}"></script>
 </head>
 <body>
 <div class="layui-row layui-col-space15">
@@ -93,5 +93,5 @@
 </div>
 </body>
 <!-- js -->
-<script th:src="@{/js/sys/setting/setting.js}"></script>
+<script th:src="@{/sys/setting/js/setting.js}"></script>
 </html>
