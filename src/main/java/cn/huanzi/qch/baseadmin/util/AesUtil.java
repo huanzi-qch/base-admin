@@ -37,7 +37,7 @@ public class AesUtil {
 
     /**
      * 不能在代码中创建
-     * JceSecurity.getVerificationResult 会将其put进private static final lap<Provider,0bject>中，导致内存缓便被耗尽
+     * JceSecurity.getVerificationResult 会将其put进 private static final Map<Provider,Object>中，导致内存缓便被耗尽
      */
     private static final BouncyCastleProvider PROVIDER = new BouncyCastleProvider();
 
