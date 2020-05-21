@@ -35,6 +35,12 @@ public class AesUtil {
      */
     public static String key;
 
+    /**
+     * 不能在代码中创建
+     * JceSecurity.getVerificationResult 会将其put进private static final lap<Provider,0bject>中，导致内存缓便被耗尽
+     */
+    private static final BouncyCastleProvider PROVIDER = new BouncyCastleProvider();
+
     static {
         key = getKey();
     }
@@ -77,14 +83,12 @@ public class AesUtil {
      */
     public static String encrypt(String content, String encryptKey) throws Exception {
         //设置Cipher对象
-        Cipher cipher = Cipher.getInstance(ALGORITHMS,new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance(ALGORITHMS, PROVIDER);
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(), KEY_ALGORITHM));
 
         //调用doFinal
-        byte[] b = cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
-
         // 转base64
-        return Base64.encodeBase64String(b);
+        return Base64.encodeBase64String(cipher.doFinal(content.getBytes(StandardCharsets.UTF_8)));
 
     }
 
@@ -99,12 +103,11 @@ public class AesUtil {
         byte[] decodeBase64 = Base64.decodeBase64(encryptStr);
 
         //设置Cipher对象
-        Cipher cipher = Cipher.getInstance(ALGORITHMS,new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance(ALGORITHMS,PROVIDER);
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), KEY_ALGORITHM));
 
         //调用doFinal解密
-        byte[] decryptBytes = cipher.doFinal(decodeBase64);
-        return new String(decryptBytes);
+        return new String(cipher.doFinal(decodeBase64));
     }
 
 }

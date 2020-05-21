@@ -95,10 +95,7 @@ public class RsaUtil {
      */
     public static byte[] decryptByPrivateKey(byte[] encryptedData, String privateKey) throws Exception {
         //base64格式的key字符串转Key对象
-        byte[] keyBytes = Base64.decodeBase64(privateKey);
-        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-        Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
+        Key privateK = KeyFactory.getInstance(KEY_ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey)));
 
         //设置加密、填充方式
         /*
@@ -126,10 +123,7 @@ public class RsaUtil {
      */
     public static byte[] encryptByPublicKey(byte[] data, String publicKey) throws Exception {
         //base64格式的key字符串转Key对象
-        byte[] keyBytes = Base64.decodeBase64(publicKey);
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-        Key publicK = keyFactory.generatePublic(x509KeySpec);
+        Key publicK = KeyFactory.getInstance(KEY_ALGORITHM).generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(publicKey)));
 
         //设置加密、填充方式
         /*
@@ -185,8 +179,7 @@ public class RsaUtil {
             i++;
             offSet = i * encryptBlock;
         }
-        byte[] toByteArray = out.toByteArray();
         out.close();
-        return toByteArray;
+        return out.toByteArray();
     }
 }
