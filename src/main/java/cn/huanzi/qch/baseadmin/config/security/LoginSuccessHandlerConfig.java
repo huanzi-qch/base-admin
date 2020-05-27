@@ -10,17 +10,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -40,6 +44,9 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
@@ -85,9 +92,13 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
             flag = true;
         }
 
+        //校验不通过
         if(flag){
-            //校验不通过，清除当前的上下文
+            //清除当前的上下文
             SecurityContextHolder.clearContext();
+
+            //清除remember-me持久化tokens
+            persistentTokenRepository1().removeUserTokens(user.getUsername());
         }else{
             //校验通过，注册session
             sessionRegistry.registerNewSession(httpServletRequest.getSession().getId(),user);
@@ -125,5 +136,12 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         } catch (Throwable e) {
             e.printStackTrace();
         }
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository1() {
+        JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
+        persistentTokenRepository.setDataSource(dataSource);
+        return persistentTokenRepository;
     }
 }
