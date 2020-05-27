@@ -9,6 +9,12 @@ java后端：SpringBoot + Thymeleaf + WebSocket + Spring Security + SpringData-J
 前往博客查看详情<br/> 
 具体介绍请看我的博客[《开源一套简单通用的后台管理系统》](https://www.cnblogs.com/huanzi-qch/p/11534203.html)<br/> 
 
+QQ群<br/>
+有事请加群，有问题进群大家一起交流！
+QQ群名：Java交流群-huanzi-qch
+QQ群号：1015379123
+![](https://files-cdn.cnblogs.com/files/huanzi-qch/QQ.bmp) 
+
 捐献<br/>
 请注意，作者五行缺钱，如果喜欢这个项目，请随意打赏！
 
