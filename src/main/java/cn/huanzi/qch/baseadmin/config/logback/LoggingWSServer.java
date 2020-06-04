@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.config.logback;
 
 
+import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -118,12 +119,14 @@ public class LoggingWSServer {
                     //休眠一秒
                     Thread.sleep(1000);
                 } catch (Exception e) {
-                    //捕获但不处理
-                    e.printStackTrace();
+                    //输出到日志文件中
+                    log.error(ErrorUtil.errorInfoToString(e));
                 } finally {
                     try {
                         reader.close();
-                    } catch (IOException ignored) {
+                    } catch (IOException e) {
+                        //输出到日志文件中
+                        log.error(ErrorUtil.errorInfoToString(e));
                     }
                 }
             }
@@ -164,7 +167,8 @@ public class LoggingWSServer {
         try {
             session.getBasicRemote().sendText(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
     }
 }

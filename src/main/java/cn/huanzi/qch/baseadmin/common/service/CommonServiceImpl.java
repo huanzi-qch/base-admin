@@ -5,7 +5,9 @@ import cn.huanzi.qch.baseadmin.common.pojo.PageInfo;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.common.repository.CommonRepository;
 import cn.huanzi.qch.baseadmin.util.CopyUtil;
+import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import cn.huanzi.qch.baseadmin.util.UUIDUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import java.util.Optional;
  * @param <E> 实体类
  * @param <T> id主键类型
  */
+@Slf4j
 public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
 
     private Class<V> entityVoClass;//实体类Vo
@@ -134,7 +137,8 @@ public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
              */
             BeanUtils.copyProperties(entity, entityFull, ignoreProperties.toArray(new String[0]));
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
 
         E e = commonRepository.save(entityFull);

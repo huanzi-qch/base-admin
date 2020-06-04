@@ -93,6 +93,9 @@
 <script th:inline="javascript">
     //获取后端RSA公钥并存到sessionStorage
     sessionStorage.setItem('javaPublicKey', [[${publicKey}]]);
+
+    //获取api加密开关并存到sessionStorage
+    sessionStorage.setItem('sysApiEncrypt', [[${sys.sysApiEncrypt}]]);
 </script>
 <script>
     layui.use('element', function () {

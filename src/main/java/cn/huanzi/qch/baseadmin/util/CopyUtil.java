@@ -1,5 +1,6 @@
 package cn.huanzi.qch.baseadmin.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanMap;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * 实体转换工具
  */
+@Slf4j
 public class CopyUtil {
 
     /**
@@ -78,7 +80,8 @@ public class CopyUtil {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
         return target;
     }

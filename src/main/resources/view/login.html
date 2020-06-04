@@ -61,6 +61,9 @@
     //获取后端RSA公钥并存到sessionStorage
     sessionStorage.setItem('javaPublicKey', [[${publicKey}]]);
 
+    //获取api加密开关并存到sessionStorage
+    sessionStorage.setItem('sysApiEncrypt', [[${sys.sysApiEncrypt}]]);
+
     function formSubmit() {
         $.post(ctx + "/login", {
             "username": $("#username").val(),

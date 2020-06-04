@@ -25,7 +25,8 @@ public class MD5Util {
             //转换为16进制字符串
             md5 = ByteUtil.bytesToHex(md5Byte);
         } catch (Exception e) {
-            log.error("getMD5报错了！", e);
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
         return md5;
     }

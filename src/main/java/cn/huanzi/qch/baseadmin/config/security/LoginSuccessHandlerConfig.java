@@ -2,9 +2,7 @@ package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
-import cn.huanzi.qch.baseadmin.util.AesUtil;
-import cn.huanzi.qch.baseadmin.util.IpUtil;
-import cn.huanzi.qch.baseadmin.util.RsaUtil;
+import cn.huanzi.qch.baseadmin.util.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -104,38 +102,43 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
             sessionRegistry.registerNewSession(httpServletRequest.getSession().getId(),user);
         }
 
-        //加密
+        //判断api加密开关是否开启
+        if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())) {
+            //加密
+            try {
+                //前端公钥
+                String publicKey = httpServletRequest.getParameter("publicKey");
 
-        //前端公钥
-        String publicKey = httpServletRequest.getParameter("publicKey");
+                log.info("前端公钥：" + publicKey);
 
-        log.info("前端公钥：" + publicKey);
+                //jackson
+                ObjectMapper mapper = new ObjectMapper();
+                //jackson 序列化和反序列化 date处理
+                mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                //每次响应之前随机获取AES的key，加密data数据
+                String key = AesUtil.getKey();
+                log.info("AES的key：" + key);
+                log.info("需要加密的data数据：" + msg);
+                String data = AesUtil.encrypt(msg, key);
 
-        //jackson
-        ObjectMapper mapper = new ObjectMapper();
-        //jackson 序列化和反序列化 date处理
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-        try {
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            //每次响应之前随机获取AES的key，加密data数据
-            String key = AesUtil.getKey();
-            log.info("AES的key：" + key);
-            log.info("需要加密的data数据：" + msg);
-            String data = AesUtil.encrypt(msg, key);
+                //用前端的公钥来解密AES的key，并转成Base64
+                String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
 
-            //用前端的公钥来解密AES的key，并转成Base64
-            String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
-
-            //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-            httpServletResponse.setCharacterEncoding("UTF-8");
-            httpServletResponse.setContentType("application/json; charset=utf-8");
-            PrintWriter out = httpServletResponse.getWriter();
-            out.print("{\"data\":{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}}");
-            out.flush();
-            out.close();
-        } catch (Throwable e) {
-            e.printStackTrace();
+                msg = "{\"data\":{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}}";
+            } catch (Throwable e) {
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
+            }
         }
+
+        //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.setContentType("application/json; charset=utf-8");
+        PrintWriter out = httpServletResponse.getWriter();
+        out.print(msg);
+        out.flush();
+        out.close();
     }
 
     @Bean

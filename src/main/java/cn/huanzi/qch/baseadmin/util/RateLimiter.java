@@ -1,10 +1,12 @@
 package cn.huanzi.qch.baseadmin.util;
 
-import java.util.Scanner;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 简单的令牌桶限流
+ * 在SpringCloud分布式下实现限流，需要把令牌桶的维护放到一个公共的地方，比如Zuul路由，另外，guava里有现成的基于令牌桶的限流实现。
  */
+@Slf4j
 public class RateLimiter {
 
     /**
@@ -39,7 +41,8 @@ public class RateLimiter {
                         tokens = newTokens;
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //输出到日志文件中
+                    log.error(ErrorUtil.errorInfoToString(e));
                 }
             }
         }).start();
@@ -56,25 +59,23 @@ public class RateLimiter {
         return false;
     }
 
-    public static void main(String[] args) {
-        //令牌桶限流：峰值每秒可以处理10个请求，正常每秒可以处理3个请求
-        RateLimiter rateLimiter = new RateLimiter(10, 3);
-
-        //模拟请求
-        while (true){
-            //在控制台输入一个值按回车，相对于发起一次请求
-            Scanner scanner = new Scanner(System.in);
-            scanner.next();
-
-            //令牌桶返回true或者false
-            if(rateLimiter.execute()){
-                System.out.println("允许访问");
-            }else{
-                System.err.println("禁止访问");
-            }
-        }
-    }
+    //测试
+//    public static void main(String[] args) {
+//        //令牌桶限流：峰值每秒可以处理10个请求，正常每秒可以处理3个请求
+//        RateLimiter rateLimiter = new RateLimiter(10, 3);
+//
+//        //模拟请求
+//        while (true){
+//            //在控制台输入一个值按回车，相对于发起一次请求
+//            Scanner scanner = new Scanner(System.in);
+//            scanner.next();
+//
+//            //令牌桶返回true或者false
+//            if(rateLimiter.execute()){
+//                System.out.println("允许访问");
+//            }else{
+//                System.err.println("禁止访问");
+//            }
+//        }
+//    }
 }
-/*
-    在SpringCloud分布式下实现限流，需要把令牌桶的维护放到一个公共的地方，比如Zuul路由，另外，guava里有现成的基于令牌桶的限流实现。
- */

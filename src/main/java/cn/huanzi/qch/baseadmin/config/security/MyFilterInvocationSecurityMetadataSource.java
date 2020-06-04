@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 配置认证数据源，实现动态权限加载（注意：不要手动new，把它交给spring管理，spring默认单例）
@@ -53,7 +57,7 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
      * 更新权限集合
      */
     public void setRequestMap(List<SysAuthorityVo> authorityVoList){
-        Map<RequestMatcher, Collection<ConfigAttribute>> map = new HashMap<>();
+        Map<RequestMatcher, Collection<ConfigAttribute>> map = new ConcurrentHashMap<>();
         for (SysAuthorityVo sysAuthorityVo : authorityVoList) {
             String authorityName = sysAuthorityVo.getAuthorityName();
             if (StringUtils.isEmpty(sysAuthorityVo.getAuthorityContent())) continue;

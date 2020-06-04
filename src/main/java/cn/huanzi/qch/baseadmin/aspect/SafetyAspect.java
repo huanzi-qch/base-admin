@@ -4,7 +4,9 @@ import cn.huanzi.qch.baseadmin.annotation.Decrypt;
 import cn.huanzi.qch.baseadmin.annotation.Encrypt;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.util.AesUtil;
+import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import cn.huanzi.qch.baseadmin.util.RsaUtil;
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,13 @@ public class SafetyAspect {
      */
     @Around(value = "safetyAspect()")
     public Object around(ProceedingJoinPoint pjp) {
-        try {
+       try {
+
+           //判断api加密开关是否开启
+           if("N".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
+               return pjp.proceed(pjp.getArgs());
+           }
+
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             assert attributes != null;
             //request对象
@@ -140,8 +148,8 @@ public class SafetyAspect {
             return o;
 
         } catch (Throwable e) {
-            log.error(pjp.getSignature().toString());
-            e.printStackTrace();
+           //输出到日志文件中
+           log.error(ErrorUtil.errorInfoToString(e));
             return Result.of(null, false, "加解密异常：\n\t" + e.getMessage());
         }
     }

@@ -1,5 +1,7 @@
 package cn.huanzi.qch.baseadmin.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -10,6 +12,7 @@ import java.util.List;
 /**
  * 自动生成代码
  */
+@Slf4j
 public class CodeDOM {
 
     /**
@@ -256,7 +259,8 @@ public class CodeDOM {
                 list.add(tableInfo);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         } finally {
             assert rs != null;
             DBConnectionUtil.close(conn, ps, rs);
@@ -289,7 +293,8 @@ public class CodeDOM {
             } catch (Exception e) {
                 file = null;
                 System.err.println("新建文件操作出错");
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
             return file;
         }
@@ -312,7 +317,8 @@ public class CodeDOM {
                 resultFile.close();
             } catch (Exception e) {
                 System.err.println("写入操作出错");
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         }
     }
@@ -406,7 +412,8 @@ public class CodeDOM {
             try {
                 Class.forName(DRIVER_CLASSNAME);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         }
 
@@ -419,7 +426,8 @@ public class CodeDOM {
             try {
                 conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             } catch (SQLException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
             return conn;
         }
@@ -432,7 +440,8 @@ public class CodeDOM {
                 conn.close();
                 stmt.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         }
 
@@ -444,7 +453,8 @@ public class CodeDOM {
                 close(conn, stmt);
                 rs.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         }
 

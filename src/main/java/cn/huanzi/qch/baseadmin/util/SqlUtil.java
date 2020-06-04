@@ -4,6 +4,7 @@ import cn.huanzi.qch.baseadmin.annotation.Between;
 import cn.huanzi.qch.baseadmin.annotation.In;
 import cn.huanzi.qch.baseadmin.annotation.Like;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Transient;
 import org.springframework.util.StringUtils;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * 拼接SQL工具类
  */
+@Slf4j
 public class SqlUtil {
 
     /**
@@ -114,7 +116,8 @@ public class SqlUtil {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
     }
 
@@ -147,7 +150,8 @@ public class SqlUtil {
             String tableName = entity.getClass().getAnnotation(Table.class).name();
             sql.append("from ").append(tableName).append(" where '1' = '1' ");
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
         return sql;
     }

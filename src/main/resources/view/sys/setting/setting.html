@@ -17,10 +17,10 @@
     <!-- 操作表单 -->
     <div class="layui-col-md12">
         <div class="layui-card">
-            <div class="layui-card-header">系统设置</div>
+            <div class="layui-card-header">系统设置（注：修改后需要刷新页面才生效）</div>
             <div class="layui-card-body">
                 <form id="sysForm" class="layui-form layui-form-pane">
-                    <div class="layui-form-item">
+                    <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">系统名称</label>
                         <div class="layui-input-block">
                             <input type="text" name="sysName" th:value="${sys.sysName}" autocomplete="off"
@@ -28,7 +28,7 @@
                                    class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">系统logo图片</label>
                         <div class="layui-input-block">
                             <input type="text" name="sysLogo" th:value="${sys.sysLogo}" autocomplete="off"
@@ -43,7 +43,7 @@
                             <script type="text/plain" id="sysNoticeTextEdit" style="width:100%;height:500px;"></script>
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">系统底部信息</label>
                         <div class="layui-input-block">
                             <input type="text" name="sysBottomText" th:value="${sys.sysBottomText}" autocomplete="off"
@@ -51,7 +51,15 @@
                                    class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item  layui-form-text">
+                        <label class="layui-form-label">是否开启API加密</label>
+                        <div class="layui-input-block">
+                            <input id="sysApiEncrypt" th:value="${sys.sysApiEncrypt}"  hidden="hidden"/>
+                            <input type="radio" name="sysApiEncrypt" value="Y" title="是">
+                            <input type="radio" name="sysApiEncrypt" value="N" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">系统颜色</label>
                         <div class="layui-input-block">
                             <div class="layui-input-inline" style="width: 120px;">
@@ -70,7 +78,7 @@
                                    class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">更新时间</label>
                         <div class="layui-input-block">
                             <input type="text" name="updateTime" th:value="${sys.updateTime}" autocomplete="off"

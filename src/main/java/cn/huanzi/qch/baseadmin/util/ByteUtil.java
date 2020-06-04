@@ -1,10 +1,13 @@
 package cn.huanzi.qch.baseadmin.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 
 /**
  * byte数组工具类
  */
+@Slf4j
 public class ByteUtil {
 
     /**
@@ -41,7 +44,8 @@ public class ByteUtil {
             //输出流转byte
             bytes = bo.toByteArray();
         } catch (Exception e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         } finally {
             //关闭流
             try {
@@ -50,7 +54,8 @@ public class ByteUtil {
                 assert oo != null;
                 oo.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         }
         return bytes;
@@ -69,7 +74,8 @@ public class ByteUtil {
             //读取输入流
             obj = oi.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         } finally {
             //关流
             try {
@@ -78,7 +84,8 @@ public class ByteUtil {
                 assert oi != null;
                 oi.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         }
         return obj;

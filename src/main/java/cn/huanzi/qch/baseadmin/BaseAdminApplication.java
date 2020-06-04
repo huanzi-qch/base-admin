@@ -8,9 +8,7 @@ import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.vo.SysShortcutMenuVo;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.sys.sysusermenu.service.SysUserMenuService;
-import cn.huanzi.qch.baseadmin.util.RsaUtil;
-import cn.huanzi.qch.baseadmin.util.SecurityUtil;
-import cn.huanzi.qch.baseadmin.util.VerifyCodeImageUtil;
+import cn.huanzi.qch.baseadmin.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,11 +81,16 @@ class IndexController {
     public ApplicationRunner applicationRunner() {
         return applicationArguments -> {
             try {
-                InetAddress ia = InetAddress.getLocalHost();
+                //系统启动时获取数据库数据，设置到公用静态集合sysSettingMap
+                SysSettingVo sysSettingVo = sysSettingService.get("1").getData();
+                sysSettingVo.setUserInitPassword(null);//隐藏部分属性
+                SysSettingUtil.setSysSettingMap(sysSettingVo);
+
                 //获取本机内网IP
-                log.info("启动成功：" + "http://" + ia.getHostAddress() + ":" + port + "/");
-            } catch (UnknownHostException ex) {
-                ex.printStackTrace();
+                log.info("启动成功：" + "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + "/");
+            } catch (UnknownHostException e) {
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
         };
     }
@@ -100,9 +103,7 @@ class IndexController {
         ModelAndView modelAndView = new ModelAndView("login");
 
         //系统信息
-        SysSettingVo sysSettingVo = sysSettingService.get("1").getData();
-        sysSettingVo.setUserInitPassword(null);//隐藏部分属性
-        modelAndView.addObject("sys", sysSettingVo);
+        modelAndView.addObject("sys", SysSettingUtil.getSysSetting());
 
         //后端公钥
         String publicKey = RsaUtil.getPublicKey();
@@ -121,7 +122,8 @@ class IndexController {
         try {
             response.sendRedirect("/index");
         } catch (IOException e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
     }
     @GetMapping("index")
@@ -129,9 +131,7 @@ class IndexController {
         ModelAndView modelAndView = new ModelAndView("index");
 
         //系统信息
-        SysSettingVo sysSettingVo = sysSettingService.get("1").getData();
-        sysSettingVo.setUserInitPassword(null);//隐藏部分属性
-        modelAndView.addObject("sys", sysSettingVo);
+        modelAndView.addObject("sys", SysSettingUtil.getSysSetting());
 
         //登录用户
         SysUserVo sysUserVo = sysUserService.findByLoginName(SecurityUtil.getLoginUser().getUsername()).getData();

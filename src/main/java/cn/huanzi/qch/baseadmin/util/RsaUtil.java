@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.util;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -14,11 +15,13 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * RSA加、解密算法工具类
  */
+@Slf4j
 public class RsaUtil {
 
     /**
@@ -60,13 +63,14 @@ public class RsaUtil {
     /**
      * 后端RSA的密钥对(公钥和私钥)Map，由静态代码块赋值
      */
-    private static Map<String, Object> genKeyPair = new HashMap<>();
+    private static Map<String, Object> genKeyPair = new LinkedHashMap<>();
 
     static {
         try {
             genKeyPair.putAll(genKeyPair());
         } catch (Exception e) {
-            e.printStackTrace();
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
         }
     }
 
