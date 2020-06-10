@@ -1,4 +1,4 @@
-package cn.huanzi.qch.baseadmin.config.logback;
+package cn.huanzi.qch.baseadmin.config.websocket;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;

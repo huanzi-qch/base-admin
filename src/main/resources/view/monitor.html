@@ -1,0 +1,149 @@
+<!DOCTYPE>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>系统监控</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="common/head::static"></script>
+    <style>
+        .layui-card-body {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<!-- 标题 -->
+<h1 style="text-align: center;">系统环境监控</h1>
+<h6 style="text-align: center;">1秒刷新一次</h6>
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">系统信息</div>
+                <div class="layui-card-body">
+                    <p>操作系统：<span id="os"></span></p>
+                    <p>Java版本：<span id="jvmJavaVersion"></span></p>
+                    <p>程序启动时间：<span id="runTime"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">CPU</div>
+                <div class="layui-card-body">
+                    <p>CPU信息：<span id="cpuInfo"></span></p>
+                    <p>CPU使用率：<span id="cpuUseRate">0%</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">内存</div>
+                <div class="layui-card-body">
+                    <p>内存总量：<span id="ramTotal">0（G）</span></p>
+                    <p>已用内存：<span id="ramUsed">0（G）</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">磁盘</div>
+                <div class="layui-card-body">
+                    <p>磁盘总量：<span id="diskTotal">0（G）</span></p>
+                    <p>已用磁盘：<span id="diskUsed">0（G）</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">JVM堆内存</div>
+                <div class="layui-card-body">
+                    <p>初始大小：<span id="jvmHeapInit">0（M）</span></p>
+                    <p>最大可用：<span id="jvmHeapMax">0（M）</span></p>
+                    <p>已使用：<span id="jvmHeapUsed">0（M）</span></p>
+                    <p>已申请：<span id="jvmHeapCommitted">0（M）</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">JVM非堆内存</div>
+                <div class="layui-card-body">
+                    <p>初始大小：<span id="jvmNonHeapInit">0（M）</span></p>
+                    <p>最大可用：<span id="jvmNonHeapMax">0（M）</span></p>
+                    <p>已使用：<span id="jvmNonHeapUsed">0（M）</span></p>
+                    <p>已申请：<span id="jvmNonHeapCommitted">0（M）</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    let port = [[${port}]];//端口
+
+    //websocket对象
+    let websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        //动态获取域名或ip
+        let hostname = window.location.hostname;
+        port = window.location.port;
+        websocket = new WebSocket("ws://"+hostname+":" + port + "/websocket/monitor");
+    } else {
+        console.error("不支持WebSocket");
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function (e) {
+        console.error("WebSocket连接发生错误");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function () {
+        console.log("WebSocket连接成功")
+    };
+
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        //追加
+        if (event.data) {
+            let monitonJson = JSON.parse(event.data);
+            $("#os").text(monitonJson.os);
+            $("#runTime").text(monitonJson.runTime);
+            $("#jvmJavaVersion").text(monitonJson.jvmJavaVersion);
+
+            $("#jvmHeapInit").text(monitonJson.jvmHeapInit  + "（M）");
+            $("#jvmHeapMax").text(monitonJson.jvmHeapMax  + "（M）");
+            $("#jvmHeapUsed").text(monitonJson.jvmHeapUsed  + "（M）");
+            $("#jvmHeapCommitted").text(monitonJson.jvmHeapCommitted  + "（M）");
+
+            $("#jvmNonHeapInit").text(monitonJson.jvmNonHeapInit  + "（M）");
+            $("#jvmNonHeapMax").text(monitonJson.jvmNonHeapMax  + "（M）");
+            $("#jvmNonHeapUsed").text(monitonJson.jvmNonHeapUsed  + "（M）");
+            $("#jvmNonHeapCommitted").text(monitonJson.jvmNonHeapCommitted  + "（M）");
+
+
+            $("#cpuUseRate").text(monitonJson.cpuUseRate + "%");
+            $("#cpuInfo").text(monitonJson.cpuInfo);
+
+            $("#ramTotal").text(monitonJson.ramTotal + "（G）");
+            $("#ramUsed").text(monitonJson.ramUsed + "（G）");
+
+            $("#diskTotal").text(monitonJson.diskTotal + "（G）");
+            $("#diskUsed").text(monitonJson.diskUsed + "（G）");
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        console.log("WebSocket连接关闭")
+    };
+</script>
+</html>

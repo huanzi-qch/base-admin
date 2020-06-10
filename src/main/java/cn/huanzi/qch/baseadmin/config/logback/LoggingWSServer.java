@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.config.logback;
 
 
+import cn.huanzi.qch.baseadmin.config.websocket.MyEndpointConfigure;
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,17 +48,17 @@ public class LoggingWSServer {
         lengthMap.put(session.getId(), 1);//默认从第一行开始
 
         //获取日志信息
-        new Thread(() -> {
+        new Thread(()->{
             log.info("LoggingWebSocketServer 任务开始");
             boolean first = true;
+            BufferedReader reader = null;
             while (sessionMap.get(session.getId()) != null) {
-                BufferedReader reader = null;
                 try {
-                    //日志文件路径，获取最新的
-                    String filePath = System.getProperty("user.home") + "/log/" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + "/"+applicationName+".log";
+                    //日志文件，获取最新的
+                    FileReader fileReader = new FileReader(System.getProperty("user.home") + "/log/" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + "/" + applicationName + ".log");
 
                     //字符流
-                    reader = new BufferedReader(new FileReader(filePath));
+                    reader = new BufferedReader(fileReader);
                     Object[] lines = reader.lines().toArray();
 
                     //只取从上次之后产生的日志
@@ -103,7 +104,7 @@ public class LoggingWSServer {
                     }
 
                     //存储最新一行开始
-                    lengthMap.put(session.getId(), lines.length);
+                    lengthMap.replace(session.getId(), lines.length);
 
                     //第一次如果太大，截取最新的200行就够了，避免传输的数据太大
                     if(first && copyOfRange.length > 200){
@@ -121,14 +122,13 @@ public class LoggingWSServer {
                 } catch (Exception e) {
                     //输出到日志文件中
                     log.error(ErrorUtil.errorInfoToString(e));
-                } finally {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        //输出到日志文件中
-                        log.error(ErrorUtil.errorInfoToString(e));
-                    }
                 }
+            }
+            try {
+                reader.close();
+            } catch (IOException e) {
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
             log.info("LoggingWebSocketServer 任务结束");
         }).start();
@@ -149,7 +149,8 @@ public class LoggingWSServer {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        error.printStackTrace();
+        //输出到日志文件中
+        log.error(ErrorUtil.errorInfoToString(error));
     }
 
     /**

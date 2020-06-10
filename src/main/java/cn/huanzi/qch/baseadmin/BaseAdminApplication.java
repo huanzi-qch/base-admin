@@ -17,6 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+@EnableAsync//开启异步调用
 @SpringBootApplication
 public class BaseAdminApplication {
 
@@ -175,6 +177,14 @@ class IndexController {
 
         //写给浏览器
         ImageIO.write(bufferedImage, "JPEG", response.getOutputStream());
+    }
+
+    /**
+     * 跳转实时系统硬件监控
+     */
+    @GetMapping("monitor")
+    public ModelAndView monitor() {
+        return new ModelAndView("monitor.html","port",port);
     }
 
     /**

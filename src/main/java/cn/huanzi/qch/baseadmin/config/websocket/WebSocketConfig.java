@@ -1,4 +1,4 @@
-package cn.huanzi.qch.baseadmin.config.logback;
+package cn.huanzi.qch.baseadmin.config.websocket;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class WebSocketConfig {
      * 支持注入其他类
      */
     @Bean
-    public MyEndpointConfigure  newMyEndpointConfigure (){
+    public MyEndpointConfigure newMyEndpointConfigure (){
         return new MyEndpointConfigure ();
     }
 }

@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * 简单的令牌桶限流
@@ -25,27 +26,33 @@ public class RateLimiter {
     public RateLimiter(Integer limit, Integer speed){
         //初始化桶的大小，且桶一开始是满的
         this.limit = limit;
-        tokens = this.limit;
+        RateLimiter.tokens = this.limit;
 
         //任务线程：每秒新增speed个令牌
-        new Thread(() ->{
-            while (true){
-                try {
-                    Thread.sleep(1000L);
+        asyncTask(speed);
+    }
 
-                    int newTokens = tokens + speed;
-                    if(newTokens > limit){
-                        tokens = limit;
-                        System.out.println("令牌桶满了！！！");
-                    }else{
-                        tokens = newTokens;
-                    }
-                } catch (InterruptedException e) {
-                    //输出到日志文件中
-                    log.error(ErrorUtil.errorInfoToString(e));
+    /**
+     * 优雅异步任务
+     */
+    @Async("asyncTaskExecutor")
+    public void asyncTask(Integer speed) {
+        while (true){
+            try {
+                Thread.sleep(1000L);
+
+                int newTokens = tokens + speed;
+                if(newTokens > limit){
+                    tokens = limit;
+                    System.out.println("令牌桶满了！！！");
+                }else{
+                    tokens = newTokens;
                 }
+            } catch (InterruptedException e) {
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
-        }).start();
+        }
     }
 
     /**

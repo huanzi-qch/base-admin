@@ -76,10 +76,24 @@
             <!-- 内容 -->
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                    <div style="padding: 15px;">
-                        欢迎你，<span th:text="${loginUser.userName}"></span>
-                        <br/>
-                        <div th:utext="${sys.sysNoticeText}"></div>
+                    <div class="layui-row layui-col-space15" style="padding: 20px;background-color: #F2F2F2;">
+                        <div class="layui-col-md6">
+                            <div class="layui-card">
+                                <div class="layui-card-header">欢迎使用</div>
+                                <div class="layui-card-body">
+                                    欢迎你，<span th:text="${loginUser.userName}"></span>
+                                    <br/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md6">
+                            <div class="layui-card">
+                                <div class="layui-card-header">系统公告</div>
+                                <div class="layui-card-body">
+                                    <div th:utext="${sys.sysNoticeText}"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

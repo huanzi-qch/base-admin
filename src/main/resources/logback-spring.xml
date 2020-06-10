@@ -5,9 +5,10 @@
     <!--日志文件名称：这里spring.application.name表示工程名称-->
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
 
-    <!--默认配置-->
+    <!--引入默认配置-->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <!--配置控制台(Console)-->
+
+    <!--引入配置控制台(CONSOLE)-->
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <!--配置日志文件(File)-->

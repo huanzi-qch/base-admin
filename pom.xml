@@ -111,6 +111,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+
+        <!--https://github.com/oshi/oshi。-->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-json</artifactId>
+            <version>3.6.1</version>
+        </dependency>
     </dependencies>
 
     <!--构建工具-->
