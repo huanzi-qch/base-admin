@@ -128,7 +128,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <finalName>${project.artifactId}</finalName>
-                    <outputDirectory>/package</outputDirectory>
+                    <outputDirectory>../package</outputDirectory>
                 </configuration>
             </plugin>
             <!-- 跳过启动测试 -->

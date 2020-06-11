@@ -13,13 +13,13 @@ QQ群<br/>
 有事请加群，有问题进群大家一起交流！
 QQ群名：Java交流群-huanzi-qch
 QQ群号：1015379123
-![](https://files-cdn.cnblogs.com/files/huanzi-qch/QQ.bmp) 
+![](http://huanzi-qch.gitee.io/file-server/images/qq.bmp) 
 
 捐献<br/>
 请注意，作者五行缺钱，如果喜欢这个项目，请随意打赏！
 
 支付宝<br/>
-![](https://files.cnblogs.com/files/huanzi-qch/1540353568326.bmp) 
+![](http://huanzi-qch.gitee.io/file-server/images/zhifubao.bmp) 
 
 微信<br/>
-![](https://files.cnblogs.com/files/huanzi-qch/1540353592438.bmp) 
+![](http://huanzi-qch.gitee.io/file-server/images/weixin.bmp) 
