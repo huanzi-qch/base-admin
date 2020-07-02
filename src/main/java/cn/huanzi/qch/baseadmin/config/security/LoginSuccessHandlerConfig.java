@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -49,11 +50,10 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         //从全局注册表中获取所有登陆用户，做用户单登陆判断
-        ArrayList<String> allUserNameList = new ArrayList<>();
-        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
-        for (Object allPrincipal : allPrincipals) {
-            User user = (User) allPrincipal;
-            allUserNameList.add(user.getUsername());
+        ArrayList<String> allSessionIdList = new ArrayList<>();
+        List<SessionInformation> allSessions = sessionRegistry.getAllSessions(authentication.getPrincipal(), false);
+        for (SessionInformation sessionInformation : allSessions) {
+            allSessionIdList.add(sessionInformation.getSessionId());
         }
 
         //查询当前与系统交互的用户，存储在本地线程安全上下文，校验账号有效性
@@ -73,7 +73,7 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         }
 
         //禁止多人在线
-        if("N".equals(sysUserVo.getLimitMultiLogin()) && allUserNameList.contains(sysUserVo.getLoginName())){
+        if("N".equals(sysUserVo.getLimitMultiLogin()) &&  allSessionIdList.size() > 0){
             msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
             flag = true;
         }
@@ -97,7 +97,8 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
 
             //清除remember-me持久化tokens
             persistentTokenRepository1().removeUserTokens(user.getUsername());
-        }else{
+        }
+        else{
             //校验通过，注册session
             sessionRegistry.registerNewSession(httpServletRequest.getSession().getId(),user);
         }

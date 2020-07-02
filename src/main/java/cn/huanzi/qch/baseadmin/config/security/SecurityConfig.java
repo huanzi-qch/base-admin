@@ -94,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 //无需权限访问
-                .antMatchers("/favicon.ico","/common/**", "/webjars/**", "/getVerifyCodeImage").permitAll()
+                .antMatchers("/favicon.ico","/common/**", "/webjars/**", "/getVerifyCodeImage","/error/*").permitAll()
 
                 //其他接口需要登录后才能访问
                 .anyRequest().authenticated()
@@ -127,7 +127,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //首次获取
         List<SysAuthorityVo> authorityVoList = sysAuthorityService.list(new SysAuthorityVo()).getData();
         myFilterInvocationSecurityMetadataSource.setRequestMap(authorityVoList);
-        //初始化拦截器并添加数据源（注意：不要手动new对象，把它交给spring管理，spring默认单例）
+        //初始化拦截器并添加数据源
         DynamicallyUrlInterceptor interceptor = new DynamicallyUrlInterceptor();
         interceptor.setSecurityMetadataSource(myFilterInvocationSecurityMetadataSource);
 

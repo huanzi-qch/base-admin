@@ -32,6 +32,22 @@
                 </script>
             </div>
         </div>
+        <div class="layui-card">
+            <div class="layui-card-header">当前在线用户</div>
+            <div class="layui-card-body">
+                <!-- 表格主体 -->
+                <table class="layui-hide" id="userOnLineTable" lay-filter="test"></table>
+                <!-- 模板 -->
+                <script type="text/html" id="userOnLineTableToolbarDemo">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn layui-btn-sm" lay-event="reload">刷新</button>
+                    </div>
+                </script>
+                <script type="text/html" id="userOnLineTableBarDemo">
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="forced">踢下线<i class="layui-icon layui-icon-close"></i></a>
+                </script>
+            </div>
+        </div>
     </div>
     <!-- 操作表单 -->
     <div class="layui-col-md6">

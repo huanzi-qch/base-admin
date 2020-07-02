@@ -17,10 +17,13 @@ import cn.huanzi.qch.baseadmin.util.MD5Util;
 import cn.huanzi.qch.baseadmin.util.SqlUtil;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,6 +31,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.sql.DataSource;
 
 @Service
 @Transactional
@@ -49,6 +53,9 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
 
     @Autowired
     private SysShortcutMenuService sysShortcutMenuService;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public Result<String> delete(String id) {
@@ -128,7 +135,19 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
     }
 
     @Override
+    public PersistentTokenRepository getPersistentTokenRepository2() {
+        return persistentTokenRepository2();
+    }
+
+    @Override
     public Result<SysUserVo> findByLoginName(String username) {
         return Result.of(CopyUtil.copy(sysUserRepository.findByLoginName(username), SysUserVo.class));
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository2() {
+        JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
+        persistentTokenRepository.setDataSource(dataSource);
+        return persistentTokenRepository;
     }
 }
