@@ -6,6 +6,9 @@ Base Admin一套简单通用的后台管理系统<br/>
 前端：layui<br/> 
 java后端：SpringBoot + Thymeleaf + WebSocket + Spring Security + SpringData-Jpa + MySql<br/> 
 
+## 运行效果图<br/> 
+![](https://img2020.cnblogs.com/blog/1353055/202007/1353055-20200717112315040-830760246.png) 
+
 ## 仓库地址<br/> 
 国外：https://github.com/huanzi-qch/base-admin<br/> 
 国内：https://gitee.com/huanzi-qch/base-admin<br/> 
