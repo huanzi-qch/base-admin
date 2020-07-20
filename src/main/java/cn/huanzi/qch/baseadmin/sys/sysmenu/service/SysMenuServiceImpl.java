@@ -5,6 +5,8 @@ import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
 import cn.huanzi.qch.baseadmin.sys.sysmenu.pojo.SysMenu;
 import cn.huanzi.qch.baseadmin.sys.sysmenu.repository.SysMenuRepository;
 import cn.huanzi.qch.baseadmin.sys.sysmenu.vo.SysMenuVo;
+import cn.huanzi.qch.baseadmin.sys.sysusermenu.service.SysUserMenuService;
+import cn.huanzi.qch.baseadmin.sys.sysusermenu.vo.SysUserMenuVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,9 @@ public class SysMenuServiceImpl extends CommonServiceImpl<SysMenuVo, SysMenu, St
     @Autowired
     private SysMenuRepository sysMenuRepository;
 
+    @Autowired
+    private SysUserMenuService sysUserMenuService;
+
     @Override
     public Result<String> delete(String id) {
         //先删除子节点
@@ -32,6 +37,14 @@ public class SysMenuServiceImpl extends CommonServiceImpl<SysMenuVo, SysMenu, St
         super.list(sysMenuVo).getData().forEach((menuVo)->{
             super.delete(menuVo.getMenuId());
         });
+
+        //后删除所有用户菜单表关联信息
+        SysUserMenuVo sysUserMenuVo = new SysUserMenuVo();
+        sysUserMenuVo.setMenuId(id);
+        sysUserMenuService.list(sysUserMenuVo).getData().forEach((vo)->{
+            sysUserMenuService.delete(vo.getUserMenuId());
+        });
+
         //再删除自己
         return super.delete(id);
     }
