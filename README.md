@@ -34,6 +34,12 @@ java后端：SpringBoot + Thymeleaf + WebSocket + Spring Security + SpringData-J
 
 解决：等待IDE识别成springboot项目后，在BaseAdminApplication.java中运行main函数启动程序
 ```
+4、测试账号/密码是多少？    PS：dev分支环境，默认关闭验证码校验
+```text
+账号/密码
+
+sa/123456
+```
 
 ## 仓库地址<br/> 
 国外：https://github.com/huanzi-qch/base-admin<br/> 
