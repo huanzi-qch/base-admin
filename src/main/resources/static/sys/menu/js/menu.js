@@ -51,7 +51,7 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
                     //返回 key 值
                     return "";
                 } else if (type === 'del') { //删除节点
-                    layer.confirm('确认要删除这个菜单吗？/n注意：删除父节点将会一同删除子节点', function (index) {
+                    layer.confirm('确认要删除这个菜单吗？\n注意：删除父节点将会一同删除子节点', function (index) {
                         $.delete(ctx + "/sys/sysMenu/delete/" + data.id,{}, function () {
                             layer.msg("删除成功");
                             elem.remove();
