@@ -117,12 +117,18 @@ public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
                 }
                 //如果前端不传这两个值，后台来维护创建时间、更新时间
                 if(isInsert && "createTime".equals(fieldName) && StringUtils.isEmpty(fieldValue)){
+                    //先赋值给fieldValue，以免后续进行copy对象判断属性是否为忽略属性是出错
+                    fieldValue = new Date();
+
                     //set方法，第一个参数是对象
-                    field.set(entity, new Date());
+                    field.set(entity, fieldValue);
                 }
                 if("updateTime".equals(fieldName) && StringUtils.isEmpty(fieldValue)){
+                    //先赋值给fieldValue，以免后续进行copy对象判断属性是否为忽略属性是出错
+                    fieldValue = new Date();
+
                     //set方法，第一个参数是对象
-                    field.set(entity, new Date());
+                    field.set(entity, fieldValue);
                 }
 
                 //找出值为空的属性，值为空则为忽略属性，或者被NotFound标注，我们复制的时候不进行赋值
