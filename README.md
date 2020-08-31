@@ -47,6 +47,28 @@ sa/123456
 一套通用common代码，每个单表去继承从而实现这套基础代码，使用CodeDOM.java代码自动生成一套单表的基础增、删、改、查接口，大大提高开发效率，
 详情见博客介绍：https://www.cnblogs.com/huanzi-qch/p/10281773.html
 ```
+6、如何跳过登录，直接测试接口？
+```text
+场景：有的同学发现在“无需权限访问”那里配置了测试接口，但还是跳转到了登录页面，例如：/sys/sysUser/getUserById
+
+原因：这是因为跟“权限管理”那里配置的url接口冲突了（例如：/sys/**），权限管理那里的配置优先级更高，因此还是会跳去登录页面
+
+解决：暂时删除所有跟测试接口冲突的“权限管理”配置的url接口（例如：/sys/**，/sys/sysUser/*等）
+```
+7、ORM框架不想用JPA，如何快速转MyBatis-Plus？
+```text
+JPA、MyBatis-Plus我都有进行封装，编码风格高度统一，都是单表继承基础通用的代码，有代码自动生成工具，本项目用的就是JPA的封装，快速切换可看之前的博客
+
+MP：SpringBoot系列——MyBatis-Plus整合封装（https://www.cnblogs.com/huanzi-qch/p/13561164.html）
+JPA：SpringBoot系列——Spring-Data-JPA（究极进化版） 自动生成单表基础增、删、改、查接口（https://www.cnblogs.com/huanzi-qch/p/10281773.html）
+```
+8、我想升级成前后端分离项目，麻烦吗？应当如何下手？
+```text
+难度肯定还是有的，如何你对这个项目比较熟悉，相信你已早有思路，如果没有可以参考下面的博客文章
+
+springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）（https://www.cnblogs.com/hetutu-5238/p/10022963.html）
+GitHub地址（https://github.com/hetutu5238/zmc_security_oauth2）
+```
 
 ## 仓库地址<br/> 
 国外：https://github.com/huanzi-qch/base-admin<br/> 
