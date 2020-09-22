@@ -183,6 +183,12 @@ function userFormSave() {
     let userForm = $("#userForm").serializeObject();
     userForm.updateTime = commonUtil.getNowTime();
     $.post(ctx + "/sys/sysUser/save", userForm, function (data) {
+
+        if(!data.flag){
+            layer.msg(data.msg, {icon: 2,time: 2000}, function () {});
+            return;
+        }
+
         //保存用户菜单跟用户权限,只要userId，以及Id集合就可以了
         let menuIdList = [];
         for (let check of tree.getChecked('userMenuTree')[0].children) {
