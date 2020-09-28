@@ -3,13 +3,17 @@ package cn.huanzi.qch.baseadmin.util;
 import cn.huanzi.qch.baseadmin.annotation.Between;
 import cn.huanzi.qch.baseadmin.annotation.In;
 import cn.huanzi.qch.baseadmin.annotation.Like;
+import cn.huanzi.qch.baseadmin.common.pojo.PageCondition;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Transient;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Table;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -61,7 +65,7 @@ public class SqlUtil {
                 Object fieldValue = field.get(entity);
                 //检查Transient注解，是否忽略拼接
                 if (!field.isAnnotationPresent(Transient.class)) {
-                    String column = new PropertyNamingStrategy.SnakeCaseStrategy().translate(fieldName).toLowerCase();
+                    String column = SqlUtil.getUnderScoreColumn(fieldName);
                     //值是否为空
                     if (!StringUtils.isEmpty(fieldValue)) {
                         //映射关系：对象属性(驼峰)->数据库字段(下划线)
@@ -161,7 +165,7 @@ public class SqlUtil {
                 //非临时字段、非忽略字段
                 if (!field.isAnnotationPresent(Transient.class) && !ignoreList.contains(fieldName)) {
                     //拼接查询字段  驼峰属性转下划线
-                    sql.append(new PropertyNamingStrategy.SnakeCaseStrategy().translate(fieldName).toLowerCase()).append(" ").append(",");
+                    sql.append(SqlUtil.getUnderScoreColumn(fieldName)).append(" ").append(",");
                 }
             }
             //处理逗号（删除最后一个字符）
@@ -177,10 +181,42 @@ public class SqlUtil {
     }
 
     /**
+     * 拼接排序SQL
+     *
+     * @param entityVo Vo类
+     * @param sql    待拼接的SQL
+     */
+    public static void orderByColumn(PageCondition entityVo, StringBuilder sql) {
+        String sidx = entityVo.getSidx();
+        String sord = entityVo.getSord();
+
+        if (!StringUtils.isEmpty(sidx)) {
+            //1.获取Bean
+            BeanWrapper srcBean = new BeanWrapperImpl(entityVo);
+            //2.获取Bean的属性描述
+            PropertyDescriptor[] pds = srcBean.getPropertyDescriptors();
+            //3.获取符合的排序字段名
+            for (PropertyDescriptor p : pds) {
+                String propertyName = p.getName();
+                if (sidx.equals(propertyName)) {
+                    sql.append(" order by ").append(getUnderScoreColumn(sidx)).append("desc".equalsIgnoreCase(sord) ? " desc" : " asc");
+                }
+            }
+        }
+    }
+
+    /**
+     * 实体属性转表字段，驼峰属性转下划线，并全部转小写
+     */
+    private static String getUnderScoreColumn(String fieldName){
+        return new PropertyNamingStrategy.SnakeCaseStrategy().translate(fieldName).toLowerCase();
+    }
+
+    /**
      * sql转义
      * 动态拼写SQL，需要进行转义防范SQL注入！
      */
-    public static String escapeSql(String str) {
+    private static String escapeSql(String str) {
         if (str == null) {
             return null;
         }
