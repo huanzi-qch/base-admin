@@ -1,6 +1,5 @@
 package cn.huanzi.qch.baseadmin.util;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -14,27 +13,14 @@ public class ErrorUtil {
      * 用于打印到日志中
      */
     public static String errorInfoToString(Throwable e) {
-        StringWriter sw = null;
-        PrintWriter pw = null;
-        try {
-            sw = new StringWriter();
-            pw = new PrintWriter(sw);
-            // 将出错的栈信息输出到printWriter中
+        //try-with-resource语法糖 处理机制
+        try(StringWriter sw = new StringWriter();PrintWriter pw = new PrintWriter(sw)){
             e.printStackTrace(pw);
             pw.flush();
             sw.flush();
-        } finally {
-            if (sw != null) {
-                try {
-                    sw.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-            if (pw != null) {
-                pw.close();
-            }
+            return sw.toString();
+        }catch (Exception ignored){
+            throw new RuntimeException(ignored.getMessage(),ignored);
         }
-        return sw.toString();
     }
 }

@@ -23,8 +23,14 @@ import java.util.List;
 public class SqlUtil {
 
     /**
+     * 日期转换格式
+     */
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    /**
      * 数据库驱动类，用于判断数据库类型
-     * MySQL：com.mysql.jdbc.Driver
+     * MySQL：com.mysql.cj.jdbc.Driver
+     * postgresql：org.postgresql.Driver
      * Oracle：oracle.jdbc.OracleDriver
      */
     @Value("${string.datasource.driver-class-name}")
@@ -62,11 +68,11 @@ public class SqlUtil {
                         if (!ignoreList1.contains(fieldName) && !ignoreList2.contains(fieldName)) {
                             //开启模糊查询
                             if (field.isAnnotationPresent(Like.class)) {
-                                sql.append(" and " + column + " like '%" + fieldValue + "%'");
+                                sql.append(" and " + column + " like '%" + SqlUtil.escapeSql((String) fieldValue) + "%'");
                             }
                             //开启等值查询
                             else {
-                                sql.append(" and " + column + " = '" + fieldValue + "'");
+                                sql.append(" and " + column + " = '" + SqlUtil.escapeSql((String) fieldValue) + "'");
                             }
                         }
                     } else {
@@ -80,19 +86,33 @@ public class SqlUtil {
                             Field maxField = entity.getClass().getDeclaredField(field.getAnnotation(Between.class).max());
                             maxField.setAccessible(true);
                             Object maxVal = maxField.get(entity);
-                            //开启区间查询
+                            //开启区间查询，需要使用对应的函数
                             if (field.getType().getName().equals("java.util.Date")) {
                                 //MySQL
-                                if(sqlType.toLowerCase().contains("mysql")){
-
-                                }
-                                //Oracle
-                                if(sqlType.toLowerCase().contains("oracle")){
+                                if(sqlType.toLowerCase().contains("com.mysql.cj.jdbc.Driver")){
                                     if (!StringUtils.isEmpty(minVal)) {
-                                        sql.append(" and " + column + " > to_date( '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((Date) minVal) + "','yyyy-mm-dd hh24:mi:ss')");
+                                        sql.append(" and " + column + " > str_to_date( '" + simpleDateFormat.format((Date) minVal) + "','%Y-%m-%d %H:%i;%s')");
                                     }
                                     if (!StringUtils.isEmpty(maxVal)) {
-                                        sql.append(" and " + column + " < to_date( '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((Date) maxVal) + "','yyyy-mm-dd hh24:mi:ss')");
+                                        sql.append(" and " + column + " < str_to_date( '" + simpleDateFormat.format((Date) maxVal) + "','%Y-%m-%d %H:%i;%s')");
+                                    }
+                                }
+                                //postgresql
+                                if(sqlType.toLowerCase().contains("org.postgresql.Driver")){
+                                    if (!StringUtils.isEmpty(minVal)) {
+                                        sql.append(" and " + column + " > cast('" + simpleDateFormat.format((Date) minVal) + "' as timestamp)");
+                                    }
+                                    if (!StringUtils.isEmpty(maxVal)) {
+                                        sql.append(" and " + column + " < cast('" + simpleDateFormat.format((Date) maxVal) + "' as timestamp)");
+                                    }
+                                }
+                                //Oracle
+                                if(sqlType.toLowerCase().contains("oracle.jdbc.OracleDriver")){
+                                    if (!StringUtils.isEmpty(minVal)) {
+                                        sql.append(" and " + column + " > to_date( '" + simpleDateFormat.format((Date) minVal) + "','yyyy-mm-dd hh24:mi:ss')");
+                                    }
+                                    if (!StringUtils.isEmpty(maxVal)) {
+                                        sql.append(" and " + column + " < to_date( '" + simpleDateFormat.format((Date) maxVal) + "','yyyy-mm-dd hh24:mi:ss')");
                                     }
                                 }
                             }
@@ -105,9 +125,9 @@ public class SqlUtil {
                             values.setAccessible(true);
                             List<String> valuesList = (List<String>) values.get(entity);
                             if (valuesList != null && valuesList.size() > 0) {
-                                String inValues = "";
+                                StringBuilder inValues = new StringBuilder();
                                 for (String value : valuesList) {
-                                    inValues = inValues + "'" + value + "'";
+                                    inValues.append("'").append(SqlUtil.escapeSql(value)).append("'");
                                 }
                                 sql.append(" and " + column + " in (" + inValues + ")");
                             }

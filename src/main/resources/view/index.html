@@ -119,6 +119,9 @@
 
     //获取api加密开关并存到sessionStorage
     sessionStorage.setItem('sysApiEncrypt', [[${sys.sysApiEncrypt}]]);
+
+    //重写jq的ajax加密
+    jQueryExtend.ajaxExtend();
 </script>
 <script>
     layui.use('element', function () {
