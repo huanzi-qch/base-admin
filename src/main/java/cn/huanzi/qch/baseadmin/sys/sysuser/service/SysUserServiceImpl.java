@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -79,16 +78,23 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
 
     @Override
     public Result<PageInfo<SysUserVo>> page(SysUserVo entityVo) {
-        //SQL
+        //下面开始SQL
         SysUser entity = CopyUtil.copy(entityVo,SysUser.class);
+
+        //拼接select实体对象字段
         StringBuilder sql = SqlUtil.appendFields(entity);
+
+        //拼接查询字段
         SqlUtil.appendQueryColumns(entity,sql);
+
+        //拼接排序
+        SqlUtil.orderByColumn(entityVo,sql);
 
         //设置SQL、映射实体，以及设置值，返回一个Query对象
         Query query = em.createNativeQuery(sql.toString(), SysUser.class);
 
-        //分页、排序信息，并设置，page从0开始
-        PageRequest pageRequest = PageRequest.of(entityVo.getPage() - 1, entityVo.getRows(), new Sort(Sort.Direction.ASC, "id"));
+        //分页设置，page从0开始
+        PageRequest pageRequest = PageRequest.of(entityVo.getPage() - 1, entityVo.getRows());
         query.setFirstResult((int) pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
 
