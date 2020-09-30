@@ -82,6 +82,10 @@ rsaUtil = {
  */
 jQueryExtend = {
     /**
+     * 是否已经进行jq的ajax加密重写
+     */
+    ajaxExtendFlag : false,
+    /**
      * 扩展jquery对象方法
      */
     fnExtend : function(){
@@ -159,7 +163,8 @@ jQueryExtend = {
      */
     ajaxExtend : function(){
         //判断api加密开关
-        if(sessionStorage.getItem('sysApiEncrypt') === "Y"){
+        if(sessionStorage.getItem('sysApiEncrypt') === "Y" && !jQueryExtend.ajaxExtendFlag){
+            jQueryExtend.ajaxExtendFlag = true;
             let _ajax = $.ajax;//首先备份下jquery的ajax方法
             $.ajax = function (opt) {
                 //默认值

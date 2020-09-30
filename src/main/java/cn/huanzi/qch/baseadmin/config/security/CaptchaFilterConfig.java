@@ -34,6 +34,9 @@ public class CaptchaFilterConfig implements Filter {
     @Value("${captcha.enable}")
     private Boolean captchaEnable;
 
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     @Autowired
     private SessionRegistry sessionRegistry;
 
@@ -53,11 +56,11 @@ public class CaptchaFilterConfig implements Filter {
         if(sessionInformation == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
             //直接输出js脚本跳转强制用户下线
             response.setContentType("text/html;charset=UTF-8");
-            response.getWriter().print("<script type='text/javascript'>window.location.href = '/logout'</script>");
+            response.getWriter().print("<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
         }
 
         //只拦截登录请求，且开发环境下不拦截
-        if ("POST".equals(request.getMethod()) && "/login".equals(request.getRequestURI())) {
+        if ("POST".equals(request.getMethod()) && "/login".equals(request.getRequestURI().replaceFirst(contextPath,""))) {
             //前端公钥
             String publicKey = null;
 

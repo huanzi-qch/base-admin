@@ -2,6 +2,7 @@ package cn.huanzi.qch.baseadmin.config.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
@@ -23,6 +24,9 @@ public class MyInvalidSessionStrategy implements InvalidSessionStrategy {
     @Autowired
     private SessionRegistry sessionRegistry;
 
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     @Override
     public void onInvalidSessionDetected(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
         HttpSession session = httpServletRequest.getSession();
@@ -33,7 +37,7 @@ public class MyInvalidSessionStrategy implements InvalidSessionStrategy {
         }else{
             //直接输出js脚本跳转
             httpServletResponse.setContentType("text/html;charset=UTF-8");
-            httpServletResponse.getWriter().print("<script type='text/javascript'>window.location.href = \"/loginPage\"</script>");
+            httpServletResponse.getWriter().print("<script type='text/javascript'>window.location.href = \"" + contextPath + "/loginPage\"</script>");
         }
         SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
         if(sessionInformation != null){

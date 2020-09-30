@@ -3,7 +3,9 @@
 #内置Tomcat容器配置
 server:
   port: 8888
-
+  servlet:
+    #context-path:
+    context-path: /baseadmin #应用路径，如果不需要则注释这行，放开上一行，但不能不要，否则@Value("${server.servlet.context-path}")读取不到会报错
 #基础配置
 spring:
   profiles:
