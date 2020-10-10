@@ -1,6 +1,9 @@
 package cn.huanzi.qch.baseadmin.sys.sysuser.vo;
 
-import cn.huanzi.qch.baseadmin. common.pojo.PageCondition;import lombok.Data;
+import cn.huanzi.qch.baseadmin.annotation.Like;
+import cn.huanzi.qch.baseadmin.common.pojo.PageCondition;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,6 +11,7 @@ import java.util.Date;
 public class SysUserVo extends PageCondition implements Serializable {
     private String userId;//用户id
 
+    @Like
     private String loginName;//登录名
 
     private String userName;//用户名称

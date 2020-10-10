@@ -234,11 +234,14 @@ function resetPassword() {
         });
         return;
     }
-    $.post(ctx + "/sys/sysUser/resetPassword", userForm, function (data) {
-        if (data.flag) {
-            layer.msg("密码重置成功，请尽快登录系统修改密码！", {icon: 1, time: 2000}, function () {
-            });
-        }
+
+    layer.confirm('确认重置该用户的密码吗？', function (index) {
+        $.post(ctx + "/sys/sysUser/resetPassword", userForm, function (data) {
+            if (data.flag) {
+                layer.msg("密码重置成功，请尽快通知用户登录系统修改密码！", {icon: 1, time: 2000}, function () {});
+            }
+            layer.close(index);
+        });
     });
 }
 

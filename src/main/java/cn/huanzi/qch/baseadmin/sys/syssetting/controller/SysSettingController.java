@@ -4,6 +4,7 @@ import cn.huanzi.qch.baseadmin.common.controller.CommonController;
 import cn.huanzi.qch.baseadmin.sys.syssetting.pojo.SysSetting;
 import cn.huanzi.qch.baseadmin.sys.syssetting.service.SysSettingService;
 import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingVo;
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,6 @@ public class SysSettingController extends CommonController<SysSettingVo, SysSett
 
     @GetMapping("setting")
     public ModelAndView setting() {
-        return new ModelAndView("sys/setting/setting", "sys", sysSettingService.get("1").getData());
+        return new ModelAndView("sys/setting/setting", "sys", SysSettingUtil.getSysSetting());
     }
 }

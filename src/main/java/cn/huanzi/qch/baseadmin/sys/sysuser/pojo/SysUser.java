@@ -1,6 +1,5 @@
 package cn.huanzi.qch.baseadmin.sys.sysuser.pojo;
 
-import cn.huanzi.qch.baseadmin.annotation.Like;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -16,7 +15,6 @@ public class SysUser implements Serializable {
     @Id
     private String userId;//用户id
 
-    @Like
     private String loginName;//登录名
 
     private String userName;//用户名称

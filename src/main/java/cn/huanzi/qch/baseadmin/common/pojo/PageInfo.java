@@ -2,11 +2,12 @@ package cn.huanzi.qch.baseadmin.common.pojo;
 
 import cn.huanzi.qch.baseadmin.util.CopyUtil;
 import lombok.Data;
+import org.hibernate.query.internal.NativeQueryImpl;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.support.PageableExecutionUtils;
-import org.springframework.util.Assert;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class PageInfo<M> {
     private int total;//总页数
 
     /**
-     * 获取统一分页对象
+     * 获取统一分页结果
      */
     public static <M> PageInfo<M> of(Page page, Class<M> entityModelClass) {
         int records = (int) page.getTotalElements();
@@ -44,24 +45,18 @@ public class PageInfo<M> {
     /**
      * 获取JPA的分页对象
      */
-    public static Page readPage(Query query, Pageable pageable, Query countQuery) {
-        if (pageable.isPaged()) {
-            query.setFirstResult((int) pageable.getOffset());
-            query.setMaxResults(pageable.getPageSize());
-        }
-        return PageableExecutionUtils.getPage(query.getResultList(), pageable, () -> executeCountQuery(countQuery));
-    }
+    public static Page getJPAPage(Query query, PageRequest pageRequest, EntityManager em) {
+        query.setFirstResult((int) pageRequest.getOffset());
+        query.setMaxResults(pageRequest.getPageSize());
 
-    private static Long executeCountQuery(Query countQuery) {
-        Assert.notNull(countQuery, "TypedQuery must not be null!");
-
-        List<Number> totals = countQuery.getResultList();
-        Long total = 0L;
-        for (Number number : totals) {
-            if (number != null) {
-                total += number.longValue();
-            }
-        }
-        return total;
+        //获取分页结果
+        return PageableExecutionUtils.getPage(query.getResultList(), pageRequest, () -> {
+            //设置countQuerySQL语句
+            Query countQuery = em.createNativeQuery("select count(*) from ( " + ((NativeQueryImpl) query).getQueryString() + " ) count_table");
+            //设置countQuerySQL参数
+            query.getParameters().forEach(parameter -> countQuery.setParameter(parameter.getName(), query.getParameterValue(parameter.getName())));
+            //返回一个总数
+            return Long.valueOf(countQuery.getResultList().get(0).toString());
+        });
     }
 }

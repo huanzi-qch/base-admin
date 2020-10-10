@@ -4,8 +4,7 @@
 server:
   port: 8888
   servlet:
-    #context-path:
-    context-path: /baseadmin #应用路径，如果不需要则注释这行，放开上一行，但不能不要，否则@Value("${server.servlet.context-path}")读取不到会报错
+    #context-path: /baseadmin #应用路径，配置应用路径，可方便进行反向代理
 #基础配置
 spring:
   profiles:

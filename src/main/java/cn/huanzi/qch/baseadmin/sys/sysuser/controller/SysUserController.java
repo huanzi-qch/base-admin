@@ -9,6 +9,7 @@ import cn.huanzi.qch.baseadmin.sys.syssetting.service.SysSettingService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.pojo.SysUser;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
@@ -33,14 +34,14 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
 
     @GetMapping("user")
     public ModelAndView user(){
-        return new ModelAndView("sys/user/user","initPassword",sysSettingService.get("1").getData().getUserInitPassword());
+        return new ModelAndView("sys/user/user","initPassword", SysSettingUtil.getSysSetting().getUserInitPassword());
     }
 
     @PostMapping("resetPassword")
     @Decrypt
     @Encrypt
-    public Result<SysUserVo> resetPassword(String userId){
-        return sysUserService.resetPassword(userId);
+    public Result<SysUserVo> resetPassword(SysUserVo sysUserVo){
+        return sysUserService.resetPassword(sysUserVo.getUserId());
     }
 
     @PostMapping("pageOnLine")

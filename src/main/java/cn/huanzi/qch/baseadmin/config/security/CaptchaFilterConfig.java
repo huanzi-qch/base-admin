@@ -34,7 +34,7 @@ public class CaptchaFilterConfig implements Filter {
     @Value("${captcha.enable}")
     private Boolean captchaEnable;
 
-    @Value("${server.servlet.context-path}")
+    @Value("${server.servlet.context-path:}")
     private String contextPath;
 
     @Autowired

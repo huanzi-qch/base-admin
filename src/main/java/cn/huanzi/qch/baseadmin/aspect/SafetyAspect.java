@@ -119,6 +119,7 @@ public class SafetyAspect {
                 //设置到方法的形参中，目前只能设置只有一个参数的情况
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+                //注：参数最好用Vo对象来接参，单用String来接，args有长度但获取为空，很奇怪不知道为什么
                 if(args.length > 0){
                     args[0] = mapper.readValue(decrypt, args[0].getClass());
                 }

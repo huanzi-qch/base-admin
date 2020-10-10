@@ -15,12 +15,10 @@ import cn.huanzi.qch.baseadmin.sys.sysusermenu.vo.SysUserMenuVo;
 import cn.huanzi.qch.baseadmin.util.CopyUtil;
 import cn.huanzi.qch.baseadmin.util.MD5Util;
 import cn.huanzi.qch.baseadmin.util.SqlUtil;
-import org.hibernate.query.internal.NativeQueryImpl;
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
@@ -38,6 +36,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
 
     @PersistenceContext
     private EntityManager em;
+
     @Autowired
     private SysUserRepository sysUserRepository;
 
@@ -78,42 +77,20 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
 
     @Override
     public Result<PageInfo<SysUserVo>> page(SysUserVo entityVo) {
-        //下面开始SQL
-        SysUser entity = CopyUtil.copy(entityVo,SysUser.class);
-
-        //拼接select实体对象字段
-        StringBuilder sql = SqlUtil.appendFields(entity);
-
-        //拼接查询字段
-        SqlUtil.appendQueryColumns(entity,sql);
-
-        //拼接排序
-        SqlUtil.orderByColumn(entityVo,sql);
+        //根据实体、Vo直接拼接全部SQL
+        StringBuilder sql = SqlUtil.joinSqlByEntityAndVo(SysUser.class,entityVo);
 
         //设置SQL、映射实体，以及设置值，返回一个Query对象
         Query query = em.createNativeQuery(sql.toString(), SysUser.class);
 
         //分页设置，page从0开始
         PageRequest pageRequest = PageRequest.of(entityVo.getPage() - 1, entityVo.getRows());
-        query.setFirstResult((int) pageRequest.getOffset());
-        query.setMaxResults(pageRequest.getPageSize());
 
-        //获取分页结果
-        Page page = PageableExecutionUtils.getPage(query.getResultList(), pageRequest, () -> {
-            //设置countQuerySQL语句
-            Query countQuery = em.createNativeQuery("select count(1) from ( " + ((NativeQueryImpl) query).getQueryString() + " ) count_table");
-            //设置countQuerySQL参数
-            query.getParameters().forEach(parameter -> countQuery.setParameter(parameter.getName(), query.getParameterValue(parameter.getName())));
-            //返回一个总数
-            return Long.valueOf(countQuery.getResultList().get(0).toString());
-        });
-
-        Result<PageInfo<SysUserVo>> result = Result.of(PageInfo.of(page, SysUserVo.class));
+        //获取最终分页结果
+        Result<PageInfo<SysUserVo>> result = Result.of(PageInfo.of(PageInfo.getJPAPage(query,pageRequest,em), SysUserVo.class));
 
         //置空密码
-        result.getData().getRows().forEach((sysUserVo) -> {
-            sysUserVo.setPassword(null);
-        });
+        result.getData().getRows().forEach((sysUserVo) -> sysUserVo.setPassword(null));
         return result;
     }
 
@@ -129,7 +106,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
 
         //新增用户，需要设置初始密码
         if (StringUtils.isEmpty(entityVo.getUserId())) {
-            entityVo.setPassword(MD5Util.getMD5(sysSettingService.get("1").getData().getUserInitPassword()));
+            entityVo.setPassword(MD5Util.getMD5(SysSettingUtil.getSysSetting().getUserInitPassword()));
         }
         return super.save(entityVo);
     }
@@ -141,7 +118,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
     public Result<SysUserVo> resetPassword(String userId) {
         SysUserVo entityVo = new SysUserVo();
         entityVo.setUserId(userId);
-        entityVo.setPassword(MD5Util.getMD5(sysSettingService.get("1").getData().getUserInitPassword()));
+        entityVo.setPassword(MD5Util.getMD5(SysSettingUtil.getSysSetting().getUserInitPassword()));
         Result<SysUserVo> result = super.save(entityVo);
         result.getData().setPassword(null);
         return result;

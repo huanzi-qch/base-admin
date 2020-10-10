@@ -24,7 +24,7 @@ public class MyInvalidSessionStrategy implements InvalidSessionStrategy {
     @Autowired
     private SessionRegistry sessionRegistry;
 
-    @Value("${server.servlet.context-path}")
+    @Value("${server.servlet.context-path:}")
     private String contextPath;
 
     @Override
