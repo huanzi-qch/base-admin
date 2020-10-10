@@ -95,7 +95,7 @@
         //动态获取域名或ip
         let hostname = window.location.hostname;
         port = window.location.port;
-        websocket = new WebSocket("ws://"+hostname+":" + port + "/websocket/monitor");
+        websocket = new WebSocket("ws://"+hostname+":" + port + ctx + "/websocket/monitor");
     } else {
         console.error("不支持WebSocket");
     }

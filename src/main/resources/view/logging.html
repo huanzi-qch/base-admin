@@ -39,7 +39,7 @@
         //动态获取域名或ip
         let hostname = window.location.hostname;
         port = window.location.port;
-        websocket = new WebSocket("ws://"+hostname+":" + port + "/websocket/logging");
+        websocket = new WebSocket("ws://"+hostname+":" + port + ctx + "/websocket/logging");
     } else {
         console.error("不支持WebSocket");
     }
