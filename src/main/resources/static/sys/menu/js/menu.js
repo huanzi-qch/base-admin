@@ -48,7 +48,11 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
 
                 if (type === 'add') { //增加节点
                     $("#menuForm")[0].reset();
-                    //返回 key 值
+                    $("#menuForm").form({
+                                        menuPath: obj.data.href,
+                                        menuParentName: obj.data.title,
+                                        menuParentId: obj.data.id
+                                    });
                     return "";
                 } else if (type === 'del') { //删除节点
                     layer.confirm('确认要删除这个菜单吗？\n注意：删除父节点将会一同删除子节点', function (index) {
