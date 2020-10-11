@@ -100,7 +100,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
         //进行登录名唯一校验
         SysUserVo sysUserVo = new SysUserVo();
         sysUserVo.setLoginName(entityVo.getLoginName());
-        if(super.list(sysUserVo).getData().size() > 0){
+        if(StringUtils.isEmpty(entityVo.getUserId()) && super.list(sysUserVo).getData().size() > 0){
             return Result.of(entityVo,false,"保存失败，登录名已存在！");
         }
 
