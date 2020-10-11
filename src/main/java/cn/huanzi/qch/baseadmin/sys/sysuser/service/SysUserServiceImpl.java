@@ -100,12 +100,13 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
         //进行登录名唯一校验
         SysUserVo sysUserVo = new SysUserVo();
         sysUserVo.setLoginName(entityVo.getLoginName());
-        if(StringUtils.isEmpty(entityVo.getUserId()) && super.list(sysUserVo).getData().size() > 0){
-            return Result.of(entityVo,false,"保存失败，登录名已存在！");
-        }
 
         //新增用户，需要设置初始密码
         if (StringUtils.isEmpty(entityVo.getUserId())) {
+            // check username existence
+            if(super.list(sysUserVo).getData().size() > 0){
+                return Result.of(entityVo,false,"保存失败，登录名已存在！");
+            }
             entityVo.setPassword(MD5Util.getMD5(SysSettingUtil.getSysSetting().getUserInitPassword()));
         }
         return super.save(entityVo);
