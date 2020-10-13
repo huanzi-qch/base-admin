@@ -4,7 +4,9 @@
 server:
   port: 8888
   servlet:
-    #context-path: /baseadmin #应用路径，配置应用路径，可方便进行反向代理
+    #应用路径，配置应用路径，可方便进行反向代理
+    context-path:
+#    context-path: /baseadmin
 #基础配置
 spring:
   profiles:
