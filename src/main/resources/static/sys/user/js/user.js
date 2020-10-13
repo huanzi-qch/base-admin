@@ -106,6 +106,9 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate', 'tree', 'util'], func
                 $("input[name='createTime']").val(nowTime);
                 $("input[name='updateTime']").val(nowTime);
                 $("input[name='lastChangePwdTime']").val(nowTime);
+
+                $("input[name='loginName']").removeAttr("readonly");
+
                 form.render();
                 loadMenuTree();
                 loadAuthorityTree();
@@ -153,6 +156,8 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate', 'tree', 'util'], func
         else if (obj.event === 'edit') {
             //回显操作表单
             $("#userForm").form(data);
+            $("input[name='loginName']").attr("readonly","readonly");
+
             form.render();
             loadMenuTree();
             loadAuthorityTree();

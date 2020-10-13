@@ -76,6 +76,10 @@ JPA：SpringBoot系列——Spring-Data-JPA（究极进化版） 自动生成单
 springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）（https://www.cnblogs.com/hetutu-5238/p/10022963.html）
 GitHub地址（https://github.com/hetutu5238/zmc_security_oauth2）
 ```
+9、运行jar包，启动失败？
+```text
+十有八九是打的jar包有问题，参考博客重新打包，SpringBoot系列——jar包与war包的部署：https://www.cnblogs.com/huanzi-qch/p/9948060.html
+```
 
 ## QQ群<br/>
 有事请加群，有问题进群大家一起交流！
