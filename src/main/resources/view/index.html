@@ -138,7 +138,7 @@
                 element.tabAdd('demo', {
                     title: text,
                     //iframe子页面onload新增监听src为/loginPage是父页面跳转/loginPage，解决“俄罗斯套娃”问题
-                    content: "<iframe onload='if(this.contentWindow.location.pathname == \""+ctx+"/loginPage\"){window.location.href = \""+ctx+"\"/loginPage\"} $(this)[0].height = document.documentElement.clientHeight-160' width='100%' height='" + height + "' frameborder='0' scrolling='auto' src=\"" + url + "\"></iframe>",
+                    content: "<iframe onload='if(this.contentWindow.location.pathname == \""+ctx+"/loginPage\"){window.location.href = \""+ctx+"/loginPage\"} $(this)[0].height = document.documentElement.clientHeight-160' width='100%' height='" + height + "' frameborder='0' scrolling='auto' src=\"" + url + "\"></iframe>",
                     id: id
                 });
             }

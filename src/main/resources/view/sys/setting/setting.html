@@ -81,7 +81,7 @@
                     <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">更新时间</label>
                         <div class="layui-input-block">
-                            <input type="text" name="updateTime" th:value="${sys.updateTime}" autocomplete="off"
+                            <input type="text" name="updateTime" th:value="${#dates.format(sys.updateTime, 'yyyy-MM-dd HH:mm:ss')}" autocomplete="off"
                                    placeholder="更新时间"
                                    class="layui-input" readonly="readonly" disabled="disabled">
                         </div>
@@ -93,7 +93,7 @@
                     </div>
                     <!-- 隐藏域 -->
                     <input type="text" name="id"  th:value="${sys.id}" hidden="hidden"/>
-                    <input type="text" name="createTime"  th:value="${sys.createTime}" hidden="hidden"/>
+                    <input type="text" name="createTime"  th:value="${#dates.format(sys.createTime, 'yyyy-MM-dd HH:mm:ss')}" hidden="hidden"/>
                 </form>
             </div>
         </div>

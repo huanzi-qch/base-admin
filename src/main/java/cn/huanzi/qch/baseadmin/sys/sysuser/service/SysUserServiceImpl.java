@@ -3,7 +3,7 @@ package cn.huanzi.qch.baseadmin.sys.sysuser.service;
 import cn.huanzi.qch.baseadmin.common.pojo.PageInfo;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
-import cn.huanzi.qch.baseadmin.sys.syssetting.service.SysSettingService;
+import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.repository.SysShortcutMenuRepository;
 import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.service.SysShortcutMenuService;
 import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.vo.SysShortcutMenuVo;
 import cn.huanzi.qch.baseadmin.sys.sysuser.pojo.SysUser;
@@ -41,7 +41,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
     private SysUserRepository sysUserRepository;
 
     @Autowired
-    private SysSettingService sysSettingService;
+    private SysShortcutMenuRepository sysShortcutMenuRepository;
 
     @Autowired
     private SysUserAuthorityService sysUserAuthorityService;
@@ -69,7 +69,8 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
         SysShortcutMenuVo sysShortcutMenuVo = new SysShortcutMenuVo();
         sysShortcutMenuVo.setUserId(id);
         sysShortcutMenuService.list(sysShortcutMenuVo).getData().forEach((vo -> {
-            sysShortcutMenuService.delete(vo.getShortcutMenuId());
+            //直接调用Repository删除记录，Service有自己的删除逻辑，不适合这里
+            sysShortcutMenuRepository.deleteById(vo.getShortcutMenuId());
         }));
 
         return super.delete(id);
