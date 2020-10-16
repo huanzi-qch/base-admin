@@ -220,7 +220,6 @@ function userFormSave() {
         };
         $.post(ctx + "/sys/sysUserAuthority/saveAllByUserId", postData2, function (data) {});
 
-
         layer.msg("保存成功", {icon: 1, time: 2000}, function () {});
 
         //更新table、updateTime
