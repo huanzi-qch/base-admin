@@ -69,7 +69,7 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
  */
 function shortcutMenuFormSave() {
     let shortcutMenuForm = $("#shortcutMenuForm").serializeObject();
-    if (shortcutMenuForm.shortcutMenuId === "") {
+    if (shortcutMenuForm.shortcutMenuParentId === "") {
         return;
     }
 

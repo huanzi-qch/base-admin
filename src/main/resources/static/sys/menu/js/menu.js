@@ -71,7 +71,7 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
  */
 function menuFormSave() {
     var menuForm = $("#menuForm").serializeObject();
-    if (menuForm.menuId === "") {
+    if (menuForm.menuParentId === "") {
         return;
     }
     if(menuForm.menuId === "0"){
