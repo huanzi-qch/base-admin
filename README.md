@@ -79,6 +79,14 @@ GitHub地址（https://github.com/hetutu5238/zmc_security_oauth2）
 9、运行jar包，启动失败？
 ```text
 十有八九是打的jar包有问题，参考博客重新打包，SpringBoot系列——jar包与war包的部署：https://www.cnblogs.com/huanzi-qch/p/9948060.html
+
+发现还是有很多同学打的包不对，我已经修改了pom.xml的打包配置，直接指定了打包生成路径：package，
+直接运行maven打包命令：package，就会在pom.xml的同级目录下生成package文件夹，打的jar包就在文件夹里面
+另外说一下：
+../package pom.xml文件的上一层目录下面的package
+/package C盘下面的package文件夹
+package pom.xml文件的同级目录下面的package
+
 ```
 
 ## QQ群<br/>
