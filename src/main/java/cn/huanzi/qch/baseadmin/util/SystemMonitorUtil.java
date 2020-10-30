@@ -84,6 +84,8 @@ public class SystemMonitorUtil {
      * 获取CPU信息
      */
     private static double getCpuUsage() {
+        //这里会疯狂打印报错：oshi.util.platform.windows.PdhUtil       : Failed to get counter. Error code: 0xC0000BBC
+        //有解决方法的同学可以跟我说一下
         return systemInfo.getHardware().getProcessor().getSystemCpuLoadBetweenTicks();
     }
 
@@ -125,7 +127,7 @@ public class SystemMonitorUtil {
         String resultInfo = runCommand(ioCmdStr);
         log.info(resultInfo);
         String[] data = resultInfo.split(" +");
-        double total = Double.parseDouble(data[10].replace("%", ""));
+        double total = Double.parseDouble(data[9].replace("%", ""));
         return hashMap;
     }
 

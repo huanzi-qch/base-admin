@@ -50,7 +50,7 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
                     $("#menuForm")[0].reset();
                     //返回 key 值
                     return "";
-                } else if (type === 'del') { //删除节点
+                } else if (type === 'del') { //删除节点，PS：存在layer.confirm弹窗非阻塞问题，未点确定，页面上的节点就被删除，如有解决方案的同学可以跟我说下
                     layer.confirm('确认要删除这个菜单吗？\n注意：删除父节点将会一同删除子节点', function (index) {
                         $.delete(ctx + "/sys/sysMenu/delete/" + data.id,{}, function () {
                             layer.msg("删除成功");
@@ -58,7 +58,6 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
                         });
                         layer.close(index);
                     });
-
                 }
             }
         });
