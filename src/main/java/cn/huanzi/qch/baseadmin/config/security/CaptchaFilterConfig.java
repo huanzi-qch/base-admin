@@ -145,6 +145,7 @@ public class CaptchaFilterConfig implements Filter {
                 out.print(dataString);
                 out.flush();
                 out.close();
+                return;
             }
         }
 
