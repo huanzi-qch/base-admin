@@ -75,6 +75,11 @@ JPA：SpringBoot系列——Spring-Data-JPA（究极进化版） 自动生成单
 
 springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）（https://www.cnblogs.com/hetutu-5238/p/10022963.html）
 GitHub地址（https://github.com/hetutu5238/zmc_security_oauth2）
+
+另外，我封装开源了一套极简的前后端分离项目脚手架：Fast Scaffold，包含一个portal前端、一个admin后端，可用于快速的搭建前后端分离项目进行二次开发
+详情请看博客：https://www.cnblogs.com/huanzi-qch/p/13933461.html
+GitHub地址：https://github.com/huanzi-qch/fast-scaffold
+
 ```
 9、运行jar包，启动失败？
 ```text
