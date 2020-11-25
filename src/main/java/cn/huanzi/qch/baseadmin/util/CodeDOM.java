@@ -240,7 +240,7 @@ public class CodeDOM {
         ArrayList<TableInfo> list = new ArrayList<>();
         try {
             conn = DBConnectionUtil.getConnection();
-            String sql = "select column_name,data_type,column_comment,column_key,extra from information_schema.columns where table_name=?";
+            String sql = "select column_name,data_type,column_comment,column_key,extra from information_schema.columns where table_schema = (select database()) and table_name=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, tableName);
             rs = ps.executeQuery();
