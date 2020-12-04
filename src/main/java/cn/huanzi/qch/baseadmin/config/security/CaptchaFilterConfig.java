@@ -122,17 +122,17 @@ public class CaptchaFilterConfig implements Filter {
                 if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
                     //加密
                     try {
-                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    //每次响应之前随机获取AES的key，加密data数据
-                    String key = AesUtil.getKey();
-                    log.info("AES的key：" + key);
-                    log.info("需要加密的data数据：" + dataString);
-                    String data = AesUtil.encrypt(dataString, key);
+                        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                        //每次响应之前随机获取AES的key，加密data数据
+                        String key = AesUtil.getKey();
+                        log.info("AES的key：" + key);
+                        log.info("需要加密的data数据：" + dataString);
+                        String data = AesUtil.encrypt(dataString, key);
 
-                    //用前端的公钥来解密AES的key，并转成Base64
-                    String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
-                    dataString = "{\"data\":{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}}";
-                } catch (Throwable e) {
+                        //用前端的公钥来解密AES的key，并转成Base64
+                        String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
+                        dataString = "{\"data\":{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}}";
+                    } catch (Throwable e) {
                         //输出到日志文件中
                         log.error(ErrorUtil.errorInfoToString(e));
                     }
