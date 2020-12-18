@@ -1,6 +1,3 @@
-## AD广告位<br/> 
-AD:上QQ群214580864购买服务器享优惠低价，更有各种特价商品等你来哦<br/> 
-
 ## 简介<br/> 
 Base Admin一套简单通用的后台管理系统<br/> 
 这套Base Admin是一套简单通用的后台管理系统，主要功能有：权限管理、菜单管理、用户管理，系统设置、实时日志，实时监控，API加密，以及登录用户修改密码、配置个性菜单等<br/> 
@@ -96,6 +93,13 @@ GitHub地址：https://github.com/huanzi-qch/fast-scaffold
 package pom.xml文件的同级目录下面的package
 
 ```
+## AD广告位（长期招租，如有需要请私信）<br/> 
+[阿里云服务器（ECS）等，高性能服务器，就选阿里云](https://s.click.taobao.com/zb70Vtu)<br/> 
+[虚机+服务器，独享虚机服务 1c1g 3M带宽](https://s.click.taobao.com/q9rZYtu)<br/> 
+[云服务器，企业级云服务器特惠5折](https://s.click.taobao.com/2khzUtu)<br/> 
+[全民云计算，1核1G仅需293元/年](https://s.click.taobao.com/vLrzUtu)<br/> 
+[云服务器，低至323元/年](https://s.click.taobao.com/8PG0Vtu)<br/> 
+[云服务器，十倍性能提升,最佳性价比](https://s.click.taobao.com/L110Vtu)<br/> 
 
 ## QQ群<br/>
 有事请加群，有问题进群大家一起交流！
