@@ -279,6 +279,8 @@ commonUtil = {
             obj1.id = obj.menuId;
             obj1.title = obj.menuName;
             obj1.href = obj.menuPath;
+            //自定义数据
+            obj1.sortWeight = obj.sortWeight;
 
             if (obj.children.length > 0) {
                 obj1.children = this.updateKeyForLayuiTree(obj.children);

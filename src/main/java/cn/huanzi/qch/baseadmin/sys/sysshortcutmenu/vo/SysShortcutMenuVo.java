@@ -20,6 +20,8 @@ public class SysShortcutMenuVo extends PageCondition implements Serializable {
 
     private String shortcutMenuParentId;//上级id
 
+    private Integer sortWeight;//同级排序权重：0-10
+
     private Date createTime;//创建时间
 
     private Date updateTime;//修改时间

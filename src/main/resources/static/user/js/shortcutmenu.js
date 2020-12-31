@@ -28,6 +28,7 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
                     shortcutMenuId: obj.data.id,
                     shortcutMenuName: obj.data.title,
                     shortcutMenuPath: obj.data.href,
+                    sortWeight: obj.data.sortWeight,
                     shortcutMenuParentName: obj.elem.parent().parent().children(".layui-tree-entry").find(".layui-tree-txt").text(),
                     shortcutMenuParentId: obj.elem.parent().parent().data("id"),
                     treeId: obj.data.id
@@ -103,6 +104,8 @@ function updateKeyForLayuiTree(arrar) {
         obj1.id = obj.shortcutMenuId;
         obj1.title = obj.shortcutMenuName;
         obj1.href = obj.shortcutMenuPath;
+        //自定义数据
+        obj1.sortWeight = obj.sortWeight;
 
         if (obj.children.length > 0) {
             obj1.children = updateKeyForLayuiTree(obj.children);

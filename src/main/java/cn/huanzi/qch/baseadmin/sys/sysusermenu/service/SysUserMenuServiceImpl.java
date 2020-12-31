@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -49,6 +50,12 @@ public class SysUserMenuServiceImpl extends CommonServiceImpl<SysUserMenuVo, Sys
             }
         });
 
+        //排序
+        menuVoList.sort(order());
+        menuVoList.forEach((sysMenuVoP) -> {
+            sysMenuVoP.getChildren().sort(order());
+        });
+
         return Result.of(menuVoList);
     }
 
@@ -68,4 +75,17 @@ public class SysUserMenuServiceImpl extends CommonServiceImpl<SysUserMenuVo, Sys
         }
         return Result.of(true);
     }
+
+    /**
+     * 排序,根据sortWeight排序
+     */
+    private Comparator<SysMenuVo> order(){
+        return (o1, o2) -> {
+            if (!o1.getSortWeight().equals(o2.getSortWeight())){
+                return o1.getSortWeight() - o2.getSortWeight();
+            }
+            return 0 ;
+        };
+    }
+
 }

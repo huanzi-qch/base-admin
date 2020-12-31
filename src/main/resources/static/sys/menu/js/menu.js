@@ -29,6 +29,7 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
                     menuId: obj.data.id,
                     menuName: obj.data.title,
                     menuPath: obj.data.href,
+                    sortWeight: obj.data.sortWeight,
                     menuParentName: obj.elem.parent().parent().children(".layui-tree-entry").find(".layui-tree-txt").text(),
                     menuParentId: obj.elem.parent().parent().data("id"),
                     treeId: obj.data.id

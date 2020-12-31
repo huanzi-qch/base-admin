@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -57,6 +58,25 @@ public class SysShortcutMenuServiceImpl extends CommonServiceImpl<SysShortcutMen
                 });
             }
         });
+
+        //排序
+        shortcutMenuVoList.sort(order());
+        shortcutMenuVoList.forEach((sysMenuVoP) -> {
+            sysMenuVoP.getChildren().sort(order());
+        });
+
         return Result.of(shortcutMenuVoList);
     }
+    /**
+     * 排序,根据sortWeight排序
+     */
+    private Comparator<SysShortcutMenuVo> order(){
+        return (o1, o2) -> {
+            if (!o1.getSortWeight().equals(o2.getSortWeight())){
+                return o1.getSortWeight() - o2.getSortWeight();
+            }
+            return 0 ;
+        };
+    }
+
 }
