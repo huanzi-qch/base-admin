@@ -62,7 +62,7 @@ rsaUtil = {
             plaintext = JSON.stringify(plaintext)
         }
         publicKey && rsaUtil.thisKeyPair.setPublicKey(publicKey);
-        return rsaUtil.thisKeyPair.encrypt(JSON.stringify(plaintext));
+        return rsaUtil.thisKeyPair.encrypt(plaintext);
     },
 
     //私钥解密

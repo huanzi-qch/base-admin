@@ -87,8 +87,6 @@ public class CaptchaFilterConfig implements Filter {
                     aesKey = new String(plaintext);
                     log.info("解密出来的AES的key：" + aesKey);
 
-                    //RSA解密出来字符串多一对双引号
-                    aesKey = aesKey.substring(1, aesKey.length() - 1);
 
                     //AES解密得到明文data数据
                     String decrypt = AesUtil.decrypt(data, aesKey);
