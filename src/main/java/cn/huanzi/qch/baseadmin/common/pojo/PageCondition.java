@@ -31,13 +31,8 @@ public class PageCondition {
         }
         //处理排序
         if(!StringUtils.isEmpty(sidx) && !StringUtils.isEmpty(sord)){
-            Sort sort;
-            if("desc".equals(sidx.toLowerCase())){
-                sort = new Sort(Direction.DESC, sord);
-            }else{
-                sort = new Sort(Direction.ASC, sord);
-            }
-            return PageRequest.of(page - 1, rows, sort);
+            Direction direction = "desc".equals(sidx.toLowerCase()) ? Direction.DESC : Direction.ASC;
+            return PageRequest.of(page - 1, rows, new Sort(direction, sord));
         }
         return PageRequest.of(page - 1, rows);
     }
