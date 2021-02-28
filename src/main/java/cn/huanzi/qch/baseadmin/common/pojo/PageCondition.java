@@ -3,6 +3,9 @@ package cn.huanzi.qch.baseadmin.common.pojo;
 import lombok.Data;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.thymeleaf.util.StringUtils;
 
 /**
  * 分页条件（参考JqGrid插件）
@@ -25,6 +28,16 @@ public class PageCondition {
         //处理非法页面大小
         if (rows < 0) {
             rows = 10;
+        }
+        //处理排序
+        if(!StringUtils.isEmpty(sidx) && !StringUtils.isEmpty(sord)){
+            Sort sort;
+            if("desc".equals(sidx.toLowerCase())){
+                sort = new Sort(Direction.DESC, sord);
+            }else{
+                sort = new Sort(Direction.ASC, sord);
+            }
+            return PageRequest.of(page - 1, rows, sort);
         }
         return PageRequest.of(page - 1, rows);
     }

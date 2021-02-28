@@ -96,7 +96,6 @@ package pom.xml文件的同级目录下面的package
 
 ```
 ## AD广告位（长期招租，如有需要请私信）<br/> 
-承接各类软件开发，可开票，正规公司，详情请邮件联系：zhangchengmes@outlook.com<br/> 
 [阿里云服务器（ECS）等，高性能服务器，就选阿里云](https://s.click.taobao.com/zb70Vtu)<br/> 
 [虚机+服务器，独享虚机服务 1c1g 3M带宽](https://s.click.taobao.com/q9rZYtu)<br/> 
 [云服务器，企业级云服务器特惠5折](https://s.click.taobao.com/2khzUtu)<br/> 
