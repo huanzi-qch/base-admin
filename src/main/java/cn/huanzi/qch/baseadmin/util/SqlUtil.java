@@ -106,11 +106,11 @@ public class SqlUtil {
                     if (!ignoreList1.contains(fieldName) && !ignoreList2.contains(fieldName)) {
                         //开启模糊查询
                         if (field.isAnnotationPresent(Like.class)) {
-                            sql.append(" and ").append(column).append(" like '%").append(SqlUtil.escapeSql((String) fieldValue)).append("%'");
+                            sql.append(" and ").append(column).append(" like '%").append(SqlUtil.escapeSql(String.valueOf(fieldValue))).append("%'");
                         }
                         //开启等值查询
                         else {
-                            sql.append(" and ").append(column).append(" = '").append(SqlUtil.escapeSql((String) fieldValue)).append("'");
+                            sql.append(" and ").append(column).append(" = '").append(SqlUtil.escapeSql(String.valueOf(fieldValue))).append("'");
                         }
                     }
                 } else {

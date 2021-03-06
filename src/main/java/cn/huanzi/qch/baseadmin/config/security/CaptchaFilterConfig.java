@@ -99,7 +99,7 @@ public class CaptchaFilterConfig implements Filter {
                     HashMap hashMap = mapper.readValue(decrypt, HashMap.class);
                     ParameterRequestWrapper parameterRequestWrapper = new ParameterRequestWrapper(request);
                     for (Object key : hashMap.keySet()) {
-                        parameterRequestWrapper.addParameter((String) key,  hashMap.get(key));
+                        parameterRequestWrapper.addParameter(String.valueOf(key),  hashMap.get(key));
                     }
 
                     servletRequest = parameterRequestWrapper;

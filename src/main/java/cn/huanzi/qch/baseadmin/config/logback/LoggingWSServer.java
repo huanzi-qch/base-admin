@@ -66,7 +66,7 @@ public class LoggingWSServer {
 
                     //对日志进行着色，更加美观  PS：注意，这里要根据日志生成规则来操作
                     for (int i = 0; i < copyOfRange.length; i++) {
-                        String line = (String) copyOfRange[i];
+                        String line = String.valueOf(copyOfRange[i]);
                         //先转义
                         line = line.replaceAll("&", "&amp;")
                                 .replaceAll("<", "&lt;")
