@@ -1,16 +1,15 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.ParameterRequestWrapper;
-import cn.huanzi.qch.baseadmin.util.AesUtil;
-import cn.huanzi.qch.baseadmin.util.ErrorUtil;
-import cn.huanzi.qch.baseadmin.util.RsaUtil;
-import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
+import cn.huanzi.qch.baseadmin.util.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
@@ -45,6 +44,7 @@ public class CaptchaFilterConfig implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
+        String requestURI = request.getRequestURI();
         /*
             注：详情可在SessionManagementFilter中进行断点调试查看
             security框架会在session的attribute存储登录信息，先从session.getAttribute(this.springSecurityContextKey)中获取登录用户信息
@@ -54,13 +54,18 @@ public class CaptchaFilterConfig implements Filter {
          */
         SessionInformation sessionInformation = sessionRegistry.getSessionInformation(session.getId());
         if(sessionInformation == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
-            //直接输出js脚本跳转强制用户下线
-            response.setContentType("text/html;charset=UTF-8");
-            response.getWriter().print("<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
+
+            //当前URL是否允许访问
+            if(!SecurityUtil.checkUrl(requestURI.replaceFirst(contextPath,""))){
+                //直接输出js脚本跳转强制用户下线
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().print("<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
+            }
+
         }
 
         //只拦截登录请求，且开发环境下不拦截
-        if ("POST".equals(request.getMethod()) && "/login".equals(request.getRequestURI().replaceFirst(contextPath,""))) {
+        if ("POST".equals(request.getMethod()) && "/login".equals(requestURI.replaceFirst(contextPath,""))) {
             //前端公钥
             String publicKey = null;
 

@@ -262,8 +262,9 @@ public class CodeDOM {
             //输出到日志文件中
             log.error(ErrorUtil.errorInfoToString(e));
         } finally {
-            assert rs != null;
-            DBConnectionUtil.close(conn, ps, rs);
+            if(rs != null){
+                DBConnectionUtil.close(conn, ps, rs);
+            }
         }
         return list;
     }

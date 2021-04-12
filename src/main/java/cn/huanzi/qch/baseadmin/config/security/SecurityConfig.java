@@ -52,6 +52,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    //无需权限访问的URL，不建议用/**/与/*.后缀同时去适配，有可以会受到CaptchaFilterConfig判断的影响
+    public static final String[] MATCHERS_PERMITALL_URL = {
+            "/login",
+            "/logout",
+            "/loginPage",
+            "/favicon.ico",
+            "/common/**",
+            "/webjars/**",
+            "/getVerifyCodeImage",
+            "/error/*",
+            "/openApi/*"
+    };
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -94,16 +107,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
 
                 //无需权限访问
-                .antMatchers("/favicon.ico","/common/**", "/webjars/**", "/getVerifyCodeImage","/error/*","/openApi/*").permitAll()
+                .antMatchers(MATCHERS_PERMITALL_URL).permitAll()
 
                 //其他接口需要登录后才能访问
                 .anyRequest().authenticated()
                 .and();
 
-        http.sessionManagement()
-                //session无效处理策略
-                .invalidSessionStrategy(myInvalidSessionStrategy)
-                .and();
+//        http.sessionManagement()
+//                //session无效处理策略
+//                .invalidSessionStrategy(myInvalidSessionStrategy)
+//                .and();
 
         http
                 //开启记住我

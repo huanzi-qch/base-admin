@@ -49,10 +49,12 @@ public class ByteUtil {
         } finally {
             //关闭流
             try {
-                assert bo != null;
-                bo.close();
-                assert oo != null;
-                oo.close();
+                if(bo != null){
+                    bo.close();
+                }
+                if(oo != null){
+                    oo.close();
+                }
             } catch (IOException e) {
                 //输出到日志文件中
                 log.error(ErrorUtil.errorInfoToString(e));
@@ -79,10 +81,12 @@ public class ByteUtil {
         } finally {
             //关流
             try {
-                assert bi != null;
-                bi.close();
-                assert oi != null;
-                oi.close();
+                if(bi != null){
+                    bi.close();
+                }
+                if(oi != null){
+                    oi.close();
+                }
             } catch (IOException e) {
                 //输出到日志文件中
                 log.error(ErrorUtil.errorInfoToString(e));

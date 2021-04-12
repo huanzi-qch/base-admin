@@ -50,10 +50,10 @@ public class SafetyAspect {
     public Object around(ProceedingJoinPoint pjp) {
        try {
 
-           //判断api加密开关是否开启
-           if("N".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
-               return pjp.proceed(pjp.getArgs());
-           }
+            //判断api加密开关是否开启
+            if("N".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
+                return pjp.proceed(pjp.getArgs());
+            }
 
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             assert attributes != null;
@@ -147,8 +147,8 @@ public class SafetyAspect {
             return o;
 
         } catch (Throwable e) {
-           //输出到日志文件中
-           log.error(ErrorUtil.errorInfoToString(e));
+            //输出到日志文件中
+            log.error(ErrorUtil.errorInfoToString(e));
             return Result.of(null, false, "加解密异常：\n\t" + e.getMessage());
         }
     }

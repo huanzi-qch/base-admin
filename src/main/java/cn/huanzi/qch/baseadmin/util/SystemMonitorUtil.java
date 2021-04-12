@@ -179,10 +179,12 @@ public class SystemMonitorUtil {
             log.error(ErrorUtil.errorInfoToString(e));
         }finally {
             try {
-                assert isr != null;
-                isr.close();
-                assert lnr != null;
-                lnr.close();
+                if(isr != null){
+                    isr.close();
+                }
+                if(lnr != null){
+                    lnr.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
