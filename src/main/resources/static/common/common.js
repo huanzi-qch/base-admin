@@ -268,8 +268,6 @@ commonUtil = {
 
     /**
      * 将我们响应的系统菜单数据转换成符合layui的tree结构
-     * @param arrar  旧数据
-     * @returns {Array} 新数据
      */
     updateKeyForLayuiTree: function (arrar) {
         let newArray = [];
@@ -292,8 +290,6 @@ commonUtil = {
 
     /**
      * 在所有系统菜单上勾选用户菜单
-     * @param arrTree
-     * @param userTreeString
      */
     checkedForLayuiTree:function (arrTree, userTreeString) {
         for(let tree of arrTree){
@@ -310,6 +306,20 @@ commonUtil = {
             }
         }
         return arrTree;
+    },
+
+    /**
+     * 递归获取菜单项
+     */
+    getChildrenByTree:function(children) {
+        let menuIdList = [];
+        for (let check of children) {
+            menuIdList.push(check.id);
+            if (check.children && check.children.length > 0) {
+                menuIdList = menuIdList.concat(commonUtil.getChildrenByTree(check.children));
+            }
+        }
+        return menuIdList;
     }
 };
 

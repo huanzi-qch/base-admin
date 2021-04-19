@@ -81,6 +81,9 @@ function menuFormSave() {
     if(menuForm.menuParentId === "0"){
         menuForm.menuParentId = "";
     }
+    if(menuForm.sortWeight === ""){
+        menuForm.sortWeight = 0;
+    }
     $.post(ctx + "/sys/sysMenu/save", menuForm, function (data) {
         layer.msg("保存成功", {icon: 1,time: 2000}, function () {});
 

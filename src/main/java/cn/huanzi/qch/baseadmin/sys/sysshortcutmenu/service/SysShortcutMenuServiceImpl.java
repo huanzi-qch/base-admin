@@ -2,10 +2,12 @@ package cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.service;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
+import cn.huanzi.qch.baseadmin.sys.sysmenu.vo.SysMenuVo;
 import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.pojo.SysShortcutMenu;
 import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.repository.SysShortcutMenuRepository;
 import cn.huanzi.qch.baseadmin.sys.sysshortcutmenu.vo.SysShortcutMenuVo;
 import cn.huanzi.qch.baseadmin.util.CopyUtil;
+import cn.huanzi.qch.baseadmin.util.MenuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,43 +42,7 @@ public class SysShortcutMenuServiceImpl extends CommonServiceImpl<SysShortcutMen
 
     @Override
     public Result<List<SysShortcutMenuVo>> findByUserId(String userId) {
-        List<SysShortcutMenuVo> shortcutMenuVoList = new ArrayList<>();
         List<SysShortcutMenuVo> sysShortcutMenuVoList = CopyUtil.copyList(sysShortcutMenuRepository.findByUserId(userId), SysShortcutMenuVo.class);
-        sysShortcutMenuVoList.forEach((SysShortcutMenuVo) -> {
-            if(StringUtils.isEmpty(SysShortcutMenuVo.getShortcutMenuParentId())){
-                //上级节点
-                shortcutMenuVoList.add(SysShortcutMenuVo);
-            }
-        });
-        sysShortcutMenuVoList.forEach((SysShortcutMenuVo) -> {
-            if(!StringUtils.isEmpty(SysShortcutMenuVo.getShortcutMenuParentId())){
-                //子节点
-                shortcutMenuVoList.forEach((sysShortcutMenuVoP) -> {
-                    if(sysShortcutMenuVoP.getShortcutMenuId().equals(SysShortcutMenuVo.getShortcutMenuParentId())){
-                        sysShortcutMenuVoP.getChildren().add(SysShortcutMenuVo);
-                    }
-                });
-            }
-        });
-
-        //排序
-        shortcutMenuVoList.sort(order());
-        shortcutMenuVoList.forEach((sysMenuVoP) -> {
-            sysMenuVoP.getChildren().sort(order());
-        });
-
-        return Result.of(shortcutMenuVoList);
+        return Result.of(MenuUtil.getChildBySysShortcutMenuVo("",sysShortcutMenuVoList));
     }
-    /**
-     * 排序,根据sortWeight排序
-     */
-    private Comparator<SysShortcutMenuVo> order(){
-        return (o1, o2) -> {
-            if (!o1.getSortWeight().equals(o2.getSortWeight())){
-                return o1.getSortWeight() - o2.getSortWeight();
-            }
-            return 0 ;
-        };
-    }
-
 }

@@ -16,14 +16,13 @@
             <div class="layui-logo"><img th:src='${sys.sysLogo}' class="layui-nav-img"/> <span th:text="${sys.sysName}"></span></div>
             <ul class="layui-nav layui-layout-left">
                 <!-- 动态读取加载用户快捷菜单 -->
-                <li class="layui-nav-item" th:each="menu,iterStat : ${shortcutMenuList}" th:unless="${#lists.size(menu.children)} eq 0">
-                    <a th:text="${menu.shortcutMenuName}" href="javascript:;">XXX</a>
-                    <dl class="layui-nav-child" >
-                        <dd th:each="childMenu,iterStat : ${menu.children}"><a class="huanzi-menu" th:data-url="${childMenu.shortcutMenuPath.indexOf('http') == -1 ? #request.getContextPath() + childMenu.shortcutMenuPath : childMenu.shortcutMenuPath}" th:data-id="${childMenu.shortcutMenuId}" th:text="${childMenu.shortcutMenuName}" href="javascript:;">XXX</a></dd>
+                <li class="layui-nav-item" th:each="menu,iterStat : ${shortcutMenuList}">
+                    <a th:text="${menu.shortcutMenuName}"
+                       th:data-url="${menu.shortcutMenuPath.indexOf('http') == -1 ? #request.getContextPath() + menu.shortcutMenuPath : menu.shortcutMenuPath}"
+                       th:data-id="${menu.shortcutMenuId}" class="huanzi-menu" href="javascript:;">XXX菜单</a>
+                    <dl class="layui-nav-child" th:if="${#lists.size(menu.children)} > 0">
+                        <th:block th:include="common/head::shortcutMenu(${menu.children})"></th:block>
                     </dl>
-                </li>
-                <li class="layui-nav-item" th:each="menu,iterStat : ${shortcutMenuList}" th:if="${#lists.size(menu.children)} eq 0">
-                    <a class="huanzi-menu" th:data-url="${menu.shortcutMenuPath.indexOf('http') == -1 ? #request.getContextPath() + menu.shortcutMenuPath : menu.shortcutMenuPath}" th:data-id="${menu.shortcutMenuId}" th:text="${menu.shortcutMenuName}" href="javascript:;">XXX</a>
                 </li>
             </ul>
             <ul class="layui-nav layui-layout-right">
@@ -45,19 +44,16 @@
         <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
         <div class="layui-side layui-bg-black"  th:style="${' background-color:' + sys.sysColor + ' !important;'}">
             <div class="layui-side-scroll">
-                <ul class="layui-nav layui-nav-tree" lay-filter="test"  th:style="${' background-color:' + sys.sysColor + ' !important;'}">
+                <ul class="layui-nav layui-nav-tree" lay-filter="test" lay-shrink="all" th:style="${' background-color:' + sys.sysColor + ' !important;'}">
                     <!-- 动态读取加载系统菜单 -->
-                    <div th:each="menu,iterStat : ${menuList}">
-                        <li class="layui-nav-item" th:unless="${#lists.size(menu.children)} eq 0">
-                            <a th:text="${menu.menuName}" href="javascript:;">XXX</a>
-                            <dl class="layui-nav-child" th:each="childMenu,iterStat : ${menu.children}">
-                                <dd><a class="huanzi-menu" th:data-url="${#request.getContextPath() + childMenu.menuPath}" th:data-id="${childMenu.menuId}" th:text="${childMenu.menuName}" href="javascript:;">XXX</a></dd>
-                            </dl>
-                        </li>
-                        <li class="layui-nav-item" th:if="${#lists.size(menu.children)} eq 0">
-                            <a class="huanzi-menu" th:data-url="${#request.getContextPath() + menu.menuPath}" th:data-id="${menu.menuId}" th:text="${menu.menuName}" href="javascript:;">XXX</a>
-                        </li>
-                    </div>
+                    <li class="layui-nav-item" th:each="menu,iterStat : ${menuList}">
+                        <a th:text="${menu.menuName}"
+                           th:data-url="${#request.getContextPath() + menu.menuPath}"
+                           th:data-id="${menu.menuId}" class="huanzi-menu" href="javascript:;">XXX菜单</a>
+                        <dl class="layui-nav-child" th:if="${#lists.size(menu.children)} > 0">
+                            <th:block th:include="common/head::sysMenu(${menu.children})"></th:block>
+                        </dl>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -156,6 +152,9 @@
             $("#indexTabContent").css("height",height);
 
             $("body").on("click", ".huanzi-menu", function (e) {
+                if($(this).next("dl").length > 0){
+                    return;
+                }
                 let url = $(this).data("url");
                 let id = $(this).data("id");
                 let text = $(this).text();

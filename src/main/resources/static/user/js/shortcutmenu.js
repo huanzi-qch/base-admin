@@ -81,6 +81,9 @@ function shortcutMenuFormSave() {
     if (shortcutMenuForm.shortcutMenuParentId === "0") {
         shortcutMenuForm.shortcutMenuParentId = "";
     }
+    if(shortcutMenuForm.sortWeight === ""){
+        shortcutMenuForm.sortWeight = 0;
+    }
     $.post(ctx + "/user/shortcutMenuSave", shortcutMenuForm, function (data) {
         layer.msg("保存成功", {icon: 1, time: 2000}, function () {
         });

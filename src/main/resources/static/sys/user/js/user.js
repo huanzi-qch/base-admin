@@ -195,25 +195,14 @@ function userFormSave() {
         }
 
         //保存用户菜单跟用户权限,只要userId，以及Id集合就可以了
-        let menuIdList = [];
-        for (let check of tree.getChecked('userMenuTree')[0].children) {
-            menuIdList.push(check.id);
-            if (check.children && check.children.length > 0) {
-                for (let check1 of check.children) {
-                    menuIdList.push(check1.id);
-                }
-            }
-        }
+        let menuIdList = commonUtil.getChildrenByTree(tree.getChecked('userMenuTree')[0].children);
         let postData = {
             userId: data.data.userId,
             menuIdList: menuIdList.join(",")
         };
         $.post(ctx + "/sys/sysUserMenu/saveAllByUserId", postData, function (data) {});
 
-        let authorityIdList = [];
-        for (let check of tree.getChecked('userAuthorityTree')[0].children) {
-            authorityIdList.push(check.id);
-        }
+        let authorityIdList = commonUtil.getChildrenByTree(tree.getChecked('userAuthorityTree')[0].children);
         let postData2 = {
             userId: data.data.userId,
             authorityIdList: authorityIdList.join(",")
@@ -227,6 +216,7 @@ function userFormSave() {
         tableIns.reload();
     });
 }
+
 
 /**
  * 重置密码

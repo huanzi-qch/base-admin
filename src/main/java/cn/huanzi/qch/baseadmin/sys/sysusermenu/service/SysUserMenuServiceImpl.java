@@ -7,6 +7,7 @@ import cn.huanzi.qch.baseadmin.sys.sysusermenu.pojo.SysUserMenu;
 import cn.huanzi.qch.baseadmin.sys.sysusermenu.repository.SysUserMenuRepository;
 import cn.huanzi.qch.baseadmin.sys.sysusermenu.vo.SysUserMenuVo;
 import cn.huanzi.qch.baseadmin.util.CopyUtil;
+import cn.huanzi.qch.baseadmin.util.MenuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,31 +33,10 @@ public class SysUserMenuServiceImpl extends CommonServiceImpl<SysUserMenuVo, Sys
         List<SysMenuVo> menuVoList = new ArrayList<>();
         List<SysUserMenuVo> sysUserMenuVoList = CopyUtil.copyList(sysUserMenuRepository.findByUserId(userId), SysUserMenuVo.class);
         sysUserMenuVoList.forEach((sysUserMenuVo) -> {
-            SysMenuVo sysMenuVo = sysUserMenuVo.getSysMenu();
-            if(StringUtils.isEmpty(sysMenuVo.getMenuParentId())){
-                //上级节点
-                menuVoList.add(sysMenuVo);
-            }
+            menuVoList.add(sysUserMenuVo.getSysMenu());
         });
-        sysUserMenuVoList.forEach((sysUserMenuVo) -> {
-            SysMenuVo sysMenuVo = sysUserMenuVo.getSysMenu();
-            if(!StringUtils.isEmpty(sysMenuVo.getMenuParentId())){
-                //子节点
-                menuVoList.forEach((sysMenuVoP) -> {
-                    if(sysMenuVoP.getMenuId().equals(sysMenuVo.getMenuParentId())){
-                        sysMenuVoP.getChildren().add(sysMenuVo);
-                    }
-                });
-            }
-        });
+        return Result.of(MenuUtil.getChildBySysMenuVo("",menuVoList));
 
-        //排序
-        menuVoList.sort(order());
-        menuVoList.forEach((sysMenuVoP) -> {
-            sysMenuVoP.getChildren().sort(order());
-        });
-
-        return Result.of(menuVoList);
     }
 
     @Override
@@ -74,18 +54,6 @@ public class SysUserMenuServiceImpl extends CommonServiceImpl<SysUserMenuVo, Sys
             save(sysUserMenuVo);
         }
         return Result.of(true);
-    }
-
-    /**
-     * 排序,根据sortWeight排序
-     */
-    private Comparator<SysMenuVo> order(){
-        return (o1, o2) -> {
-            if (!o1.getSortWeight().equals(o2.getSortWeight())){
-                return o1.getSortWeight() - o2.getSortWeight();
-            }
-            return 0 ;
-        };
     }
 
 }
