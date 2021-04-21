@@ -6,7 +6,7 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate','tree', 'util'], funct
     let element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
     let laydate = layui.laydate;
     tree = layui.tree;
-    let height = document.documentElement.clientHeight - 160;
+    let height = 400;
 
     tableIns = table.render({
         elem: '#authorityTable'
