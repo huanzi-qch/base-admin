@@ -151,6 +151,9 @@
             //首页内容高度
             $("#indexTabContent").css("height",height);
 
+            /**
+             * 菜单点击事件
+             */
             $("body").on("click", ".huanzi-menu", function (e) {
                 if($(this).next("dl").length > 0){
                     return;
