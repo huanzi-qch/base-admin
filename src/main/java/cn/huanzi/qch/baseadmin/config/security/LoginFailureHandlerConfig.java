@@ -64,5 +64,6 @@ public class LoginFailureHandlerConfig implements AuthenticationFailureHandler {
         out.print(msg);
         out.flush();
         out.close();
+        httpServletResponse.flushBuffer();
     }
 }

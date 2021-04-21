@@ -140,6 +140,7 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         out.print(msg);
         out.flush();
         out.close();
+        httpServletResponse.flushBuffer();
     }
 
     @Bean

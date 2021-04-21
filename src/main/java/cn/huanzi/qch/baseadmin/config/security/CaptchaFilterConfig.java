@@ -59,7 +59,12 @@ public class CaptchaFilterConfig implements Filter {
             if(!SecurityUtil.checkUrl(requestURI.replaceFirst(contextPath,""))){
                 //直接输出js脚本跳转强制用户下线
                 response.setContentType("text/html;charset=UTF-8");
-                response.getWriter().print("<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
+                PrintWriter out = response.getWriter();
+                out.print("<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
+                out.flush();
+                out.close();
+                response.flushBuffer();
+                return;
             }
 
         }
@@ -148,6 +153,7 @@ public class CaptchaFilterConfig implements Filter {
                 out.print(dataString);
                 out.flush();
                 out.close();
+                response.flushBuffer();
                 return;
             }
         }

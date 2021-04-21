@@ -69,7 +69,7 @@
                 <!-- 内容 -->
                 <div class="layui-tab-content">
                     <div class="layui-tab-item layui-show">
-                        <div id="indexTabContent"  class="layui-row layui-col-space15" style="padding: 20px;background-color: #F2F2F2;overflow: auto;">
+                        <div id="indexTabContent"  class="layui-row layui-col-space15 tab-content-div" style="padding: 20px;background-color: #F2F2F2;overflow: auto;">
                             <div class="layui-col-md6">
                                 <div class="layui-card">
                                     <div class="layui-card-header">欢迎使用</div>
@@ -146,7 +146,7 @@
     <script>
         layui.use('element', function () {
             let element = layui.element;
-            let height = document.documentElement.clientHeight - 160 + "px";
+            let height = ($(".layui-body")[0].offsetHeight - 56) + "px";
 
             //首页内容高度
             $("#indexTabContent").css("height",height);
@@ -164,12 +164,19 @@
                     element.tabAdd('demo', {
                         title: text,
                         //iframe子页面onload新增监听src为/loginPage是父页面跳转/loginPage，解决“俄罗斯套娃”问题
-                        content: "<iframe onload='if(this.contentWindow.location.pathname == \""+ctx+"/loginPage\"){window.location.href = \""+ctx+"/loginPage\"} $(this)[0].height = document.documentElement.clientHeight-160' width='100%' height='" + height + "' frameborder='0' scrolling='auto' src=\"" + url + "\"></iframe>",
+                        content: "<iframe class='tab-content-div' onload='if(this.contentWindow.location.pathname == \""+ctx+"/loginPage\"){window.location.href = \""+ctx+"/loginPage\"} $(this)[0].height = ($(\".layui-body\")[0].offsetHeight - 56)' width='100%' height='" + height + "' frameborder='0' scrolling='auto' src=\"" + url + "\"></iframe>",
                         id: id
                     });
                 }
                 element.tabChange('demo', id);
             });
+
+            /**
+             * 监听浏览器可视高度，自适应设置高度
+             */
+            window.onresize = function (ev) {
+                $(".tab-content-div").css("height",($(".layui-body")[0].offsetHeight - 56) + "px")
+            }
         });
     </script>
 </body>
