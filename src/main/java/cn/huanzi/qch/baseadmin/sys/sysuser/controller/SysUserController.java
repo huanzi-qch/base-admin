@@ -5,16 +5,13 @@ import cn.huanzi.qch.baseadmin.annotation.Encrypt;
 import cn.huanzi.qch.baseadmin.common.controller.CommonController;
 import cn.huanzi.qch.baseadmin.common.pojo.PageInfo;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
-import cn.huanzi.qch.baseadmin.sys.syssetting.service.SysSettingService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.pojo.SysUser;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
+import cn.huanzi.qch.baseadmin.util.SecurityUtil;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,13 +25,7 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
     private SysUserService sysUserService;
 
     @Autowired
-    private SessionRegistry sessionRegistry;
-
-    @Autowired
-    private SysSettingService sysSettingService;
-
-    @Autowired
-    private PersistentTokenRepository persistentTokenRepository;
+    private SecurityUtil securityUtil;
 
     @GetMapping("user")
     public ModelAndView user(){
@@ -53,7 +44,7 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
     @Encrypt
     public Result<PageInfo<SysUserVo>> pageOnLine(SysUserVo sysUserVo){
         ArrayList<SysUserVo> sysUserVoList = new ArrayList<>();
-        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
+        List<Object> allPrincipals = securityUtil.sessionRegistryGetAllPrincipals();
         for (Object allPrincipal : allPrincipals) {
             SysUserVo userVo = new SysUserVo();
             User user = (User) allPrincipal;
@@ -71,23 +62,7 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
 
     @DeleteMapping("forced/{loginName}")
     public Result<String> forced( @PathVariable("loginName") String loginName) {
-        //清除remember-me持久化tokens
-        persistentTokenRepository.removeUserTokens(loginName);
-
-        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
-        for (Object allPrincipal : allPrincipals) {
-            User user = (User) allPrincipal;
-            if(user.getUsername().equals(loginName)){
-                List<SessionInformation> allSessions = sessionRegistry.getAllSessions(user, true);
-                if (allSessions != null) {
-                    for (SessionInformation sessionInformation : allSessions) {
-                        sessionInformation.expireNow();
-                        sessionRegistry.removeSessionInformation(sessionInformation.getSessionId());
-                    }
-                }
-                break;
-            }
-        }
+        securityUtil.sessionRegistryRemoveUserByLoginName(loginName);
         return Result.of("操作成功");
     }
 }

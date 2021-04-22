@@ -44,9 +44,8 @@
                 <img id="captchaImg" th:src="@{/getVerifyCodeImage}" onclick="changeCode()"/><!-- <a href="javascript:changeCode()">看不清换一张</a>-->
             </div>
         </div>
-        <div class="layui-form-item">
-            <!-- 我直接写死，需要开启选择请自行调整前端代码 -->
-            <input id="remember-me" type="checkbox" name="remember-me" value="true" style="display: none">
+        <div class="layui-form-item" style="float: right;">
+            <input id="remember-me" type="checkbox" title="七天免登陆" name="rememberMe" checked lay-skin="primary">
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
@@ -69,19 +68,24 @@
 </script>
 <script>
     let layer;
-    layui.use('layer', function () {
+    layui.use(['layer','form'], function () {
         layer = layui.layer;
+        let form = layui.form;//select、单选、复选等依赖form
     });
 
     /**
      * 登录
      */
     function formSubmit() {
+        let rememberMe = true;
+        if($("input[name='rememberMe']:checked").length <= 0){
+            rememberMe = false;
+        }
         $.post(ctx + "/login", {
             "username": $("#username").val(),
             "password": $("#password").val(),
             "captcha": $("#captcha").val(),
-            "remember-me": $("#remember-me").val(),
+            "remember-me": rememberMe,
         }, function (data) {
             if (data.code == 300) {
                 layer.msg(data.msg, {icon: 1,time: 1000}, function () {

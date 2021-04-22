@@ -44,18 +44,10 @@ public class CaptchaFilterConfig implements Filter {
     private String contextPath;
 
     @Autowired
-    private SessionRegistry sessionRegistry;
+    private SecurityUtil securityUtil;
 
     @Autowired
     private UserConfig userConfig;
-
-//    @Autowired
-//    private PersistentTokenBasedRememberMeServices myRememberMeServices;
-//    private MyRememberMeServices myRememberMeServices;
-
-    @Autowired
-    private PersistentTokenRepository persistentTokenRepository;
-
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -70,17 +62,17 @@ public class CaptchaFilterConfig implements Filter {
 
             另外，虽然重启了服务，sessionRegistry.getAllSessions()为空，但之前的用户session未过期同样能访问系统，也是这个原因
          */
-        SessionInformation sessionInformation = sessionRegistry.getSessionInformation(session.getId());
-        if(sessionInformation == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
+        User user = securityUtil.sessionRegistryGetUserBySessionId(session.getId());
+        if(user == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
 
             //remember me？
             Cookie rememberMeCookie = SecurityUtil.getCookieByName(request, "remember-me");
-            String[] decodeCookie = SecurityUtil.decodeCookie(rememberMeCookie.getValue());
-            PersistentRememberMeToken token = persistentTokenRepository.getTokenForSeries(decodeCookie[0]);
+            PersistentRememberMeToken token = securityUtil.rememberMeGetTokenForSeries(rememberMeCookie);
 
             if(!StringUtils.isEmpty(token)){
+                log.info("当前session连接开启了免登陆，已自动登录！token："+rememberMeCookie.getValue() + ",userName：" + token.getUsername() + "，最后登录时间：" + token.getDate());
                 //注册新的session
-                sessionRegistry.registerNewSession(session.getId(),userConfig.loadUserByUsername(token.getUsername()));
+                securityUtil.sessionRegistryAddUser(session.getId(),userConfig.loadUserByUsername(token.getUsername()));
             }
 
             //当前URL是否允许访问，同时没有remember me

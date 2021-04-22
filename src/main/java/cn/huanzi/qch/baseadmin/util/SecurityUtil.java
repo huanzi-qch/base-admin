@@ -1,16 +1,20 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import cn.huanzi.qch.baseadmin.config.security.SecurityConfig;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +22,21 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * Spring Security工具类
  */
+@Component
 @Slf4j
 public class SecurityUtil {
+
+    @Autowired
+    private SessionRegistry sessionRegistry;
+
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+
     /**
      * 从ThreadLocal获取其自己的SecurityContext，从而获取在Security上下文中缓存的登录用户
      */
@@ -83,6 +96,27 @@ public class SecurityUtil {
         return true;
     }
 
+
+
+    /*    remember-me相关操作     */
+
+
+
+
+    /**
+     * 清除remember-me持久化tokens
+     */
+    public void rememberMeRemoveUserTokens(String userName){
+        persistentTokenRepository.removeUserTokens(userName);
+    }
+
+    /**
+     * 根据rememberMeCookie查询获取数据表中的信息
+     */
+    public PersistentRememberMeToken rememberMeGetTokenForSeries(Cookie rememberMeCookie){
+        return persistentTokenRepository.getTokenForSeries(SecurityUtil.decodeCookie(rememberMeCookie.getValue())[0]);
+    }
+
     /**
      * 解密rememberMeCookie
      * 详情可在 PersistentTokenBasedRememberMeServices.processAutoLoginCookie断点，查看调用栈
@@ -122,5 +156,85 @@ public class SecurityUtil {
             }
         }
         return null;
+    }
+
+
+
+
+
+    /*  SessionRegistry相关操作  */
+
+
+
+
+    /**
+     * 根据user从sessionRegistry获取SessionInformation
+     */
+    public List<SessionInformation> sessionRegistryGetSessionInformationList(User user){
+        return sessionRegistry.getAllSessions(user, true);
+    }
+
+    /**
+     * 根据sessionId从sessionRegistry获取用户
+     */
+    public User sessionRegistryGetUserBySessionId(String sessionId){
+        SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
+        if(sessionInformation != null){
+            return (User) sessionInformation.getPrincipal();
+        }
+        return null;
+    }
+
+    /**
+     * 从sessionRegistry中删除user
+     */
+    public void sessionRegistryRemoveUser(User user){
+        List<SessionInformation> allSessions = this.sessionRegistryGetSessionInformationList(user);
+        if (allSessions != null) {
+            for (SessionInformation sessionInformation : allSessions) {
+                sessionInformation.expireNow();
+                sessionRegistry.removeSessionInformation(sessionInformation.getSessionId());
+            }
+
+            //清除当前的上下文
+            SecurityContextHolder.clearContext();
+
+            //清除remember-me持久化tokens
+            this.rememberMeRemoveUserTokens(user.getUsername());
+        }
+    }
+
+    /**
+     * 指定loginName从sessionRegistry中删除user
+     */
+    public void sessionRegistryRemoveUserByLoginName(String loginName){
+        //清除remember-me持久化tokens
+        this.rememberMeRemoveUserTokens(loginName);
+
+        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
+        for (Object allPrincipal : allPrincipals) {
+            User user = (User) allPrincipal;
+            if(user.getUsername().equals(loginName)){
+                List<SessionInformation> allSessions = sessionRegistry.getAllSessions(user, true);
+                if (allSessions != null) {
+                    for (SessionInformation sessionInformation : allSessions) {
+                        sessionInformation.expireNow();
+                        sessionRegistry.removeSessionInformation(sessionInformation.getSessionId());
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * 向sessionRegistry注册user
+     */
+    public void sessionRegistryAddUser(String sessionId, Object user){
+        sessionRegistry.registerNewSession(sessionId,user);
+    }
+
+    public List<Object> sessionRegistryGetAllPrincipals(){
+        return sessionRegistry.getAllPrincipals();
     }
 }
