@@ -9,5 +9,4 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 public interface SysUserService extends CommonService<SysUserVo, SysUser, String> {
     Result<SysUserVo> findByLoginName(String username);
     Result<SysUserVo> resetPassword(String userId);
-    PersistentTokenRepository getPersistentTokenRepository2();
 }

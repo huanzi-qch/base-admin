@@ -68,6 +68,14 @@
     jQueryExtend.ajaxExtend();
 </script>
 <script>
+    let layer;
+    layui.use('layer', function () {
+        layer = layui.layer;
+    });
+
+    /**
+     * 登录
+     */
     function formSubmit() {
         $.post(ctx + "/login", {
             "username": $("#username").val(),
@@ -75,19 +83,19 @@
             "captcha": $("#captcha").val(),
             "remember-me": $("#remember-me").val(),
         }, function (data) {
-            layui.use('layer', function () {
-                var layer = layui.layer;
-                if (data.code == 300) {
-                    layer.msg(data.msg, {icon: 1,time: 1000}, function () {
-                        window.location.href = ctx + data.url;
-                    });
-                } else {
-                    layer.msg(data.msg, {icon: 2,time: 2000}, function () {});
-                }
-            });
+            if (data.code == 300) {
+                layer.msg(data.msg, {icon: 1,time: 1000}, function () {
+                    window.location.href = ctx + data.url;
+                });
+            } else {
+                layer.msg(data.msg, {icon: 2,time: 2000}, function () {});
+            }
         })
     }
 
+    /**
+     * 刷新验证码
+     */
     function changeCode() {
         var img = document.getElementById("captchaImg");
         img.src = ctx + "/getVerifyCodeImage?time=" + new Date().getTime();

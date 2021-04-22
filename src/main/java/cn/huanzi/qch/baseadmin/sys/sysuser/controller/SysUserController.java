@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,6 +32,9 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
 
     @Autowired
     private SysSettingService sysSettingService;
+
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
 
     @GetMapping("user")
     public ModelAndView user(){
@@ -68,7 +72,7 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
     @DeleteMapping("forced/{loginName}")
     public Result<String> forced( @PathVariable("loginName") String loginName) {
         //清除remember-me持久化tokens
-        sysUserService.getPersistentTokenRepository2().removeUserTokens(loginName);
+        persistentTokenRepository.removeUserTokens(loginName);
 
         List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
         for (Object allPrincipal : allPrincipals) {

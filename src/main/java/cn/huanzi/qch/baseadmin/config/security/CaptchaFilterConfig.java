@@ -12,9 +12,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -39,6 +46,17 @@ public class CaptchaFilterConfig implements Filter {
     @Autowired
     private SessionRegistry sessionRegistry;
 
+    @Autowired
+    private UserConfig userConfig;
+
+//    @Autowired
+//    private PersistentTokenBasedRememberMeServices myRememberMeServices;
+//    private MyRememberMeServices myRememberMeServices;
+
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -55,8 +73,18 @@ public class CaptchaFilterConfig implements Filter {
         SessionInformation sessionInformation = sessionRegistry.getSessionInformation(session.getId());
         if(sessionInformation == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
 
-            //当前URL是否允许访问
-            if(!SecurityUtil.checkUrl(requestURI.replaceFirst(contextPath,""))){
+            //remember me？
+            Cookie rememberMeCookie = SecurityUtil.getCookieByName(request, "remember-me");
+            String[] decodeCookie = SecurityUtil.decodeCookie(rememberMeCookie.getValue());
+            PersistentRememberMeToken token = persistentTokenRepository.getTokenForSeries(decodeCookie[0]);
+
+            if(!StringUtils.isEmpty(token)){
+                //注册新的session
+                sessionRegistry.registerNewSession(session.getId(),userConfig.loadUserByUsername(token.getUsername()));
+            }
+
+            //当前URL是否允许访问，同时没有remember me
+            if(!SecurityUtil.checkUrl(requestURI.replaceFirst(contextPath,"")) && StringUtils.isEmpty(token)){
                 //直接输出js脚本跳转强制用户下线
                 response.setContentType("text/html;charset=UTF-8");
                 PrintWriter out = response.getWriter();

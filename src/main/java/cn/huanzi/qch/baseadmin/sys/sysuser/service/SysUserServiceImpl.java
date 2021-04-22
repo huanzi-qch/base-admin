@@ -52,9 +52,6 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
     @Autowired
     private SysShortcutMenuService sysShortcutMenuService;
 
-    @Autowired
-    private DataSource dataSource;
-
     @Override
     public Result<String> delete(String id) {
         //删除权限关联表、菜单关联表、个性菜单关联表
@@ -127,19 +124,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
     }
 
     @Override
-    public PersistentTokenRepository getPersistentTokenRepository2() {
-        return persistentTokenRepository2();
-    }
-
-    @Override
     public Result<SysUserVo> findByLoginName(String username) {
         return Result.of(CopyUtil.copy(sysUserRepository.findByLoginName(username), SysUserVo.class));
-    }
-
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository2() {
-        JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
-        persistentTokenRepository.setDataSource(dataSource);
-        return persistentTokenRepository;
     }
 }

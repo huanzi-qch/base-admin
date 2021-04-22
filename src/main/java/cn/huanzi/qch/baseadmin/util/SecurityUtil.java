@@ -8,7 +8,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
+import org.springframework.util.StringUtils;
 import sun.rmi.runtime.Log;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * Spring Security工具类
@@ -72,5 +81,46 @@ public class SecurityUtil {
         }
 
         return true;
+    }
+
+    /**
+     * 解密rememberMeCookie
+     * 详情可在 PersistentTokenBasedRememberMeServices.processAutoLoginCookie断点，查看调用栈
+     */
+    public static String[] decodeCookie(String cookieValue) throws InvalidCookieException {
+        for(int j = 0; j < cookieValue.length() % 4; ++j) {
+            cookieValue = cookieValue + "=";
+        }
+
+        try {
+            Base64.getDecoder().decode(cookieValue.getBytes());
+        } catch (IllegalArgumentException var7) {
+            throw new InvalidCookieException("Cookie token was not Base64 encoded; value was '" + cookieValue + "'");
+        }
+
+        String cookieAsPlainText = new String(Base64.getDecoder().decode(cookieValue.getBytes()));
+        String[] tokens = StringUtils.delimitedListToStringArray(cookieAsPlainText, ":");
+
+        for(int i = 0; i < tokens.length; ++i) {
+            try {
+                tokens[i] = URLDecoder.decode(tokens[i], StandardCharsets.UTF_8.toString());
+            } catch (UnsupportedEncodingException var6) {
+                log.error(var6.getMessage(), var6);
+            }
+        }
+
+        return tokens;
+    }
+
+    /**
+     * 根据name获取cookie
+     */
+    public static Cookie getCookieByName(HttpServletRequest request,String name){
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName().equals(name)) {
+                return cookie;
+            }
+        }
+        return null;
     }
 }
