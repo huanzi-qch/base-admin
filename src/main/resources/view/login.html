@@ -71,6 +71,16 @@
     layui.use(['layer','form'], function () {
         layer = layui.layer;
         let form = layui.form;//select、单选、复选等依赖form
+
+        /**
+         * 监听键盘事件
+         */
+        document.addEventListener("keydown",function (even) {
+            //按下Enter回车键
+            if(even.keyCode === 13){
+                formSubmit();
+            }
+        })
     });
 
     /**

@@ -114,7 +114,7 @@ public class SecurityUtil {
      * 根据rememberMeCookie查询获取数据表中的信息
      */
     public PersistentRememberMeToken rememberMeGetTokenForSeries(Cookie rememberMeCookie){
-        return persistentTokenRepository.getTokenForSeries(SecurityUtil.decodeCookie(rememberMeCookie.getValue())[0]);
+        return rememberMeCookie == null ? null : persistentTokenRepository.getTokenForSeries(SecurityUtil.decodeCookie(rememberMeCookie.getValue())[0]);
     }
 
     /**
@@ -147,11 +147,11 @@ public class SecurityUtil {
     }
 
     /**
-     * 根据name获取cookie
+     * 获取 "remember-me" cookie
      */
-    public static Cookie getCookieByName(HttpServletRequest request,String name){
+    public static Cookie getRememberMeCookie(HttpServletRequest request){
         for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals(name)) {
+            if (cookie.getName().equals("remember-me")) {
                 return cookie;
             }
         }

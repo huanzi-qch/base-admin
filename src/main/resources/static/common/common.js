@@ -320,7 +320,7 @@ commonUtil = {
             }
         }
         return menuIdList;
-    }
+    },
 };
 
 

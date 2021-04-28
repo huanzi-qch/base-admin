@@ -146,10 +146,9 @@
     <script>
         layui.use('element', function () {
             let element = layui.element;
-            let height = ($(".layui-body")[0].offsetHeight - 56) + "px";
 
             //首页内容高度
-            $("#indexTabContent").css("height",height);
+            $("#indexTabContent").css("height",($(".layui-body")[0].offsetHeight - 94) + "px");
 
             /**
              * 菜单点击事件
@@ -167,7 +166,7 @@
                     element.tabAdd('demo', {
                         title: text,
                         //iframe子页面onload新增监听src为/loginPage是父页面跳转/loginPage，解决“俄罗斯套娃”问题
-                        content: "<iframe class='tab-content-div' onload='if(this.contentWindow.location.pathname == \""+ctx+"/loginPage\"){window.location.href = \""+ctx+"/loginPage\"} $(this)[0].height = ($(\".layui-body\")[0].offsetHeight - 56)' width='100%' height='" + height + "' frameborder='0' scrolling='auto' src=\"" + url + "\"></iframe>",
+                        content: "<iframe class='tab-content-div' onload='if(this.contentWindow.location.pathname == \""+ctx+"/loginPage\"){window.location.href = \""+ctx+"/loginPage\"};' width='100%' height='" + ($(".layui-body")[0].offsetHeight - 61) + "px" + "' frameborder='0' scrolling='auto' src=\"" + url + "\"></iframe>",
                         id: id
                     });
                 }
@@ -178,7 +177,11 @@
              * 监听浏览器可视高度，自适应设置高度
              */
             window.onresize = function (ev) {
-                $(".tab-content-div").css("height",($(".layui-body")[0].offsetHeight - 56) + "px")
+                let h = 94;
+                if($(".layui-show .tab-content-div")[0].nodeName === "IFRAME"){
+                    h = 61;
+                }
+                $(".tab-content-div").css("height",($(".layui-body")[0].offsetHeight - h) + "px");
             }
         });
     </script>

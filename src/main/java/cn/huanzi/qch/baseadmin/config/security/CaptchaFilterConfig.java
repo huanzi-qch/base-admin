@@ -8,15 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -66,7 +59,7 @@ public class CaptchaFilterConfig implements Filter {
         if(user == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
 
             //remember me？
-            Cookie rememberMeCookie = SecurityUtil.getCookieByName(request, "remember-me");
+            Cookie rememberMeCookie = SecurityUtil.getRememberMeCookie(request);
             PersistentRememberMeToken token = securityUtil.rememberMeGetTokenForSeries(rememberMeCookie);
 
             if(!StringUtils.isEmpty(token)){

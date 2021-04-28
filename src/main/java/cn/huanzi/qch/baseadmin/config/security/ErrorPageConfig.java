@@ -1,5 +1,6 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
@@ -40,16 +41,16 @@ public class ErrorPageConfig implements ErrorPageRegistrar {
 class ErrorPageController {
     @GetMapping("/error/403")
     public ModelAndView error403(){
-        return new ModelAndView("common/error/403");
+        return new ModelAndView("common/error/403","sysLogo",SysSettingUtil.getSysSetting().getSysLogo());
     }
 
     @GetMapping("/error/404")
-    public ModelAndView error404(){
-        return new ModelAndView("common/error/404");
+    public ModelAndView error404() {
+        return new ModelAndView("common/error/404", "sysLogo", SysSettingUtil.getSysSetting().getSysLogo());
     }
 
     @GetMapping("/error/500")
     public ModelAndView error500(){
-        return new ModelAndView("common/error/500");
+        return new ModelAndView("common/error/500","sysLogo",SysSettingUtil.getSysSetting().getSysLogo());
     }
 }
