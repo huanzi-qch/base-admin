@@ -24,5 +24,5 @@ public class SysUserMenuVo extends PageCondition implements Serializable {
 
     private Date updateTime;//修改时间
 
-    private String menuIdList;////新增、修改用户菜单时菜单id集合
+    private String menuIdList;//新增、修改用户菜单时菜单id集合
 }
