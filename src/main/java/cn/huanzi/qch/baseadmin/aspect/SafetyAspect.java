@@ -102,17 +102,12 @@ public class SafetyAspect {
                 //前端公钥
                 publicKey = request.getParameter("publicKey");
 
-                log.info("前端公钥：" + publicKey);
-
                 //后端私钥解密的到AES的key
                 byte[] plaintext = RsaUtil.decryptByPrivateKey(Base64.decodeBase64(aesKey), RsaUtil.getPrivateKey());
                 aesKey = new String(plaintext);
-                log.info("解密出来的AES的key：" + aesKey);
-
 
                 //AES解密得到明文data数据
                 String decrypt = AesUtil.decrypt(data, aesKey);
-                log.info("解密出来的data数据：" + decrypt);
 
                 //设置到方法的形参中，目前只能设置只有一个参数的情况
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -131,9 +126,7 @@ public class SafetyAspect {
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 //每次响应之前随机获取AES的key，加密data数据
                 String key = AesUtil.getKey();
-                log.info("AES的key：" + key);
                 String dataString = mapper.writeValueAsString(o);
-                log.info("需要加密的data数据：" + dataString);
                 String data = AesUtil.encrypt(dataString, key);
 
                 //用前端的公钥来解密AES的key，并转成Base64

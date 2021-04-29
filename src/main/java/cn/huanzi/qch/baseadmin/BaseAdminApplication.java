@@ -112,7 +112,6 @@ class IndexController {
 
         //后端公钥
         String publicKey = RsaUtil.getPublicKey();
-        log.info("后端公钥：" + publicKey);
         modelAndView.addObject("publicKey", publicKey);
 
         return modelAndView;
@@ -153,7 +152,6 @@ class IndexController {
 
         //后端公钥
         String publicKey = RsaUtil.getPublicKey();
-        log.info("后端公钥：" + publicKey);
         modelAndView.addObject("publicKey", publicKey);
 
         return modelAndView;
@@ -173,7 +171,6 @@ class IndexController {
 
         //将验证码放到HttpSession里面
         request.getSession().setAttribute("verifyCode", verifyCode);
-         log.info("本次生成的验证码为：" + verifyCode + ",已存放到HttpSession中");
 
         //设置输出的内容的类型为JPEG图像
         response.setContentType("image/jpeg");

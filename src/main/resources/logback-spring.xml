@@ -65,7 +65,6 @@
         <!-- 子节点向上级传递 局部日志级别-->
         <logger level="WARN" name="org.springframework"/>
         <logger level="WARN" name="com.netflix"/>
-        <logger level="DEBUG" name="org.hibernate.SQL"/>
     </springProfile>
     <springProfile name="prod">
 

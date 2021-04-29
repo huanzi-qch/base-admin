@@ -97,8 +97,6 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
                 //前端公钥
                 String publicKey = httpServletRequest.getParameter("publicKey");
 
-                log.info("前端公钥：" + publicKey);
-
                 //jackson
                 ObjectMapper mapper = new ObjectMapper();
                 //jackson 序列化和反序列化 date处理
@@ -106,8 +104,6 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 //每次响应之前随机获取AES的key，加密data数据
                 String key = AesUtil.getKey();
-                log.info("AES的key：" + key);
-                log.info("需要加密的data数据：" + msg);
                 String data = AesUtil.encrypt(msg, key);
 
                 //用前端的公钥来解密AES的key，并转成Base64
