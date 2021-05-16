@@ -49,6 +49,11 @@ layui.use(['element', 'form', 'table', 'layer', 'tree', 'util'], function () {
 
                 if (type === 'add') { //增加节点
                     $("#menuForm")[0].reset();
+                    $("#menuForm").form({
+                            menuPath: obj.data.href,
+                            menuParentName: obj.data.title,
+                            menuParentId: obj.data.id
+                        });
                     //返回 key 值
                     return "";
                 } else if (type === 'del') { //删除节点，PS：存在layer.confirm弹窗非阻塞问题，未点确定，页面上的节点就被删除，如有解决方案的同学可以跟我说下
