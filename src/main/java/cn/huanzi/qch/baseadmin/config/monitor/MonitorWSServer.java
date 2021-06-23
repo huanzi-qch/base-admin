@@ -3,6 +3,7 @@ package cn.huanzi.qch.baseadmin.config.monitor;
 
 import cn.huanzi.qch.baseadmin.config.websocket.MyEndpointConfigure;
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
+import cn.huanzi.qch.baseadmin.util.JsonUtil;
 import cn.huanzi.qch.baseadmin.util.SystemMonitorUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,15 +44,10 @@ public class MonitorWSServer {
         //获取系统监控信息
         new Thread(()->{
             log.info("MonitorWSServer 任务开始");
-            ObjectMapper mapper = new ObjectMapper();
-            //当属性的值为空（null或者""）时，不进行序列化，可以减少数据传输
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-            //设置日期格式
-            mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             while (sessionMap.get(session.getId()) != null) {
                 try {
                     //获取系统监控信息 发送
-                    send(session,  mapper.writeValueAsString(SystemMonitorUtil.getSysMonitor()));
+                    send(session,  JsonUtil.stringify(SystemMonitorUtil.getSysMonitor()));
 
                     //休眠一秒
                     Thread.sleep(1000);

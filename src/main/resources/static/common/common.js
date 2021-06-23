@@ -280,7 +280,7 @@ commonUtil = {
             //自定义数据
             obj1.sortWeight = obj.sortWeight;
 
-            if (obj.children.length > 0) {
+            if (obj.children && obj.children.length > 0) {
                 obj1.children = this.updateKeyForLayuiTree(obj.children);
             }
             newArray.push(obj1);

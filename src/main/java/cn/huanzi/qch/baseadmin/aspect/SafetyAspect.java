@@ -3,10 +3,7 @@ package cn.huanzi.qch.baseadmin.aspect;
 import cn.huanzi.qch.baseadmin.annotation.Decrypt;
 import cn.huanzi.qch.baseadmin.annotation.Encrypt;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
-import cn.huanzi.qch.baseadmin.util.AesUtil;
-import cn.huanzi.qch.baseadmin.util.ErrorUtil;
-import cn.huanzi.qch.baseadmin.util.RsaUtil;
-import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
+import cn.huanzi.qch.baseadmin.util.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -85,36 +82,14 @@ public class SafetyAspect {
                 }
             }
 
-            //前端公钥
-            String publicKey = null;
-
-            //jackson
-            ObjectMapper mapper = new ObjectMapper();
-            //jackson 序列化和反序列化 date处理
-            mapper.setDateFormat( new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-
             //执行方法之前解密，且只拦截post请求
             if ("post".equals(httpMethod) && hasDecrypt) {
-                //AES加密后的数据
-                String data = request.getParameter("data");
-                //后端RSA公钥加密后的AES的key
-                String aesKey = request.getParameter("aesKey");
-                //前端公钥
-                publicKey = request.getParameter("publicKey");
-
-                //后端私钥解密的到AES的key
-                byte[] plaintext = RsaUtil.decryptByPrivateKey(Base64.decodeBase64(aesKey), RsaUtil.getPrivateKey());
-                aesKey = new String(plaintext);
-
-                //AES解密得到明文data数据
-                String decrypt = AesUtil.decrypt(data, aesKey);
-
-                //设置到方法的形参中，目前只能设置只有一个参数的情况
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                //api解密
+                String decrypt = ApiSecurityUtil.decrypt();
 
                 //注：参数最好用Vo对象来接参，单用String来接，args有长度但获取为空，很奇怪不知道为什么
                 if(args.length > 0){
-                    args[0] = mapper.readValue(decrypt, args[0].getClass());
+                    args[0] = JsonUtil.parse(decrypt, args[0].getClass());
                 }
             }
 
@@ -123,17 +98,8 @@ public class SafetyAspect {
 
             //返回结果之前加密
             if (hasEncrypt) {
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                //每次响应之前随机获取AES的key，加密data数据
-                String key = AesUtil.getKey();
-                String dataString = mapper.writeValueAsString(o);
-                String data = AesUtil.encrypt(dataString, key);
-
-                //用前端的公钥来解密AES的key，并转成Base64
-                String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
-
-                //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-                o = Result.of(mapper.readValue("{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}", Object.class));
+                //api加密，转json字符串并转成Object对象，设置到Result中并赋值给返回值o
+                o = ApiSecurityUtil.encrypt(o);
             }
 
             //返回

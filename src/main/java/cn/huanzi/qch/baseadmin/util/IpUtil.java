@@ -108,13 +108,8 @@ public class IpUtil {
 
         IpVo ipVo = null;
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            //当属性的值为空（null或者""）时，不进行序列化，可以减少数据传输
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-            //设置日期格式
-            mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             //转换成IpVo
-            ipVo = mapper.readValue(new String(inputLine.toString().getBytes("GBK"), "GBK"), IpVo.class);
+            ipVo = JsonUtil.parse(new String(inputLine.toString().getBytes("GBK"), "GBK"), IpVo.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

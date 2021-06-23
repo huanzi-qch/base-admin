@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.ParameterRequestWrapper;
+import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.util.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -87,34 +88,15 @@ public class CaptchaFilterConfig implements Filter {
             //前端公钥
             String publicKey = null;
 
-            //jackson
-            ObjectMapper mapper = new ObjectMapper();
-            //jackson 序列化和反序列化 date处理
-            mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-
             //判断api加密开关是否开启
             if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
                 //解密
                 try {
-                    //AES加密后的数据
-                    String data = request.getParameter("data");
-                    //后端RSA公钥加密后的AES的key
-                    String aesKey = request.getParameter("aesKey");
-                    //前端公钥
-                    publicKey = request.getParameter("publicKey");
-
-                    //后端私钥解密的到AES的key
-                    byte[] plaintext = RsaUtil.decryptByPrivateKey(Base64.decodeBase64(aesKey), RsaUtil.getPrivateKey());
-                    aesKey = new String(plaintext);
-
-                    //AES解密得到明文data数据
-                    String decrypt = AesUtil.decrypt(data, aesKey);
-
-                    //设置到方法的形参中，目前只能设置只有一个参数的情况
-                    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    //api解密
+                    String decrypt = ApiSecurityUtil.decrypt();
 
                     //new一个自定义RequestWrapper
-                    HashMap hashMap = mapper.readValue(decrypt, HashMap.class);
+                    HashMap hashMap = JsonUtil.parse(decrypt, HashMap.class);
                     ParameterRequestWrapper parameterRequestWrapper = new ParameterRequestWrapper(request);
                     for (Object key : hashMap.keySet()) {
                         parameterRequestWrapper.addParameter(String.valueOf(key),  hashMap.get(key));
@@ -138,14 +120,10 @@ public class CaptchaFilterConfig implements Filter {
                 if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
                     //加密
                     try {
-                        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                        //每次响应之前随机获取AES的key，加密data数据
-                        String key = AesUtil.getKey();
-                        String data = AesUtil.encrypt(dataString, key);
+                        //api加密
+                        Result encrypt = ApiSecurityUtil.encrypt(dataString);
 
-                        //用前端的公钥来解密AES的key，并转成Base64
-                        String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
-                        dataString = "{\"data\":{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}}";
+                        dataString = JsonUtil.stringify(encrypt);
                     } catch (Throwable e) {
                         //输出到日志文件中
                         log.error(ErrorUtil.errorInfoToString(e));

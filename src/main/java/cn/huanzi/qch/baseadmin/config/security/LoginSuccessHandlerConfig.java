@@ -1,5 +1,6 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
+import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.*;
@@ -94,22 +95,10 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())) {
             //加密
             try {
-                //前端公钥
-                String publicKey = httpServletRequest.getParameter("publicKey");
+                //api加密
+                Result encrypt = ApiSecurityUtil.encrypt(msg);
 
-                //jackson
-                ObjectMapper mapper = new ObjectMapper();
-                //jackson 序列化和反序列化 date处理
-                mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                //每次响应之前随机获取AES的key，加密data数据
-                String key = AesUtil.getKey();
-                String data = AesUtil.encrypt(msg, key);
-
-                //用前端的公钥来解密AES的key，并转成Base64
-                String aesKey = Base64.encodeBase64String(RsaUtil.encryptByPublicKey(key.getBytes(), publicKey));
-
-                msg = "{\"data\":{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}}";
+                msg = JsonUtil.stringify(encrypt);
             } catch (Throwable e) {
                 //输出到日志文件中
                 log.error(ErrorUtil.errorInfoToString(e));

@@ -1,7 +1,6 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import cn.huanzi.qch.baseadmin.common.pojo.HolidayVo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,8 +54,7 @@ public class HolidayUtil {
 
         //查询全年日历包含周末
         String allDayJson = HolidayUtil.get("https://api.apihubs.cn/holiday/get?size=500&year="+year);
-        ObjectMapper mapper = new ObjectMapper();
-        Map allDayMap = mapper.readValue(allDayJson,Map.class);
+        Map allDayMap = JsonUtil.parse(allDayJson,Map.class);
         Map allDayData = (Map)allDayMap.get("data");
         List allDayDataList = (List)allDayData.get("list");
         allDayDataList.forEach((value) -> {
@@ -82,7 +80,7 @@ public class HolidayUtil {
 
         //查询全年节假日、调休
         String holidayJson = HolidayUtil.get("https://timor.tech/api/holiday/year/"+year + "/");
-        Map holidayMap = mapper.readValue(holidayJson,Map.class);
+        Map holidayMap = JsonUtil.parse(holidayJson,Map.class);
         LinkedHashMap holidayList = (LinkedHashMap)holidayMap.get("holiday");
         holidayList.forEach((key,value) -> {
             HolidayVo holidayVo = new HolidayVo();
