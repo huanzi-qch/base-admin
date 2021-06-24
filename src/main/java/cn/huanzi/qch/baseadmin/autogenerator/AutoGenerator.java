@@ -1,6 +1,4 @@
-package cn.huanzi.qch.baseadmin.util;
-
-import lombok.extern.slf4j.Slf4j;
+package cn.huanzi.qch.baseadmin.autogenerator;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,50 +8,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 自动生成代码
+ * 代码生成工具 V1.0
  */
-@Slf4j
-public class CodeDOM {
+public class AutoGenerator {
 
     /**
-     * 构造参数，出入表名
+     * 程序自动设置
      */
-    private CodeDOM(String tableName) {
-        this.tableName = tableName;
-        basePackage_ = "cn\\huanzi\\qch\\baseadmin\\sys\\";
-        package_ = basePackage_ + StringUtil.camelCaseName(tableName).toLowerCase() + "\\";
-        //System.getProperty("user.dir") 获取的是项目所在路径，如果我们是子项目，则需要添加一层路径
-        basePath = System.getProperty("user.dir") + "\\src\\main\\java\\" + package_;
-        basePackage_ = "cn\\huanzi\\qch\\baseadmin\\";
-    }
+    private String tableName;//表名
+    private String tableComment;//表注释
+    private String filePath;//最终文件生成位置
 
     /**
-     * 数据连接相关
+     * 数据连接相关，需要手动设置
      */
     private static final String URL = "jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&characterEncoding=utf-8";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "123456";
-    private static final String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
-    /**
-     * 表名
-     */
-    private String tableName;
+    private static final String DRIVER_CLASSNAME = "com.mysql.cj.jdbc.Driver";
 
     /**
-     * 基础路径
+     * 基础路径，需要手动设置
      */
-    private String basePackage_;
-    private String package_;
-    private String basePath;
+    private String basePackage = "cn\\huanzi\\qch\\baseadmin\\";//根包位置
+    private String filePackage = basePackage + "sys\\";//文件所在包位置
+
+    /**
+     * 构造参数，设置表名
+     */
+    private AutoGenerator(String tableName) {
+        //设置表名
+        this.tableName = tableName;
+
+        //文件所在包位置
+        filePackage = filePackage + StringUtil.camelCaseName(tableName).toLowerCase() + "\\";
+
+        //拼接完整最终位置 System.getProperty("user.dir") 获取的是项目所在路径，如果我们是子项目，则需要添加一层路径
+        filePath = System.getProperty("user.dir") + "\\src\\main\\java\\" + filePackage;
+    }
 
     /**
      * 创建pojo实体类
      */
     private void createPojo(List<TableInfo> tableInfos) {
-        File file = FileUtil.createFile(basePath + "pojo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ".java");
+        //创建文件
+        File file = FileUtil.createFile(filePath + "pojo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ".java");
+
+        //拼接文件内容
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(
-                "package " + package_.replaceAll("\\\\", ".") + "pojo;\n" +
+                "package " + filePackage.replaceAll("\\\\", ".") + "pojo;\n" +
                         "\n" +
                         "import lombok.Data;\n" +
                         "import javax.persistence.*;\n" +
@@ -75,9 +79,11 @@ public class CodeDOM {
             if ("auto_increment".equals(tableInfo.getExtra())) {
                 stringBuffer.append("    @GeneratedValue(strategy= GenerationType.IDENTITY)\n");
             }
-            stringBuffer.append("    private " + StringUtil.typeMapping(tableInfo.getDataType()) + " " + StringUtil.camelCaseName(tableInfo.getColumnName()) + ";//" + tableInfo.getColumnComment() + "\n\n");
+            stringBuffer.append("    private ").append(StringUtil.typeMapping(tableInfo.getDataType())).append(" ").append(StringUtil.camelCaseName(tableInfo.getColumnName())).append(";//").append(tableInfo.getColumnComment()).append("\n\n");
         }
         stringBuffer.append("}");
+
+        //写入文件内容
         FileUtil.fileWriter(file, stringBuffer);
     }
 
@@ -85,12 +91,12 @@ public class CodeDOM {
      * 创建vo类
      */
     private void createVo(List<TableInfo> tableInfos) {
-        File file = FileUtil.createFile(basePath + "vo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo.java");
+        File file = FileUtil.createFile(filePath + "vo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo.java");
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append(
-                "package " + package_.replaceAll("\\\\", ".") + "vo;\n" +
+                "package " + filePackage.replaceAll("\\\\", ".") + "vo;\n" +
                         "\n" +
-                        "import "+ basePackage_.replaceAll("\\\\", ".") +" common.pojo.PageCondition;"+
+                        "import "+ basePackage.replaceAll("\\\\", ".") +" common.pojo.PageCondition;"+
                         "import lombok.Data;\n" +
                         "import java.io.Serializable;\n" +
                         "import java.util.Date;\n" +
@@ -100,7 +106,7 @@ public class CodeDOM {
         );
         //遍历设置属性
         for (TableInfo tableInfo : tableInfos) {
-            stringBuffer.append("    private " + StringUtil.typeMapping(tableInfo.getDataType()) + " " + StringUtil.camelCaseName(tableInfo.getColumnName()) + ";//" + tableInfo.getColumnComment() + "\n\n");
+            stringBuffer.append("    private ").append(StringUtil.typeMapping(tableInfo.getDataType())).append(" ").append(StringUtil.camelCaseName(tableInfo.getColumnName())).append(";//").append(tableInfo.getColumnComment()).append("\n\n");
         }
         stringBuffer.append("}");
         FileUtil.fileWriter(file, stringBuffer);
@@ -110,7 +116,7 @@ public class CodeDOM {
      * 创建repository类
      */
     private void createRepository(List<TableInfo> tableInfos) {
-        File file = FileUtil.createFile(basePath + "repository\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository.java");
+        File file = FileUtil.createFile(filePath + "repository\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository.java");
         StringBuffer stringBuffer = new StringBuffer();
         String t = "String";
         //遍历属性
@@ -121,10 +127,10 @@ public class CodeDOM {
             }
         }
         stringBuffer.append(
-                "package " + package_.replaceAll("\\\\", ".") + "repository;\n" +
+                "package " + filePackage.replaceAll("\\\\", ".") + "repository;\n" +
                         "\n" +
-                        "import " + basePackage_.replaceAll("\\\\", ".") + "common.repository.*;\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
+                        "import " + basePackage.replaceAll("\\\\", ".") + "common.repository.*;\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
                         "import org.springframework.stereotype.Repository;\n" +
                         "\n" +
                         "@Repository\n" +
@@ -139,7 +145,7 @@ public class CodeDOM {
      * 创建service类
      */
     private void createService(List<TableInfo> tableInfos) {
-        File file = FileUtil.createFile(basePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service.java");
+        File file = FileUtil.createFile(filePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service.java");
         StringBuffer stringBuffer = new StringBuffer();
         String t = "String";
         //遍历属性
@@ -150,11 +156,11 @@ public class CodeDOM {
             }
         }
         stringBuffer.append(
-                "package " + package_.replaceAll("\\\\", ".") + "service;\n" +
+                "package " + filePackage.replaceAll("\\\\", ".") + "service;\n" +
                         "\n" +
-                        "import " + basePackage_.replaceAll("\\\\", ".") + "common.service.*;\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "vo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo;\n" +
+                        "import " + basePackage.replaceAll("\\\\", ".") + "common.service.*;\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "vo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo;\n" +
                         "\n" +
                         "public interface " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service extends CommonService<" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo, " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ", " + t + "> {"
         );
@@ -163,15 +169,15 @@ public class CodeDOM {
         FileUtil.fileWriter(file, stringBuffer);
 
         //Impl
-        File file1 = FileUtil.createFile(basePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "ServiceImpl.java");
+        File file1 = FileUtil.createFile(filePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "ServiceImpl.java");
         StringBuffer stringBuffer1 = new StringBuffer();
         stringBuffer1.append(
-                "package " + package_.replaceAll("\\\\", ".") + "service;\n" +
+                "package " + filePackage.replaceAll("\\\\", ".") + "service;\n" +
                         "\n" +
-                        "import " + basePackage_.replaceAll("\\\\", ".") + "common.service.*;\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "vo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo;\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "repository." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository;\n" +
+                        "import " + basePackage.replaceAll("\\\\", ".") + "common.service.*;\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "vo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo;\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "repository." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository;\n" +
                         "import org.springframework.beans.factory.annotation.Autowired;\n" +
                         "import org.springframework.stereotype.Service;\n" +
                         "import org.springframework.transaction.annotation.Transactional;\n" +
@@ -198,7 +204,7 @@ public class CodeDOM {
      * 创建controller类
      */
     private void createController(List<TableInfo> tableInfos) {
-        File file = FileUtil.createFile(basePath + "controller\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Controller.java");
+        File file = FileUtil.createFile(filePath + "controller\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Controller.java");
         StringBuffer stringBuffer = new StringBuffer();
         String t = "String";
         //遍历属性
@@ -209,12 +215,12 @@ public class CodeDOM {
             }
         }
         stringBuffer.append(
-                "package " + package_.replaceAll("\\\\", ".") + "controller;\n" +
+                "package " + filePackage.replaceAll("\\\\", ".") + "controller;\n" +
                         "\n" +
-                        "import " + basePackage_.replaceAll("\\\\", ".") + "common.controller.*;\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "vo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo;\n" +
-                        "import " + package_.replaceAll("\\\\", ".") + "service." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service;\n" +
+                        "import " + basePackage.replaceAll("\\\\", ".") + "common.controller.*;\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "pojo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ";\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "vo." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo;\n" +
+                        "import " + filePackage.replaceAll("\\\\", ".") + "service." + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service;\n" +
                         "import org.springframework.beans.factory.annotation.Autowired;\n" +
                         "import org.springframework.web.bind.annotation.*;\n" +
                         "\n" +
@@ -228,45 +234,6 @@ public class CodeDOM {
                 "    private " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service " + StringUtil.camelCaseName(tableName) + "Service;\n");
         stringBuffer.append("}");
         FileUtil.fileWriter(file, stringBuffer);
-    }
-
-    /**
-     * 获取表结构信息
-     */
-    private List<TableInfo> getTableInfo() {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        ArrayList<TableInfo> list = new ArrayList<>();
-        try {
-            conn = DBConnectionUtil.getConnection();
-            String sql = "select column_name,data_type,column_comment,column_key,extra from information_schema.columns where table_schema = (select database()) and table_name=?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, tableName);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                TableInfo tableInfo = new TableInfo();
-                //列名，全部转为小写
-                tableInfo.setColumnName(rs.getString("column_name").toLowerCase());
-                //列类型
-                tableInfo.setDataType(rs.getString("data_type"));
-                //列注释
-                tableInfo.setColumnComment(rs.getString("column_comment"));
-                //主键
-                tableInfo.setColumnKey(rs.getString("column_key"));
-                //主键类型
-                tableInfo.setExtra(rs.getString("extra"));
-                list.add(tableInfo);
-            }
-        } catch (SQLException e) {
-            //输出到日志文件中
-            log.error(ErrorUtil.errorInfoToString(e));
-        } finally {
-            if(rs != null){
-                DBConnectionUtil.close(conn, ps, rs);
-            }
-        }
-        return list;
     }
 
     /**
@@ -294,8 +261,7 @@ public class CodeDOM {
             } catch (Exception e) {
                 file = null;
                 System.err.println("新建文件操作出错");
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
+                e.printStackTrace();
             }
             return file;
         }
@@ -318,8 +284,7 @@ public class CodeDOM {
                 resultFile.close();
             } catch (Exception e) {
                 System.err.println("写入操作出错");
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
+                e.printStackTrace();
             }
         }
     }
@@ -351,7 +316,7 @@ public class CodeDOM {
         /**
          * 驼峰转换为下划线
          */
-        public static String underscoreName(String camelCaseName) {
+        private static String underscoreName(String camelCaseName) {
             StringBuilder result = new StringBuilder();
             if (camelCaseName != null && camelCaseName.length() > 0) {
                 result.append(camelCaseName.substring(0, 1).toLowerCase());
@@ -371,7 +336,7 @@ public class CodeDOM {
         /**
          * 首字母大写
          */
-        static String captureName(String name) {
+        private static String captureName(String name) {
             char[] cs = name.toCharArray();
             cs[0] -= 32;
             return String.valueOf(cs);
@@ -381,7 +346,7 @@ public class CodeDOM {
         /**
          * 下划线转换为驼峰
          */
-        static String camelCaseName(String underscoreName) {
+        private static String camelCaseName(String underscoreName) {
             StringBuilder result = new StringBuilder();
             if (underscoreName != null && underscoreName.length() > 0) {
                 boolean flag = false;
@@ -413,8 +378,8 @@ public class CodeDOM {
             try {
                 Class.forName(DRIVER_CLASSNAME);
             } catch (ClassNotFoundException e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
+                
+                e.printStackTrace();
             }
         }
 
@@ -427,8 +392,8 @@ public class CodeDOM {
             try {
                 conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             } catch (SQLException e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
+                
+                e.printStackTrace();
             }
             return conn;
         }
@@ -441,8 +406,7 @@ public class CodeDOM {
                 conn.close();
                 stmt.close();
             } catch (SQLException e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
+                e.printStackTrace();
             }
         }
 
@@ -454,86 +418,140 @@ public class CodeDOM {
                 close(conn, stmt);
                 rs.close();
             } catch (SQLException e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
+                e.printStackTrace();
             }
         }
 
     }
 
     /**
-     * 表结构行信息实体类
+     * 表结构信息实体类
      */
     private class TableInfo {
-        private String columnName;
-        private String dataType;
-        private String columnComment;
-        private String columnKey;
-        private String extra;
+        private String columnName;//字段名
+        private String dataType;//字段类型
+        private String columnComment;//字段注释
+        private String columnKey;//主键
+        private String extra;//主键类型
 
-        TableInfo() {
-        }
-
-        String getColumnName() {
+        public String getColumnName() {
             return columnName;
         }
 
-        void setColumnName(String columnName) {
+        public void setColumnName(String columnName) {
             this.columnName = columnName;
         }
 
-        String getDataType() {
+        public String getDataType() {
             return dataType;
         }
 
-        void setDataType(String dataType) {
+        public void setDataType(String dataType) {
             this.dataType = dataType;
         }
 
-        String getColumnComment() {
+        public String getColumnComment() {
             return columnComment;
         }
 
-        void setColumnComment(String columnComment) {
+        public void setColumnComment(String columnComment) {
             this.columnComment = columnComment;
         }
 
-        String getColumnKey() {
+        public String getColumnKey() {
             return columnKey;
         }
 
-        void setColumnKey(String columnKey) {
+        public void setColumnKey(String columnKey) {
             this.columnKey = columnKey;
         }
 
-        String getExtra() {
+        public String getExtra() {
             return extra;
         }
 
-        void setExtra(String extra) {
+        public void setExtra(String extra) {
             this.extra = extra;
         }
+    }
+
+    /**
+     * 获取表结构信息
+     * 目前仅支持mysql
+     */
+    private List<TableInfo> getTableInfo() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<TableInfo> list = new ArrayList<>();
+        try {
+            conn = DBConnectionUtil.getConnection();
+
+            //表字段信息
+            String sql = "select column_name,data_type,column_comment,column_key,extra from information_schema.columns where table_schema = (select database()) and table_name=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, tableName);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                TableInfo tableInfo = new TableInfo();
+                //列名，全部转为小写
+                tableInfo.setColumnName(rs.getString("column_name").toLowerCase());
+                //列类型
+                tableInfo.setDataType(rs.getString("data_type"));
+                //列注释
+                tableInfo.setColumnComment(rs.getString("column_comment"));
+                //主键
+                tableInfo.setColumnKey(rs.getString("column_key"));
+                //主键类型
+                tableInfo.setExtra(rs.getString("extra"));
+                list.add(tableInfo);
+            }
+
+            //表注释
+            sql = "select table_comment from information_schema.tables where table_schema = (select database()) and table_name=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, tableName);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                //表注释
+                tableComment = rs.getString("table_comment");
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        } finally {
+            if(rs != null){
+                DBConnectionUtil.close(conn, ps, rs);
+            }
+        }
+        return list;
     }
 
     /**
      * 快速创建，供外部调用，调用之前先设置一下项目的基础路径
      */
     private String create() {
+        System.out.println("生成路径位置：" + filePath);
+
+        //获取表信息
         List<TableInfo> tableInfo = getTableInfo();
+
+        //开始生成代码
         createPojo(tableInfo);
         createVo(tableInfo);
         createRepository(tableInfo);
         createService(tableInfo);
         createController(tableInfo);
-        System.out.println("生成路径位置：" + basePath);
+
         return tableName + " 后台代码生成完毕！";
     }
 
-//    public static void main(String[] args) {
+    public static void main(String[] args) {
 //        String[] tables = {"sys_user","sys_menu","sys_authority","sys_user_menu","sys_user_authority","sys_shortcut_menu","sys_setting"};
-//        for (String table : tables) {
-//            String msg = new CodeDOM(table).create();
-//            System.out.println(msg);
-//        }
-//    }
+        String[] tables = {"tb_user"};
+        for (String table : tables) {
+            String msg = new AutoGenerator(table).create();
+            System.out.println(msg);
+        }
+    }
 }

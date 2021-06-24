@@ -1,0 +1,23 @@
+package cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.pojo;
+
+import lombok.Data;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * ${tableComment} 实体类
+ *
+ * ${author}
+ * ${date}
+ */
+@Entity
+@Table(name = "${tableName}")
+@Data
+public class ${entity} implements Serializable {
+  #for
+    #ifPri
+    #ifAutoIncrement
+    private ${tableInfo.dataType} ${tableInfo.columnName};//${tableInfo.columnComment}
+  #end
+}

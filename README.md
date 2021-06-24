@@ -47,12 +47,14 @@ java后端：SpringBoot + Thymeleaf + WebSocket + Spring Security + SpringData-J
 
 sa/123456
 ```
-5、如何逆向工程生成后端代码？我封装有一个工具类CodeDOM.java用于生成单表全套后端代码
+5、如何逆向工程生成后端代码？我封装有一个工具类AutoGenerator.java用于生成单表全套后端代码
 ```text
 首先建好数据表，在该类中配置好数据源以及项目所在路径，在main函数的tables数组指定要生成代码表，运行main函数即可生成全套后端增删改查、分页代码
 
-一套通用common代码，每个单表去继承从而实现这套基础代码，使用CodeDOM.java代码自动生成一套单表的基础增、删、改、查接口，大大提高开发效率，
+一套通用common代码，每个单表去继承从而实现这套基础代码，使用AutoGenerator.java代码自动生成一套单表的基础增、删、改、查接口，大大提高开发效率，
 详情见博客介绍：https://www.cnblogs.com/huanzi-qch/p/10281773.html
+
+2021-06-24更新：我优化了AutoGenerator.java的代码，并升级了V2.0版本的代码生成器，支持使用模板文件生成代码：AutoGeneratorPlus.java
 ```
 6、如何跳过登录，直接测试接口？
 ```text

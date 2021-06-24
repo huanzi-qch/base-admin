@@ -1,0 +1,30 @@
+package cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.service;
+
+import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
+import cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.pojo.${entity};
+import cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.repository.${entity}Repository;
+import cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.vo.${entity}Vo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+/**
+ * ${tableComment} ServiceImpl
+ *
+ * ${author}
+ * ${date}
+ */
+@Service
+@Transactional
+public class ${entity}ServiceImpl extends CommonServiceImpl<${entity}Vo, ${entity}, ${priDataType}> implements ${entity}Service{
+
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Autowired
+    private ${entity}Repository ${entityFirstToLowerCase}Repository;
+
+}

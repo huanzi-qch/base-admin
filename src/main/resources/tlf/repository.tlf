@@ -1,0 +1,15 @@
+package cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.repository;
+
+import cn.huanzi.qch.baseadmin.common.repository.*;
+import cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.pojo.${entity};
+import org.springframework.stereotype.Repository;
+
+/**
+ * ${tableComment} Repository
+ *
+ * ${author}
+ * ${date}
+ */
+@Repository
+public interface ${entity}Repository extends CommonRepository<${entity}, ${priDataType}> {
+}

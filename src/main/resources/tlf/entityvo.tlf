@@ -1,0 +1,19 @@
+package cn.huanzi.qch.baseadmin.sys.${entityToLowerCase}.vo;
+
+import cn.huanzi.qch.baseadmin.common.pojo.PageCondition;
+import lombok.Data;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * ${tableComment} Vo
+ *
+ * ${author}
+ * ${date}
+ */
+@Data
+public class ${entity}Vo extends PageCondition implements Serializable {
+  #for
+    private ${tableInfo.dataType} ${tableInfo.columnName};//${tableInfo.columnComment}
+  #end
+}
