@@ -52,10 +52,11 @@ public class LoggingWSServer {
             log.info("LoggingWebSocketServer 任务开始");
             boolean first = true;
             BufferedReader reader = null;
+            FileReader fileReader = null;
             while (sessionMap.get(session.getId()) != null) {
                 try {
                     //日志文件，获取最新的
-                    FileReader fileReader = new FileReader(System.getProperty("user.home") + "/log/" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + "/" + applicationName + ".log");
+                    fileReader = new FileReader(System.getProperty("user.home") + "/log/" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + "/" + applicationName + ".log");
 
                     //字符流
                     reader = new BufferedReader(fileReader);
@@ -126,6 +127,7 @@ public class LoggingWSServer {
             }
             try {
                 reader.close();
+                fileReader.close();
             } catch (IOException e) {
                 //输出到日志文件中
                 log.error(ErrorUtil.errorInfoToString(e));

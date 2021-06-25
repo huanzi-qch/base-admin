@@ -1,5 +1,6 @@
 package cn.huanzi.qch.baseadmin;
 
+import cn.huanzi.qch.baseadmin.limiter.RateLimiter;
 import cn.huanzi.qch.baseadmin.sys.sysmenu.vo.SysMenuVo;
 import cn.huanzi.qch.baseadmin.sys.syssetting.service.SysSettingService;
 import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingVo;
@@ -18,8 +19,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,23 +34,21 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
-@EnableAsync//开启异步调用
+/**
+ * 启动类，运行入口函数main，即可启动项目
+ */
+@EnableAsync
 @SpringBootApplication
 public class BaseAdminApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BaseAdminApplication.class, args);
     }
-
-    /**
-     * 解决不能注入session注册表问题
-     */
-    @Bean
-    SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
 }
 
+/**
+ * 系统登录页、首页等controller控制器
+ */
 @Slf4j
 @Controller
 @RequestMapping("/")
@@ -70,9 +67,11 @@ class IndexController {
     @Autowired
     private SysShortcutMenuService sysShortcutMenuService;
 
+    @Autowired
+    private RateLimiter rateLimiter;
+
     @Value("${server.servlet.context-path:}")
     private String contextPath;
-
 
     /**
      * 端口
@@ -90,6 +89,9 @@ class IndexController {
                 //系统启动时获取数据库数据，设置到公用静态集合sysSettingMap
                 SysSettingVo sysSettingVo = sysSettingService.get("1").getData();
                 SysSettingUtil.setSysSettingMap(sysSettingVo);
+
+                //限流令牌桶任务线程启动！
+                rateLimiter.asyncTask();
 
                 //获取本机内网IP
                 log.info("启动成功：" + "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + contextPath);

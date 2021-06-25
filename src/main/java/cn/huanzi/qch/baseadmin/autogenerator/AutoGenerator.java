@@ -546,12 +546,12 @@ public class AutoGenerator {
         return tableName + " 后台代码生成完毕！";
     }
 
-    public static void main(String[] args) {
-//        String[] tables = {"sys_user","sys_menu","sys_authority","sys_user_menu","sys_user_authority","sys_shortcut_menu","sys_setting"};
-        String[] tables = {"tb_user"};
-        for (String table : tables) {
-            String msg = new AutoGenerator(table).create();
-            System.out.println(msg);
-        }
-    }
+//    public static void main(String[] args) {
+////        String[] tables = {"sys_user","sys_menu","sys_authority","sys_user_menu","sys_user_authority","sys_shortcut_menu","sys_setting"};
+//        String[] tables = {"tb_user"};
+//        for (String table : tables) {
+//            String msg = new AutoGenerator(table).create();
+//            System.out.println(msg);
+//        }
+//    }
 }
