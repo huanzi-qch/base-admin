@@ -1,7 +1,6 @@
 package cn.huanzi.qch.baseadmin.limiter;
 
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
-import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Async;
@@ -19,47 +18,61 @@ import org.springframework.stereotype.Component;
 @Component
 public class RateLimiter {
 
-    /**
-     * 桶的大小，即峰值可处理请求数量
-     */
+    //桶的大小，即峰值可处理请求数量
     private Integer limit = 10;
 
-    /**
-     * 每秒新增speed个令牌，即每秒可处理请求数量
-     */
+    //每秒新增speed个令牌，即每秒可处理请求数量
     private Integer speed = 3;
 
-    /**
-     * 桶当前的token数，使用volatile修饰
-     */
+    //桶当前的token数，使用volatile修饰
     private static volatile Integer tokens = 0;
 
-    public static boolean asyncTaskFlag = true;
+    //状态标识
+    private static boolean asyncTaskFlag = false;
 
-    /**
-     * 构造参数
-     * 默认值情况下，每秒可处理请求数量3，峰值可处理请求数量10
-     */
     public RateLimiter(){
         //初始化桶是满的
         RateLimiter.tokens = this.limit;
     }
 
     /**
-     * 令牌桶任务线程
+     * 根据令牌数判断是否允许执行
+     * 运行执行tokens - 1;
+     * 存在并发调用情况，需要加锁
+     */
+    public synchronized boolean execute() {
+        if (RateLimiter.tokens > 0) {
+            RateLimiter.tokens = RateLimiter.tokens - 1;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 当前状态
+     */
+    public boolean getStatus(){
+        return RateLimiter.asyncTaskFlag;
+    }
+
+    /**
+     * 令牌桶限流启动！
      */
     @Async("asyncTaskExecutor")
-    public void asyncTask() {
+    public void star() {
         log.info("限流令牌桶任务线程启动！");
+        RateLimiter.asyncTaskFlag = true;
+
+        //异步线程循环往桶里添加令牌
         while (asyncTaskFlag){
             try {
                 Thread.sleep(1000L);
 
-                int newTokens = tokens + speed;
+                int newTokens = RateLimiter.tokens + speed;
                 if(newTokens > limit){
-                    tokens = limit;
+                    RateLimiter.tokens = limit;
                 }else{
-                    tokens = newTokens;
+                    RateLimiter.tokens = newTokens;
                 }
             } catch (Exception e) {
                 //输出到日志文件中
@@ -70,15 +83,9 @@ public class RateLimiter {
     }
 
     /**
-     * 根据令牌数判断是否允许执行
-     * 运行执行tokens - 1;
-     * 存在并发调用情况，需要加锁
+     * 令牌桶限流关闭！
      */
-    public synchronized boolean execute() {
-        if (tokens > 0) {
-            tokens = tokens - 1;
-            return true;
-        }
-        return false;
+    public void stop(){
+        RateLimiter.asyncTaskFlag = false;
     }
 }
