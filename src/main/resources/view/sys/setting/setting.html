@@ -60,6 +60,14 @@
                         </div>
                     </div>
                     <div class="layui-form-item  layui-form-text">
+                        <label class="layui-form-label">是否开启OpenAPI限流</label>
+                        <div class="layui-input-block">
+                            <input id="sysOpenApiLimiterEncrypt" th:value="${sys.sysOpenApiLimiterEncrypt}"  hidden="hidden"/>
+                            <input type="radio" name="sysOpenApiLimiterEncrypt" value="Y" title="是">
+                            <input type="radio" name="sysOpenApiLimiterEncrypt" value="N" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-form-item  layui-form-text">
                         <label class="layui-form-label">系统颜色</label>
                         <div class="layui-input-block">
                             <div class="layui-input-inline" style="width: 120px;">

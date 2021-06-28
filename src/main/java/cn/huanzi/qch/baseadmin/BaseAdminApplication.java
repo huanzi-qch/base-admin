@@ -90,8 +90,11 @@ class IndexController {
                 SysSettingVo sysSettingVo = sysSettingService.get("1").getData();
                 SysSettingUtil.setSysSettingMap(sysSettingVo);
 
-                //限流令牌桶任务线程启动！
-                rateLimiter.asyncTask();
+                //判断OpenAPI限流开关是否开启
+                if("Y".equals(SysSettingUtil.getSysSetting().getSysOpenApiLimiterEncrypt())){
+                    //限流令牌桶任务线程启动！
+                    rateLimiter.asyncTask();
+                }
 
                 //获取本机内网IP
                 log.info("启动成功：" + "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + contextPath);

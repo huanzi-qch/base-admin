@@ -8,6 +8,12 @@
     <link rel="shortcut icon" th:href='${sys.sysLogo}' th:mce_href='${sys.sysLogo}' type="image/x-icon">
     <!-- 引入公用部分 -->
     <script th:replace="common/head::static"></script>
+    <style>
+        /* 菜单鼠标放上去时，左边的提示条对不齐，直接屏蔽*/
+        .layui-nav-bar{
+            display: none;
+        }
+    </style>
 </head>
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">

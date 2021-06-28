@@ -3,6 +3,7 @@ package cn.huanzi.qch.baseadmin.aspect;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import cn.huanzi.qch.baseadmin.limiter.RateLimiter;
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -37,9 +38,14 @@ public class OpenApiAspect {
     @Around(value = "openApiAspect()")
     public Object arround(ProceedingJoinPoint pjp) {
         try {
+            //判断OpenAPI限流开关是否开启
+            if("N".equals(SysSettingUtil.getSysSetting().getSysOpenApiLimiterEncrypt())){
+                return pjp.proceed(pjp.getArgs());
+            }
+
             //令牌桶返回true或者false
             if(rateLimiter.execute()){
-                return pjp.proceed();
+                return pjp.proceed(pjp.getArgs());
             }else{
                 return Result.of(10001,false,"API接口繁忙，请稍后再试！");
             }

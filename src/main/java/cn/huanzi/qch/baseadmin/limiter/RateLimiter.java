@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.limiter;
 
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
+import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Async;
@@ -33,6 +34,8 @@ public class RateLimiter {
      */
     private static volatile Integer tokens = 0;
 
+    public static boolean asyncTaskFlag = true;
+
     /**
      * 构造参数
      * 默认值情况下，每秒可处理请求数量3，峰值可处理请求数量10
@@ -48,7 +51,7 @@ public class RateLimiter {
     @Async("asyncTaskExecutor")
     public void asyncTask() {
         log.info("限流令牌桶任务线程启动！");
-        while (true){
+        while (asyncTaskFlag){
             try {
                 Thread.sleep(1000L);
 
@@ -63,6 +66,7 @@ public class RateLimiter {
                 log.error(ErrorUtil.errorInfoToString(e));
             }
         }
+        log.info("限流令牌桶任务停止！");
     }
 
     /**
