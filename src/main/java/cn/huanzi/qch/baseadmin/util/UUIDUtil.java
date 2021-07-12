@@ -11,7 +11,7 @@ public class UUIDUtil{
 	/** 
      * 生成32位UUID编码
      */
-    public static String getUUID(){
+    public static String getUuid(){
 		return UUID.randomUUID().toString().trim().replaceAll("-", "");
     }
 }

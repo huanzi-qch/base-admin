@@ -12,7 +12,6 @@ import org.hibernate.annotations.NotFound;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Id;
@@ -54,24 +53,20 @@ public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
             throw new RuntimeException("实体类" + entityVoClass.getName() + "未继承PageCondition。");
         }
         PageCondition pageCondition = (PageCondition) entityVo;
-        Page<E> page = commonRepository.findAll(Example.of(CopyUtil.copy(entityVo, entityClass)), pageCondition.getPageable());
-        return Result.of(PageInfo.of(page, entityVoClass));
+        //先entityVo转entity，再调用findAll（传多一个分页参数），结果集再转回entityVo
+        return Result.of(PageInfo.of(commonRepository.findAll(Example.of(CopyUtil.copy(entityVo, entityClass)), pageCondition.getPageable()), entityVoClass));
     }
 
     @Override
     public Result<List<V>> list(V entityVo) {
-        List<E> entityList = commonRepository.findAll(Example.of(CopyUtil.copy(entityVo, entityClass)));
-        List<V> entityModelList = CopyUtil.copyList(entityList, entityVoClass);
-        return Result.of(entityModelList);
+        //先entityVo转entity，再调用findAll，结果集再转回entityVo
+        return Result.of(CopyUtil.copyList(commonRepository.findAll(Example.of(CopyUtil.copy(entityVo, entityClass))), entityVoClass));
     }
 
     @Override
     public Result<V> get(T id) {
-        Optional<E> optionalE = commonRepository.findById(id);
-        if (!optionalE.isPresent()) {
-            return Result.of(null,false,"ID不存在！");
-        }
-        return Result.of(CopyUtil.copy(optionalE.get(), entityVoClass));
+        //findById返回Optional<T>，再获取entity转成entityVo
+        return commonRepository.findById(id).map(e -> Result.of(CopyUtil.copy(e, entityVoClass))).orElseGet(() -> Result.of(null, false, "ID不存在！"));
     }
 
     @Override
@@ -83,7 +78,7 @@ public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
         E entityFull = entity;
 
         //为空的属性值，忽略属性，BeanUtils复制的时候用到
-        List<String> ignoreProperties = new ArrayList<String>();
+        List<String> ignoreProperties = new ArrayList<>(5);
 
         //获取最新数据，解决部分更新时jpa其他字段设置null问题
         try {
@@ -109,7 +104,7 @@ public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
                         }
                     }else{
                         //如果Id主键为空，则为新增
-                        fieldValue = UUIDUtil.getUUID();
+                        fieldValue = UUIDUtil.getUuid();
                         //set方法，第一个参数是对象
                         field.set(entity, fieldValue);
                         isInsert = true;

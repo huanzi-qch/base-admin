@@ -53,18 +53,18 @@ public class SecurityUtil {
     /**
      * 检查URL是否包含在“无需权限访问的URL”中
      */
-    public static boolean checkUrl(String requestURI){
-        String[] requestURIs = requestURI.split("/");
+    public static boolean checkUrl(String requestUri){
+        String[] requestUris = requestUri.split("/");
         for (int i = 0; i < SecurityConfig.MATCHERS_PERMITALL_URL.length; i++) {
-            if(check(requestURIs,SecurityConfig.MATCHERS_PERMITALL_URL[i].split("/"))){
+            if(check(requestUris,SecurityConfig.MATCHERS_PERMITALL_URL[i].split("/"))){
                 return true;
             }
         }
 
         return false;
     }
-    private static boolean check(String[] requestURIs,String[] urls){
-        for (int i1 = 0; i1 < requestURIs.length; i1++) {
+    private static boolean check(String[] requestUris,String[] urls){
+        for (int i1 = 0; i1 < requestUris.length; i1++) {
             //判断长度
             if (i1 >= urls.length){
                 return false;
@@ -76,8 +76,8 @@ public class SecurityUtil {
             }
 
             //处理带后缀
-            if(requestURIs[i1].contains(".") && urls[i1].contains(".")){
-                String[] split = requestURIs[i1].split("\\.");
+            if(requestUris[i1].contains(".") && urls[i1].contains(".")){
+                String[] split = requestUris[i1].split("\\.");
                 String[] split2 = urls[i1].split("\\.");
 
                 // *.后缀的情况
@@ -87,7 +87,7 @@ public class SecurityUtil {
             }
 
             //不相等
-            if(!requestURIs[i1].equals(urls[i1])){
+            if(!requestUris[i1].equals(urls[i1])){
                 return false;
             }
 
@@ -122,9 +122,11 @@ public class SecurityUtil {
      * 详情可在 PersistentTokenBasedRememberMeServices.processAutoLoginCookie断点，查看调用栈
      */
     public static String[] decodeCookie(String cookieValue) throws InvalidCookieException {
-        for(int j = 0; j < cookieValue.length() % 4; ++j) {
-            cookieValue = cookieValue + "=";
+        StringBuilder cookieValueBuilder = new StringBuilder(cookieValue);
+        for(int j = 0; j < cookieValueBuilder.length() % 4; ++j) {
+            cookieValueBuilder.append("=");
         }
+        cookieValue = cookieValueBuilder.toString();
 
         try {
             Base64.getDecoder().decode(cookieValue.getBytes());
@@ -151,7 +153,7 @@ public class SecurityUtil {
      */
     public static Cookie getRememberMeCookie(HttpServletRequest request){
         for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals("remember-me")) {
+            if ("remember-me".equals(cookie.getName())) {
                 return cookie;
             }
         }

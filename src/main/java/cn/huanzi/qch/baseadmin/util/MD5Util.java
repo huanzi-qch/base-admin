@@ -14,7 +14,7 @@ public class MD5Util {
     /**
      * 生成MD5加密串
      */
-    public static String getMD5(String message) {
+    public static String getMd5(String message) {
         String md5 = "";
         try {
             //创建一个md5算法对象
@@ -38,6 +38,6 @@ public class MD5Util {
      * @return 对比结果
      */
     private static boolean verify(String text,String md5){
-        return md5.equals(getMD5(text));
+        return md5.equals(getMd5(text));
     }
 }

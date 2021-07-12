@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * 代码生成工具 V1.0
+ * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/14927738.html
  */
 public class AutoGenerator {
 
@@ -55,8 +56,8 @@ public class AutoGenerator {
         File file = FileUtil.createFile(filePath + "pojo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ".java");
 
         //拼接文件内容
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "pojo;\n" +
                         "\n" +
                         "import lombok.Data;\n" +
@@ -73,18 +74,18 @@ public class AutoGenerator {
         for (TableInfo tableInfo : tableInfos) {
             //主键
             if ("PRI".equals(tableInfo.getColumnKey())) {
-                stringBuffer.append("    @Id\n");
+                stringBuilder.append("    @Id\n");
             }
             //自增
             if ("auto_increment".equals(tableInfo.getExtra())) {
-                stringBuffer.append("    @GeneratedValue(strategy= GenerationType.IDENTITY)\n");
+                stringBuilder.append("    @GeneratedValue(strategy= GenerationType.IDENTITY)\n");
             }
-            stringBuffer.append("    private ").append(StringUtil.typeMapping(tableInfo.getDataType())).append(" ").append(StringUtil.camelCaseName(tableInfo.getColumnName())).append(";//").append(tableInfo.getColumnComment()).append("\n\n");
+            stringBuilder.append("    private ").append(StringUtil.typeMapping(tableInfo.getDataType())).append(" ").append(StringUtil.camelCaseName(tableInfo.getColumnName())).append(";//").append(tableInfo.getColumnComment()).append("\n\n");
         }
-        stringBuffer.append("}");
+        stringBuilder.append("}");
 
         //写入文件内容
-        FileUtil.fileWriter(file, stringBuffer);
+        FileUtil.fileWriter(file, stringBuilder);
     }
 
     /**
@@ -92,8 +93,8 @@ public class AutoGenerator {
      */
     private void createVo(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "vo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo.java");
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "vo;\n" +
                         "\n" +
                         "import "+ basePackage.replaceAll("\\\\", ".") +" common.pojo.PageCondition;"+
@@ -106,10 +107,10 @@ public class AutoGenerator {
         );
         //遍历设置属性
         for (TableInfo tableInfo : tableInfos) {
-            stringBuffer.append("    private ").append(StringUtil.typeMapping(tableInfo.getDataType())).append(" ").append(StringUtil.camelCaseName(tableInfo.getColumnName())).append(";//").append(tableInfo.getColumnComment()).append("\n\n");
+            stringBuilder.append("    private ").append(StringUtil.typeMapping(tableInfo.getDataType())).append(" ").append(StringUtil.camelCaseName(tableInfo.getColumnName())).append(";//").append(tableInfo.getColumnComment()).append("\n\n");
         }
-        stringBuffer.append("}");
-        FileUtil.fileWriter(file, stringBuffer);
+        stringBuilder.append("}");
+        FileUtil.fileWriter(file, stringBuilder);
     }
 
     /**
@@ -117,7 +118,7 @@ public class AutoGenerator {
      */
     private void createRepository(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "repository\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository.java");
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         String t = "String";
         //遍历属性
         for (TableInfo tableInfo : tableInfos) {
@@ -126,7 +127,7 @@ public class AutoGenerator {
                 t = StringUtil.typeMapping(tableInfo.getDataType());
             }
         }
-        stringBuffer.append(
+        stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "repository;\n" +
                         "\n" +
                         "import " + basePackage.replaceAll("\\\\", ".") + "common.repository.*;\n" +
@@ -136,9 +137,9 @@ public class AutoGenerator {
                         "@Repository\n" +
                         "public interface " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository extends CommonRepository<" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ", " + t + "> {"
         );
-        stringBuffer.append("\n");
-        stringBuffer.append("}");
-        FileUtil.fileWriter(file, stringBuffer);
+        stringBuilder.append("\n");
+        stringBuilder.append("}");
+        FileUtil.fileWriter(file, stringBuilder);
     }
 
     /**
@@ -146,7 +147,7 @@ public class AutoGenerator {
      */
     private void createService(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service.java");
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         String t = "String";
         //遍历属性
         for (TableInfo tableInfo : tableInfos) {
@@ -155,7 +156,7 @@ public class AutoGenerator {
                 t = StringUtil.typeMapping(tableInfo.getDataType());
             }
         }
-        stringBuffer.append(
+        stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "service;\n" +
                         "\n" +
                         "import " + basePackage.replaceAll("\\\\", ".") + "common.service.*;\n" +
@@ -164,14 +165,14 @@ public class AutoGenerator {
                         "\n" +
                         "public interface " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service extends CommonService<" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo, " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ", " + t + "> {"
         );
-        stringBuffer.append("\n");
-        stringBuffer.append("}");
-        FileUtil.fileWriter(file, stringBuffer);
+        stringBuilder.append("\n");
+        stringBuilder.append("}");
+        FileUtil.fileWriter(file, stringBuilder);
 
         //Impl
         File file1 = FileUtil.createFile(filePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "ServiceImpl.java");
-        StringBuffer stringBuffer1 = new StringBuffer();
-        stringBuffer1.append(
+        StringBuilder stringBuilder1 = new StringBuilder();
+        stringBuilder1.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "service;\n" +
                         "\n" +
                         "import " + basePackage.replaceAll("\\\\", ".") + "common.service.*;\n" +
@@ -188,16 +189,16 @@ public class AutoGenerator {
                         "@Transactional\n" +
                         "public class " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "ServiceImpl extends CommonServiceImpl<" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo, " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ", " + t + "> implements " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service{"
         );
-        stringBuffer1.append("\n\n");
-        stringBuffer1.append(
+        stringBuilder1.append("\n\n");
+        stringBuilder1.append(
                 "    @PersistenceContext\n" +
                         "    private EntityManager em;\n");
 
-        stringBuffer1.append("" +
+        stringBuilder1.append("" +
                 "    @Autowired\n" +
                 "    private " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository " + StringUtil.camelCaseName(tableName) + "Repository;\n");
-        stringBuffer1.append("}");
-        FileUtil.fileWriter(file1, stringBuffer1);
+        stringBuilder1.append("}");
+        FileUtil.fileWriter(file1, stringBuilder1);
     }
 
     /**
@@ -205,7 +206,7 @@ public class AutoGenerator {
      */
     private void createController(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "controller\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Controller.java");
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         String t = "String";
         //遍历属性
         for (TableInfo tableInfo : tableInfos) {
@@ -214,7 +215,7 @@ public class AutoGenerator {
                 t = StringUtil.typeMapping(tableInfo.getDataType());
             }
         }
-        stringBuffer.append(
+        stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "controller;\n" +
                         "\n" +
                         "import " + basePackage.replaceAll("\\\\", ".") + "common.controller.*;\n" +
@@ -228,12 +229,12 @@ public class AutoGenerator {
                         "@RequestMapping(\"/sys/" + StringUtil.camelCaseName(tableName) + "/\")\n" +
                         "public class " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Controller extends CommonController<" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo, " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ", " + t + "> {"
         );
-        stringBuffer.append("\n");
-        stringBuffer.append("" +
+        stringBuilder.append("\n");
+        stringBuilder.append("" +
                 "    @Autowired\n" +
                 "    private " + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service " + StringUtil.camelCaseName(tableName) + "Service;\n");
-        stringBuffer.append("}");
-        FileUtil.fileWriter(file, stringBuffer);
+        stringBuilder.append("}");
+        FileUtil.fileWriter(file, stringBuilder);
     }
 
     /**
@@ -270,15 +271,15 @@ public class AutoGenerator {
          * 字符流写入文件
          *
          * @param file         file对象
-         * @param stringBuffer 要写入的数据
+         * @param stringBuilder 要写入的数据
          */
-        private static void fileWriter(File file, StringBuffer stringBuffer) {
+        private static void fileWriter(File file, StringBuilder stringBuilder) {
             //字符流
             try {
                 FileWriter resultFile = new FileWriter(file, false);//true,则追加写入 false,则覆盖写入
                 PrintWriter myFile = new PrintWriter(resultFile);
                 //写入
-                myFile.println(stringBuffer.toString());
+                myFile.println(stringBuilder.toString());
 
                 myFile.close();
                 resultFile.close();

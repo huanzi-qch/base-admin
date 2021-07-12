@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService {
         SysUserVo sysUserVo = sysUserService.findByLoginName(SecurityUtil.getLoginUser().getUsername()).getData();
         Result<SysUserVo> result = Result.of(null,false,"修改失败，你输入的原密码错误！");
         //确认旧密码
-        if(sysUserVo.getPassword().equals(MD5Util.getMD5(oldPassword))){
+        if(sysUserVo.getPassword().equals(MD5Util.getMd5(oldPassword))){
             //新密码
-            sysUserVo.setPassword(MD5Util.getMD5(newPassword));
+            sysUserVo.setPassword(MD5Util.getMd5(newPassword));
 
             //最后修改密码时间
             sysUserVo.setLastChangePwdTime(new Date());

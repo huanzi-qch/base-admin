@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 @Component
-public class UserConfig implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private SysUserService sysUserService;
@@ -30,10 +30,9 @@ public class UserConfig implements UserDetailsService {
         SysUserVo sysUserVo = sysUserService.findByLoginName(username).getData();
         //查询权限
         List<SysUserAuthorityVo> sysUserAuthorityVoList = sysUserAuthorityService.findByUserId(sysUserVo.getUserId()).getData();
-        StringBuilder authorityList = new StringBuilder();
+        StringBuilder authorityList = new StringBuilder(512);
         for (int i = 0; i < sysUserAuthorityVoList.size(); i++) {
-            SysUserAuthorityVo sysUserAuthorityVo = sysUserAuthorityVoList.get(i);
-            authorityList.append(sysUserAuthorityVo.getSysAuthority().getAuthorityName());
+            authorityList.append(sysUserAuthorityVoList.get(i).getSysAuthority().getAuthorityName());
             if (i != sysUserAuthorityVoList.size() - 1) {
                 authorityList.append(",");
             }

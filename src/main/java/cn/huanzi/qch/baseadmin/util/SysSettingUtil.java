@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SysSettingUtil {
 
     //使用线程安全的ConcurrentHashMap来存储系统设置
-    private static ConcurrentHashMap<String,SysSettingVo> sysSettingMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String,SysSettingVo> sysSettingMap = new ConcurrentHashMap<>(1);
 
     //从公用静态集合sysSettingMap获取系统设置
     public static SysSettingVo getSysSetting(){

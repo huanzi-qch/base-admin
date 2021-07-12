@@ -67,7 +67,7 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         }
 
         //超出有效时间
-        if(!StringUtils.isEmpty(sysUserVo.getExpiredTime()) && new Date().getTime() > sysUserVo.getExpiredTime().getTime()){
+        if(!StringUtils.isEmpty(sysUserVo.getExpiredTime()) && System.currentTimeMillis() > sysUserVo.getExpiredTime().getTime()){
             msg = "{\"code\":\"400\",\"msg\":\"该账号已失效，请联系管理员\"}";
             flag = true;
         }

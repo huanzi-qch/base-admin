@@ -43,8 +43,8 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
     @Decrypt
     @Encrypt
     public Result<PageInfo<SysUserVo>> pageOnLine(SysUserVo sysUserVo){
-        ArrayList<SysUserVo> sysUserVoList = new ArrayList<>();
         List<Object> allPrincipals = securityUtil.sessionRegistryGetAllPrincipals();
+        ArrayList<SysUserVo> sysUserVoList = new ArrayList<>(allPrincipals.size());
         for (Object allPrincipal : allPrincipals) {
             SysUserVo userVo = new SysUserVo();
             User user = (User) allPrincipal;

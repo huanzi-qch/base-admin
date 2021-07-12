@@ -4,7 +4,11 @@ package cn.huanzi.qch.baseadmin.config.logback;
 import cn.huanzi.qch.baseadmin.config.websocket.MyEndpointConfigure;
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
 
@@ -32,11 +36,19 @@ public class LoggingWSServer {
     @Value("${spring.application.name}")
     private String applicationName;
 
+    @Autowired
+    AsyncTaskExecutor asyncTaskExecutor;
+
     /**
      * 连接集合
      */
-    private static Map<String, Session> sessionMap = new ConcurrentHashMap<String, Session>();
-    private static Map<String, Integer> lengthMap = new ConcurrentHashMap<String, Integer>();
+    private static Map<String, Session> sessionMap = new ConcurrentHashMap<>(3);
+    private static Map<String, Integer> lengthMap = new ConcurrentHashMap<>(3);
+
+    /**
+     * 匹配日期开头加换行，2019-08-12 14:15:04
+     */
+    private Pattern datePattern = Pattern.compile("[\\d+][\\d+][\\d+][\\d+]-[\\d+][\\d+]-[\\d+][\\d+] [\\d+][\\d+]:[\\d+][\\d+]:[\\d+][\\d+]");
 
     /**
      * 连接建立成功调用的方法
@@ -48,7 +60,7 @@ public class LoggingWSServer {
         lengthMap.put(session.getId(), 1);//默认从第一行开始
 
         //获取日志信息
-        new Thread(()->{
+        asyncTaskExecutor.submit(() -> {
             log.info("LoggingWebSocketServer 任务开始");
             boolean first = true;
             BufferedReader reader = null;
@@ -90,8 +102,7 @@ public class LoggingWSServer {
                         }
 
                         // 匹配日期开头加换行，2019-08-12 14:15:04
-                        Pattern r = Pattern.compile("[\\d+][\\d+][\\d+][\\d+]-[\\d+][\\d+]-[\\d+][\\d+] [\\d+][\\d+]:[\\d+][\\d+]:[\\d+][\\d+]");
-                        Matcher m = r.matcher(line);
+                        Matcher m = datePattern.matcher(line);
                         if (m.find( )) {
                             //找到下标
                             int start = m.start();
@@ -133,7 +144,7 @@ public class LoggingWSServer {
                 log.error(ErrorUtil.errorInfoToString(e));
             }
             log.info("LoggingWebSocketServer 任务结束");
-        }).start();
+        });
     }
 
     /**

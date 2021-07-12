@@ -14,7 +14,7 @@ public class ByteUtil {
      * 二进制转十六进制
      */
     public static String bytesToHex(byte[] bytes) {
-        StringBuilder hexStr = new StringBuilder();
+        StringBuilder hexStr = new StringBuilder(bytes.length);
         int num;
         for (byte aByte : bytes) {
             num = aByte;
@@ -34,11 +34,7 @@ public class ByteUtil {
      */
     public static byte[] objectToByte(Object obj) {
         byte[] bytes = null;
-        ByteArrayOutputStream bo = null;
-        ObjectOutputStream oo = null;
-        try {
-            bo = new ByteArrayOutputStream();
-            oo = new ObjectOutputStream(bo);
+        try (ByteArrayOutputStream bo = new ByteArrayOutputStream();ObjectOutputStream oo = new ObjectOutputStream(bo);){
             //开始写入输出流
             oo.writeObject(obj);
             //输出流转byte
@@ -46,19 +42,6 @@ public class ByteUtil {
         } catch (Exception e) {
             //输出到日志文件中
             log.error(ErrorUtil.errorInfoToString(e));
-        } finally {
-            //关闭流
-            try {
-                if(bo != null){
-                    bo.close();
-                }
-                if(oo != null){
-                    oo.close();
-                }
-            } catch (IOException e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
-            }
         }
         return bytes;
     }
@@ -68,29 +51,12 @@ public class ByteUtil {
      */
     public static Object byteToObject(byte[] bytes) {
         Object obj = null;
-        ByteArrayInputStream bi = null;
-        ObjectInputStream oi = null;
-        try {
-            bi = new ByteArrayInputStream(bytes);
-            oi = new ObjectInputStream(bi);
+        try (ByteArrayInputStream bi = new ByteArrayInputStream(bytes);ObjectInputStream oi = new ObjectInputStream(bi);){
             //读取输入流
             obj = oi.readObject();
         } catch (Exception e) {
             //输出到日志文件中
             log.error(ErrorUtil.errorInfoToString(e));
-        } finally {
-            //关流
-            try {
-                if(bi != null){
-                    bi.close();
-                }
-                if(oi != null){
-                    oi.close();
-                }
-            } catch (IOException e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
-            }
         }
         return obj;
     }

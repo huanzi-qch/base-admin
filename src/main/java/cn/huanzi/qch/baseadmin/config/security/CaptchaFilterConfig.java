@@ -3,10 +3,7 @@ package cn.huanzi.qch.baseadmin.config.security;
 import cn.huanzi.qch.baseadmin.common.pojo.ParameterRequestWrapper;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.util.*;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 /**
@@ -41,14 +37,14 @@ public class CaptchaFilterConfig implements Filter {
     private SecurityUtil securityUtil;
 
     @Autowired
-    private UserConfig userConfig;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
-        String requestURI = request.getRequestURI();
+        String requestUri = request.getRequestURI();
         /*
             注：详情可在SessionManagementFilter中进行断点调试查看
             security框架会在session的attribute存储登录信息，先从session.getAttribute(this.springSecurityContextKey)中获取登录用户信息
@@ -64,13 +60,13 @@ public class CaptchaFilterConfig implements Filter {
             PersistentRememberMeToken token = securityUtil.rememberMeGetTokenForSeries(rememberMeCookie);
 
             if(!StringUtils.isEmpty(token)){
-                log.info("当前session连接开启了免登陆，已自动登录！token："+rememberMeCookie.getValue() + ",userName：" + token.getUsername() + "，最后登录时间：" + token.getDate());
+                log.info("当前session连接开启了免登陆，已自动登录！token：{},userName：{}，最后登录时间：{}",rememberMeCookie.getValue(),token.getUsername(),token.getDate());
                 //注册新的session
-                securityUtil.sessionRegistryAddUser(session.getId(),userConfig.loadUserByUsername(token.getUsername()));
+                securityUtil.sessionRegistryAddUser(session.getId(), userDetailsServiceImpl.loadUserByUsername(token.getUsername()));
             }
 
             //当前URL是否允许访问，同时没有remember me
-            if(!SecurityUtil.checkUrl(requestURI.replaceFirst(contextPath,"")) && StringUtils.isEmpty(token)){
+            if(!SecurityUtil.checkUrl(requestUri.replaceFirst(contextPath,"")) && StringUtils.isEmpty(token)){
                 //直接输出js脚本跳转强制用户下线
                 response.setContentType("text/html;charset=UTF-8");
                 PrintWriter out = response.getWriter();
@@ -84,10 +80,7 @@ public class CaptchaFilterConfig implements Filter {
         }
 
         //只拦截登录请求，且开发环境下不拦截
-        if ("POST".equals(request.getMethod()) && "/login".equals(requestURI.replaceFirst(contextPath,""))) {
-            //前端公钥
-            String publicKey = null;
-
+        if ("POST".equals(request.getMethod()) && "/login".equals(requestUri.replaceFirst(contextPath,""))) {
             //判断api加密开关是否开启
             if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
                 //解密

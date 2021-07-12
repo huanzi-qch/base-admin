@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 /**
  * IP工具类
+ * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/12979895.html
  */
 @Slf4j
 public class IpUtil {
@@ -76,7 +77,7 @@ public class IpUtil {
             url = "http://whois.pconline.com.cn/ipJson.jsp?json=true&ip=" + ip;
         }
 
-        StringBuilder inputLine = new StringBuilder();
+        StringBuilder inputLine = new StringBuilder(512);
         String read;
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();

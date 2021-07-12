@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * API接口 加解密工具类
+ * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/10913636.html
  */
 public class ApiSecurityUtil {
 

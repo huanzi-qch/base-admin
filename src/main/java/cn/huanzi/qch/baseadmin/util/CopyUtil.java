@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * 实体转换工具
+ * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/9984261.html
  */
 @Slf4j
 public class CopyUtil {
@@ -85,7 +86,7 @@ public class CopyUtil {
      * 类型转换：实体Vo <->实体  例如：List<UserVo> <-> List<User>
      */
     public static <T> List<T> copyList(List srcList, Class<T> targetType) {
-        List<T> newList = new ArrayList<>();
+        List<T> newList = new ArrayList<>(srcList.size());
         for (Object src : srcList) {
             newList.add(CopyUtil.copy(src, targetType));
         }
@@ -125,11 +126,9 @@ public class CopyUtil {
      * 类型转换：List<Object[]>转List<Vo>
      */
     public static <T> List<T> copyListByObject(List<Object[]> srcList, Class<T> targetType) {
-        List<T> newList = new ArrayList<>();
-        if (srcList != null) {
-            for (Object[] src : srcList) {
-                newList.add(CopyUtil.copyByObject(src,targetType));
-            }
+        List<T> newList = new ArrayList<>(srcList.size());
+        for (Object[] src : srcList) {
+            newList.add(CopyUtil.copyByObject(src,targetType));
         }
         return newList;
     }

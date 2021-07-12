@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * 代码生成工具 V2.0
+ * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/14927738.html
  */
 public class AutoGeneratorPlus {
 
@@ -81,7 +82,7 @@ public class AutoGeneratorPlus {
             BufferedReader reader = new BufferedReader(fileReader)) {
             //生成文件
             File file = FileUtil.createFile(outputFile);
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuilder = new StringBuilder();
 
             //读取模板文件，拼接文件内容
             Object[] lines = reader.lines().toArray();
@@ -168,19 +169,19 @@ public class AutoGeneratorPlus {
                         tableColumns = customParameter(tableColumns,customParameter);
 
                         //前补tab，后补换行符
-                        stringBuffer.append("    ").append(tableColumns.trim()).append("\n\n");
+                        stringBuilder.append("    ").append(tableColumns.trim()).append("\n\n");
                     }
                     //置空
                     forContent.setLength(0);
                 }
 
                 if(!forFlag){
-                    stringBuffer.append(line).append("\n");
+                    stringBuilder.append(line).append("\n");
                 }
             }
 
             //写入数据到到文件中
-            FileUtil.fileWriter(file, stringBuffer);
+            FileUtil.fileWriter(file, stringBuilder);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -233,15 +234,15 @@ public class AutoGeneratorPlus {
          * 字符流写入文件
          *
          * @param file         file对象
-         * @param stringBuffer 要写入的数据
+         * @param stringBuilder 要写入的数据
          */
-        private static void fileWriter(File file, StringBuffer stringBuffer) {
+        private static void fileWriter(File file, StringBuilder stringBuilder) {
             //字符流
             try {
                 FileWriter resultFile = new FileWriter(file, false);//true,则追加写入 false,则覆盖写入
                 PrintWriter myFile = new PrintWriter(resultFile);
                 //写入
-                myFile.println(stringBuffer.toString());
+                myFile.println(stringBuilder.toString());
 
                 myFile.close();
                 resultFile.close();

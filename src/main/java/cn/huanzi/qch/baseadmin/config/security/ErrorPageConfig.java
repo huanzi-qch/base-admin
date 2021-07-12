@@ -20,12 +20,10 @@ public class ErrorPageConfig implements ErrorPageRegistrar {
     public void registerErrorPages(ErrorPageRegistry registry) {
 
         /**
-         * ErrorPage 有两个参数
+         * 将ErrorPage 注册到注册器中
          * 参数1 响应状态码
          * 参数2 出现响应状态码的时候的跳转路径  可以自定义跳转路径
          */
-
-        //将ErrorPage 注册到注册器中
         registry.addErrorPages(
                 new ErrorPage(HttpStatus.FORBIDDEN, "/error/403"),
                 new ErrorPage(HttpStatus.NOT_FOUND, "/error/404"),

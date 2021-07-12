@@ -17,10 +17,7 @@ import cn.huanzi.qch.baseadmin.util.MD5Util;
 import cn.huanzi.qch.baseadmin.util.SqlUtil;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,7 +25,6 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 
 @Service
 @Transactional
@@ -85,7 +81,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
         PageRequest pageRequest = PageRequest.of(entityVo.getPage() - 1, entityVo.getRows());
 
         //获取最终分页结果
-        Result<PageInfo<SysUserVo>> result = Result.of(PageInfo.of(PageInfo.getJPAPage(query,pageRequest,em), SysUserVo.class));
+        Result<PageInfo<SysUserVo>> result = Result.of(PageInfo.of(PageInfo.getJpaPage(query,pageRequest,em), SysUserVo.class));
 
         //置空密码
         result.getData().getRows().forEach((sysUserVo) -> sysUserVo.setPassword(null));
@@ -105,7 +101,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
             }
 
             //需要设置初始密码
-            entityVo.setPassword(MD5Util.getMD5(SysSettingUtil.getSysSetting().getUserInitPassword()));
+            entityVo.setPassword(MD5Util.getMd5(SysSettingUtil.getSysSetting().getUserInitPassword()));
         }
         return super.save(entityVo);
     }
@@ -117,7 +113,7 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
     public Result<SysUserVo> resetPassword(String userId) {
         SysUserVo entityVo = new SysUserVo();
         entityVo.setUserId(userId);
-        entityVo.setPassword(MD5Util.getMD5(SysSettingUtil.getSysSetting().getUserInitPassword()));
+        entityVo.setPassword(MD5Util.getMd5(SysSettingUtil.getSysSetting().getUserInitPassword()));
         Result<SysUserVo> result = super.save(entityVo);
         result.getData().setPassword(null);
         return result;

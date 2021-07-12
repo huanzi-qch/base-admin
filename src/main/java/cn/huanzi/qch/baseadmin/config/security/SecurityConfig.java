@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CaptchaFilterConfig captchaFilterConfig;
 
     @Autowired
-    private UserConfig userConfig;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
     private PasswordConfig passwordConfig;
@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 //用户认证处理
-                .userDetailsService(userConfig)
+                .userDetailsService(userDetailsServiceImpl)
                 //密码处理
                 .passwordEncoder(passwordConfig);
     }
@@ -117,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 .tokenValiditySeconds(604800)//七天免登陆
                 .tokenRepository(persistentTokenRepository())
-                .userDetailsService(userConfig)
+                .userDetailsService(userDetailsServiceImpl)
                 .and();
     }
 
@@ -128,7 +128,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return persistentTokenRepository;
     }
 
-    //配置filter
     @Bean
     public DynamicallyUrlInterceptor dynamicallyUrlInterceptor(){
         //首次获取
@@ -139,7 +138,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         interceptor.setSecurityMetadataSource(myFilterInvocationSecurityMetadataSource);
 
         //配置RoleVoter决策
-        List<AccessDecisionVoter<? extends Object>> decisionVoters = new ArrayList<>();
+        List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>(1);
         decisionVoters.add(new RoleVoter());
 
         //设置认证决策管理器

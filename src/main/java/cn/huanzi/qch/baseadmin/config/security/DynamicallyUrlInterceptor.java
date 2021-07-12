@@ -34,7 +34,7 @@ public class DynamicallyUrlInterceptor extends AbstractSecurityInterceptor imple
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
     @Override
@@ -45,6 +45,7 @@ public class DynamicallyUrlInterceptor extends AbstractSecurityInterceptor imple
         return this.securityMetadataSource;
     }
 
+    @Override
     public SecurityMetadataSource obtainSecurityMetadataSource() {
         return this.securityMetadataSource;
     }

@@ -31,7 +31,7 @@ public class SysUserMenuController extends CommonController<SysUserMenuVo, SysUs
     @Decrypt
     @Encrypt
     public Result<Map<String,Object>> findUserMenuAndAllSysMenuByUserId(SysUserMenuVo sysUserMenuVo){
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>(2);
         List<SysMenuVo> userSysMenuVoList = sysUserMenuService.findByUserId(sysUserMenuVo.getUserId()).getData();
         map.put("userSysMenuVoList",userSysMenuVoList);
         List<SysMenuVo> sysMenuVoList = sysMenuService.listByTier(new SysMenuVo()).getData();

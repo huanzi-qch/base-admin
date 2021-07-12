@@ -7,14 +7,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class PasswordConfig implements PasswordEncoder {
 
+    /**
+     * 加密
+     */
     @Override
     public String encode(CharSequence charSequence) {
-        //charSequence是用户输入的密码，password是存库的密码
-        return MD5Util.getMD5(charSequence.toString());
+        return MD5Util.getMd5(charSequence.toString());
     }
 
+    /**
+     * 密码匹配
+     * charSequence是用户输入的密码，password是存库的密码
+     */
     @Override
     public boolean matches(CharSequence charSequence, String password) {
-        return password.contentEquals(encode(charSequence));
+        return password.contentEquals(this.encode(charSequence));
     }
 }

@@ -93,7 +93,7 @@ public class SystemMonitorUtil {
      * 获取磁盘信息
      */
     private static HashMap<String, Double>  getDiskUsage() {
-        HashMap<String, Double> hashMap = new HashMap<>();
+        HashMap<String, Double> hashMap = new HashMap<>(2);
         File[] files = File.listRoots();
         double total = 0;
         double used = 0;
@@ -122,7 +122,7 @@ public class SystemMonitorUtil {
      * @return 磁盘使用率
      */
     private static HashMap<String, Long> getUnixDiskUsage() {
-        HashMap<String, Long> hashMap = new HashMap<>();
+        HashMap<String, Long> hashMap = new HashMap<>(2);
         String ioCmdStr = "df -h /";
         String resultInfo = runCommand(ioCmdStr);
         log.info(resultInfo);
@@ -139,7 +139,7 @@ public class SystemMonitorUtil {
     private static HashMap<String, Long> getWinDiskUsage() {
         HardwareAbstractionLayer hal = systemInfo.getHardware();
         HWDiskStore[] diskStores = hal.getDiskStores();
-        HashMap<String, Long> hashMap = new HashMap<>();
+        HashMap<String, Long> hashMap = new HashMap<>(2);
         long total = 0;
         long used = 0;
         if (diskStores != null && diskStores.length > 0) {
@@ -158,15 +158,15 @@ public class SystemMonitorUtil {
     /**
      * Linux 执行系统命令
      *
-     * @param CMD 命令
+     * @param cmd 命令
      * @return 字符串结果
      */
-    private static String runCommand(String CMD) {
+    private static String runCommand(String cmd) {
         StringBuilder info = new StringBuilder();
         InputStreamReader isr = null;
         LineNumberReader lnr = null;
         try {
-            Process pos = Runtime.getRuntime().exec(CMD);
+            Process pos = Runtime.getRuntime().exec(cmd);
             pos.waitFor();
             isr = new InputStreamReader(pos.getInputStream());
             lnr = new LineNumberReader(isr);

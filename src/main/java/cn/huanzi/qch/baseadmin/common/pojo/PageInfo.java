@@ -45,7 +45,7 @@ public class PageInfo<M> {
     /**
      * 获取JPA的分页对象
      */
-    public static Page getJPAPage(Query query, PageRequest pageRequest, EntityManager em) {
+    public static Page getJpaPage(Query query, PageRequest pageRequest, EntityManager em) {
         query.setFirstResult((int) pageRequest.getOffset());
         query.setMaxResults(pageRequest.getPageSize());
 

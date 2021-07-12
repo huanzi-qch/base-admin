@@ -94,7 +94,7 @@ public class SqlUtil {
                 try {
                     entityClass.getDeclaredField(fieldName);
                 }catch (NoSuchFieldException e){
-                    log.debug("entity中没有这个字段，拼接查询SQL直接跳过：" + e.getMessage());
+                    log.debug("entity中没有这个字段，拼接查询SQL直接跳过：{}",e.getMessage());
                     continue;
                 }
 
@@ -125,7 +125,7 @@ public class SqlUtil {
                         maxField.setAccessible(true);
                         Object maxVal = maxField.get(entityVo);
                         //开启区间查询，需要使用对应的函数
-                        if (field.getType().getName().equals("java.util.Date")) {
+                        if ("java.util.Date".equals(field.getType().getName())) {
                             //MySQL
                             if(sqlType.toLowerCase().contains("com.mysql.cj.jdbc.driver")){
                                 if (!StringUtils.isEmpty(minVal)) {
@@ -163,7 +163,7 @@ public class SqlUtil {
                         values.setAccessible(true);
                         List<String> valuesList = (List<String>) values.get(entityVo);
                         if (valuesList != null && valuesList.size() > 0) {
-                            StringBuilder inValues = new StringBuilder();
+                            StringBuilder inValues = new StringBuilder(512);
                             for (int i = 0; i < valuesList.size(); i++) {
                                 inValues.append("'").append(SqlUtil.escapeSql(valuesList.get(i))).append("'");
                                 if(i < valuesList.size()-1){
@@ -189,7 +189,7 @@ public class SqlUtil {
      * @return sql
      */
     public static StringBuilder appendFields(Class<?> entityClass, String... ignoreProperties) {
-        StringBuilder sql = new StringBuilder();
+        StringBuilder sql = new StringBuilder(1024);
         List<String> ignoreList = Arrays.asList(ignoreProperties);
         sql.append("select ");
 

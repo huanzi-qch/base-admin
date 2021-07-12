@@ -57,14 +57,16 @@ public class MyFilterInvocationSecurityMetadataSource implements FilterInvocatio
      * 更新权限集合
      */
     public void setRequestMap(List<SysAuthorityVo> authorityVoList){
-        Map<RequestMatcher, Collection<ConfigAttribute>> map = new ConcurrentHashMap<>();
+        Map<RequestMatcher, Collection<ConfigAttribute>> map = new ConcurrentHashMap<>(5);
         for (SysAuthorityVo sysAuthorityVo : authorityVoList) {
             String authorityName = sysAuthorityVo.getAuthorityName();
-            if (StringUtils.isEmpty(sysAuthorityVo.getAuthorityContent())) continue;
+            if (StringUtils.isEmpty(sysAuthorityVo.getAuthorityContent())){
+                continue;
+            }
             for (String url : sysAuthorityVo.getAuthorityContent().split(",")) {
                 Collection<ConfigAttribute> value = map.get(new AntPathRequestMatcher(url));
                 if (StringUtils.isEmpty(value)) {
-                    ArrayList<ConfigAttribute> configs = new ArrayList<>();
+                    ArrayList<ConfigAttribute> configs = new ArrayList<>(1);
                     configs.add(new SecurityConfig(authorityName));
                     map.put(new AntPathRequestMatcher(url), configs);
                 } else {

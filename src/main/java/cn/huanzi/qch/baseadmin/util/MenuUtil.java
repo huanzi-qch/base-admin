@@ -20,7 +20,7 @@ public class MenuUtil {
      */
     public static List<SysMenuVo> getChildBySysMenuVo(String id, List<SysMenuVo> allMenu){
         //子菜单
-        List<SysMenuVo> childList = new ArrayList<SysMenuVo>();
+        List<SysMenuVo> childList = new ArrayList<>(allMenu.size());
         for (SysMenuVo nav : allMenu) {
             // 遍历所有节点，将所有菜单的父id与传过来的根节点的id比较
             //相等说明：为该根节点的子节点。
@@ -35,7 +35,7 @@ public class MenuUtil {
         childList.sort(orderBySysMenuVo()); //排序
         //如果节点下没有子节点，返回一个空List（递归退出）
         if (childList.size() == 0 ){
-            return new ArrayList<>();
+            return new ArrayList<>(0);
         }
         return childList;
     }
@@ -61,7 +61,7 @@ public class MenuUtil {
      */
     public static List<SysShortcutMenuVo> getChildBySysShortcutMenuVo(String id, List<SysShortcutMenuVo> allMenu){
         //子菜单
-        List<SysShortcutMenuVo> childList = new ArrayList<SysShortcutMenuVo>();
+        List<SysShortcutMenuVo> childList = new ArrayList<>(allMenu.size());
         for (SysShortcutMenuVo nav : allMenu) {
             // 遍历所有节点，将所有菜单的父id与传过来的根节点的id比较
             //相等说明：为该根节点的子节点。
@@ -76,7 +76,7 @@ public class MenuUtil {
         childList.sort(orderBySysShortcutMenuVo()); //排序
         //如果节点下没有子节点，返回一个空List（递归退出）
         if (childList.size() == 0 ){
-            return new ArrayList<>();
+            return new ArrayList<>(0);
         }
         return childList;
     }

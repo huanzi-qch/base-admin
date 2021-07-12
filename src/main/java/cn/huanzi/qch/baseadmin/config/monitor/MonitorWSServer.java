@@ -8,7 +8,11 @@ import cn.huanzi.qch.baseadmin.util.SystemMonitorUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -28,10 +32,13 @@ public class MonitorWSServer {
     @Value("${spring.application.name}")
     private String applicationName;
 
+    @Autowired
+    AsyncTaskExecutor asyncTaskExecutor;
+
     /**
      * 连接集合
      */
-    private static Map<String, Session> sessionMap = new ConcurrentHashMap<String, Session>();
+    private static Map<String, Session> sessionMap = new ConcurrentHashMap<>(3);
 
     /**
      * 连接建立成功调用的方法
@@ -42,7 +49,7 @@ public class MonitorWSServer {
         sessionMap.put(session.getId(), session);
 
         //获取系统监控信息
-        new Thread(()->{
+        asyncTaskExecutor.submit(() -> {
             log.info("MonitorWSServer 任务开始");
             while (sessionMap.get(session.getId()) != null) {
                 try {
@@ -57,7 +64,7 @@ public class MonitorWSServer {
                 }
             }
             log.info("MonitorWSServer 任务结束");
-        }).start();
+        });
     }
 
     /**

@@ -31,7 +31,7 @@ public class SysUserAuthorityController extends CommonController<SysUserAuthorit
     @Decrypt
     @Encrypt
     public Result<Map<String, Object>> findUserAuthorityAndAllSysAuthorityByUserId(SysUserAuthorityVo sysUserAuthorityVo) {
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>(2);
         List<SysUserAuthorityVo> sysUserAuthorityVoList = sysUserAuthorityService.findByUserId(sysUserAuthorityVo.getUserId()).getData();
         map.put("sysUserAuthorityVoList", sysUserAuthorityVoList);
         List<SysAuthorityVo> sysAuthorityVoList = sysAuthorityService.list(new SysAuthorityVo()).getData();

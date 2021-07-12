@@ -24,5 +24,5 @@ public class SysMenuVo extends PageCondition implements Serializable {
 
     private Date updateTime;//修改时间
 
-    private List<SysMenuVo> children = new ArrayList<>();//如果是父类，这里存孩子节点
+    private List<SysMenuVo> children;//如果是父类，这里存孩子节点
 }

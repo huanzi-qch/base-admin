@@ -46,8 +46,7 @@ public class MyAccessDecisionManager extends AbstractAccessDecisionManager {
         }
 
         if (deny > 0) {
-            throw new AccessDeniedException(messages.getMessage(
-                    "AbstractAccessDecisionManager.accessDenied", "Access is denied"));
+            throw new AccessDeniedException(messages.getMessage("AbstractAccessDecisionManager.accessDenied", "Access is denied"));
         }
 
         // To get this far, every AccessDecisionVoter abstained

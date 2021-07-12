@@ -14,6 +14,7 @@ import java.util.*;
 
 /**
  * 节假日工具类
+ * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/14764989.html
  */
 public class HolidayUtil {
 
@@ -21,7 +22,7 @@ public class HolidayUtil {
      * 发送get请求
      */
     private static String get(String url){
-        StringBuilder inputLine = new StringBuilder();
+        StringBuilder inputLine = new StringBuilder(1024);
         String read;
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
@@ -48,31 +49,31 @@ public class HolidayUtil {
      */
     public static ArrayList<HolidayVo> getAllHolidayByYear(String year) throws IOException {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        ArrayList<HolidayVo> holidayVoList = new ArrayList<>();
-        HashMap<String,HolidayVo> hashMap = new HashMap<>();
-
 
         //查询全年日历包含周末
         String allDayJson = HolidayUtil.get("https://api.apihubs.cn/holiday/get?size=500&year="+year);
         Map allDayMap = JsonUtil.parse(allDayJson,Map.class);
         Map allDayData = (Map)allDayMap.get("data");
         List allDayDataList = (List)allDayData.get("list");
+        //初始化大小
+        ArrayList<HolidayVo> holidayVoList = new ArrayList<>(allDayDataList.size());
+        HashMap<String,HolidayVo> hashMap = new HashMap<>(allDayDataList.size());
         allDayDataList.forEach((value) -> {
             HolidayVo holidayVo = new HolidayVo();
 
             Map value1 = (Map) value;
-            String YEAR = value1.get("year").toString();
-            String MONTH = value1.get("month").toString().replace(YEAR,"");
-            String DAY = value1.get("date").toString().replace(YEAR+MONTH,"");
+            String year_ = value1.get("year").toString();
+            String month = value1.get("month").toString().replace(year_,"");
+            String day = value1.get("date").toString().replace(year_+month,"");
 
-            holidayVo.setData(YEAR + "-" + MONTH + "-" + DAY);
-            String STATUS = "0";
+            holidayVo.setData(year_ + "-" + month + "-" + day);
+            String status = "0";
             String msg = "工作日";
             if("1".equals(value1.get("weekend").toString())){
-                STATUS = "1";
+                status = "1";
                 msg = "周末";
             }
-            holidayVo.setStatus(STATUS);
+            holidayVo.setStatus(status);
             holidayVo.setMsg(msg);
 
             hashMap.put(holidayVo.getData(),holidayVo);
@@ -89,13 +90,13 @@ public class HolidayUtil {
             String dateTime = value1.get("date").toString();
 
             holidayVo.setData(dateTime);
-            String STATUS = "2";
+            String status = "2";
             String msg = "法定节假日("+value1.get("name").toString()+")";
             if(value.toString().contains("调休")){
-                STATUS = "3";
+                status = "3";
                 msg = "节假日调休补班("+value1.get("target").toString()+")";
             }
-            holidayVo.setStatus(STATUS);
+            holidayVo.setStatus(status);
             holidayVo.setMsg(msg);
 
             hashMap.replace(holidayVo.getData(),holidayVo);
@@ -103,7 +104,6 @@ public class HolidayUtil {
 
         for (String key : hashMap.keySet()) {
             holidayVoList.add(hashMap.get(key));
-
         }
 
         //排序

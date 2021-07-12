@@ -97,7 +97,7 @@ class IndexController {
                 }
 
                 //获取本机内网IP
-                log.info("启动成功：" + "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + contextPath);
+                log.info("启动成功：{}","http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + contextPath);
             } catch (UnknownHostException e) {
                 //输出到日志文件中
                 log.error(ErrorUtil.errorInfoToString(e));

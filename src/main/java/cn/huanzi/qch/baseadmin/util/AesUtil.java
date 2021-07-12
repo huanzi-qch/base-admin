@@ -49,13 +49,13 @@ public class AesUtil {
      * 获取key
      */
     public static String getKey() {
-        StringBuilder uid = new StringBuilder();
+        int length = KEY_LENGTH / 8;
+        StringBuilder uid = new StringBuilder(length);
         //产生16位的强随机数
         Random rd = new SecureRandom();
-        for (int i = 0; i < KEY_LENGTH / 8; i++) {
+        for (int i = 0; i < length; i++) {
             //产生0-2的3位随机数
-            int type = rd.nextInt(3);
-            switch (type) {
+            switch (rd.nextInt(3)) {
                 case 0:
                     //0-9的随机数
                     uid.append(rd.nextInt(10));
