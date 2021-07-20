@@ -36,23 +36,17 @@ public class OpenApiAspect {
      * 环绕通知
      */
     @Around(value = "openApiAspect()")
-    public Object arround(ProceedingJoinPoint pjp) {
-        try {
-            //判断OpenAPI限流开关是否开启
-            if("N".equals(SysSettingUtil.getSysSetting().getSysOpenApiLimiterEncrypt())){
-                return pjp.proceed(pjp.getArgs());
-            }
+    public Object arround(ProceedingJoinPoint pjp) throws Throwable {
+        //判断OpenAPI限流开关是否开启
+        if("N".equals(SysSettingUtil.getSysSetting().getSysOpenApiLimiterEncrypt())){
+            return pjp.proceed(pjp.getArgs());
+        }
 
-            //令牌桶返回true或者false
-            if(rateLimiter.execute()){
-                return pjp.proceed(pjp.getArgs());
-            }else{
-                return Result.of(10001,false,"API接口繁忙，请稍后再试！");
-            }
-        } catch (Throwable e) {
-            //输出到日志文件中
-            log.error(ErrorUtil.errorInfoToString(e));
-            return Result.of(50001,false,"API接口异常：\n\t" + e.getMessage());
+        //令牌桶返回true或者false
+        if(rateLimiter.execute()){
+            return pjp.proceed(pjp.getArgs());
+        }else{
+            return Result.of(10001,false,"API接口繁忙，请稍后再试！");
         }
     }
 }

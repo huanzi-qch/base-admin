@@ -187,7 +187,7 @@ public class AutoGeneratorPlus {
         }
     }
     private void writer(String templatePath, String outputFile,List<TableInfo> tableInfos){
-        writer(templatePath,outputFile,tableInfos,new HashMap<>());
+        writer(templatePath,outputFile,tableInfos,new HashMap<>(0));
     }
 
     /**
@@ -502,7 +502,7 @@ public class AutoGeneratorPlus {
         String captureName = StringUtil.captureName(StringUtil.camelCaseName(tableName));
 
         //自定义参数
-        HashMap<String, String> customParameter = new HashMap<>();
+        HashMap<String, String> customParameter = new HashMap<>(2);
         customParameter.put("author","作者：Auto Generator By 'huanzi-qch'");
         customParameter.put("date","生成日期："+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 

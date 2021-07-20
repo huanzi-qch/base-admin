@@ -16,9 +16,11 @@
         <!--设置策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件路径：这里%d{yyyyMMdd}表示按天分类日志-->
-            <FileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/${APP_NAME}.log</FileNamePattern>
+            <FileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/${APP_NAME}.%i.log</FileNamePattern>
             <!--日志保留天数-->
             <MaxHistory>15</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>10MB</MaxFileSize>
         </rollingPolicy>
         <!--设置格式-->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -28,10 +30,6 @@
             <!--<pattern>${FILE_LOG_PATTERN}</pattern>-->
             <charset>utf8</charset>
         </encoder>
-        <!--日志文件最大的大小-->
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>100MB</MaxFileSize>
-        </triggeringPolicy>
     </appender>
 
     <!-- 将文件输出设置成异步输出 -->

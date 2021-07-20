@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import cn.huanzi.qch.baseadmin.common.pojo.HolidayVo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.*;
  * 节假日工具类
  * 详情请阅读博客：https://www.cnblogs.com/huanzi-qch/p/14764989.html
  */
+@Slf4j
 public class HolidayUtil {
 
     /**
@@ -47,7 +49,7 @@ public class HolidayUtil {
      * 1、调用 https://api.apihubs.cn/holiday/get?size=500&year=2021 查询全年日历（含周末）
      * 2、调用 https://timor.tech/api/holiday/year/2021 查询全年节假日、调休
      */
-    public static ArrayList<HolidayVo> getAllHolidayByYear(String year) throws IOException {
+    public static ArrayList<HolidayVo> getAllHolidayByYear(String year) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 
         //查询全年日历包含周末
@@ -111,7 +113,8 @@ public class HolidayUtil {
             try {
                 return sf.parse(a.getData()).compareTo(sf.parse(b.getData()));
             } catch (ParseException e) {
-                e.printStackTrace();
+                //输出到日志文件中
+                log.error(ErrorUtil.errorInfoToString(e));
             }
             return 1;
         });
@@ -120,14 +123,10 @@ public class HolidayUtil {
     }
 
 //    public static void main(String[] args) {
-//        try {
-//            ArrayList<HolidayVo> HolidayVoList = HolidayUtil.getAllHolidayByYear("2021");
-//            System.err.println("全年完整数据：");
-//            for (HolidayVo HolidayVo : HolidayVoList) {
-//                System.err.println(HolidayVo);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
+//        ArrayList<HolidayVo> HolidayVoList = HolidayUtil.getAllHolidayByYear("2021");
+//        System.err.println("全年完整数据：");
+//        for (HolidayVo HolidayVo : HolidayVoList) {
+//            System.err.println(HolidayVo);
 //        }
 //    }
 }

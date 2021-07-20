@@ -93,16 +93,10 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
 
         //判断api加密开关是否开启
         if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())) {
-            //加密
-            try {
-                //api加密
-                Result encrypt = ApiSecurityUtil.encrypt(msg);
+            //api加密
+            Result encrypt = ApiSecurityUtil.encrypt(msg);
 
-                msg = JsonUtil.stringify(encrypt);
-            } catch (Throwable e) {
-                //输出到日志文件中
-                log.error(ErrorUtil.errorInfoToString(e));
-            }
+            msg = JsonUtil.stringify(encrypt);
         }
 
         //转json字符串并转成Object对象，设置到Result中并赋值给返回值o

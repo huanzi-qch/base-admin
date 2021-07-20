@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,7 @@ public class LogoutHandlerConfig implements LogoutHandler {
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
         //剔除退出用户
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal !=null){
+        if (!StringUtils.isEmpty(principal)){
             securityUtil.sessionRegistryRemoveUser((User)principal);
         }
     }

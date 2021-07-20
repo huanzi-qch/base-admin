@@ -83,24 +83,18 @@ public class CaptchaFilterConfig implements Filter {
         if ("POST".equals(request.getMethod()) && "/login".equals(requestUri.replaceFirst(contextPath,""))) {
             //判断api加密开关是否开启
             if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
-                //解密
-                try {
-                    //api解密
-                    String decrypt = ApiSecurityUtil.decrypt();
+                //api解密
+                String decrypt = ApiSecurityUtil.decrypt();
 
-                    //new一个自定义RequestWrapper
-                    HashMap hashMap = JsonUtil.parse(decrypt, HashMap.class);
-                    ParameterRequestWrapper parameterRequestWrapper = new ParameterRequestWrapper(request);
-                    for (Object key : hashMap.keySet()) {
-                        parameterRequestWrapper.addParameter(String.valueOf(key),  hashMap.get(key));
-                    }
-
-                    servletRequest = parameterRequestWrapper;
-                    request = (HttpServletRequest) servletRequest;
-                } catch (Throwable e) {
-                    //输出到日志文件中
-                    log.error(ErrorUtil.errorInfoToString(e));
+                //new一个自定义RequestWrapper
+                HashMap hashMap = JsonUtil.parse(decrypt, HashMap.class);
+                ParameterRequestWrapper parameterRequestWrapper = new ParameterRequestWrapper(request);
+                for (Object key : hashMap.keySet()) {
+                    parameterRequestWrapper.addParameter(String.valueOf(key),  hashMap.get(key));
                 }
+
+                servletRequest = parameterRequestWrapper;
+                request = (HttpServletRequest) servletRequest;
             }
 
             //从session中获取生成的验证码
@@ -111,16 +105,10 @@ public class CaptchaFilterConfig implements Filter {
 
                 //判断api加密开关是否开启
                 if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
-                    //加密
-                    try {
-                        //api加密
-                        Result encrypt = ApiSecurityUtil.encrypt(dataString);
+                    //api加密
+                    Result encrypt = ApiSecurityUtil.encrypt(dataString);
 
-                        dataString = JsonUtil.stringify(encrypt);
-                    } catch (Throwable e) {
-                        //输出到日志文件中
-                        log.error(ErrorUtil.errorInfoToString(e));
-                    }
+                    dataString = JsonUtil.stringify(encrypt);
                 }
 
                 //转json字符串并转成Object对象，设置到Result中并赋值给返回值o

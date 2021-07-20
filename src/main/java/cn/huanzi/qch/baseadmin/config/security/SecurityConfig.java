@@ -146,9 +146,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return interceptor;
     }
 
-    /**
-     * 解决不能注入session注册表问题
-     */
     @Bean
     SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
