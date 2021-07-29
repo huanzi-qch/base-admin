@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.thymeleaf.util.StringUtils;
 
 /**
- * 分页条件（参考JqGrid插件）
+ * 分页条件
  */
 @Data
 public class PageCondition {
@@ -22,17 +22,17 @@ public class PageCondition {
      */
     public Pageable getPageable() {
         //处理非法页码
-        if (page < 0) {
+        if (page <= 0) {
             page = 1;
         }
         //处理非法页面大小
-        if (rows < 0) {
+        if (rows <= 0) {
             rows = 10;
         }
         //处理排序
         if(!StringUtils.isEmpty(sidx) && !StringUtils.isEmpty(sord)){
-            Direction direction = "desc".equals(sidx.toLowerCase()) ? Direction.DESC : Direction.ASC;
-            return PageRequest.of(page - 1, rows, new Sort(direction, sord));
+            Direction direction = "desc".equals(sord.toLowerCase()) ? Direction.DESC : Direction.ASC;
+            return PageRequest.of(page - 1, rows, new Sort(direction, sidx));
         }
         return PageRequest.of(page - 1, rows);
     }
