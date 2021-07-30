@@ -38,9 +38,12 @@ public class PageInfo<M> {
         PageInfo<M> pageInfo = new PageInfo<>();
         pageInfo.setPage(page.getNumber() + 1);//页码
         pageInfo.setPageSize(pageSize);//页面大小
-        String[] split = page.getSort().toString().split(":");
-        pageInfo.setSidx(split[0].trim());//排序字段
-        pageInfo.setSord(split[1].trim().toLowerCase());//排序方式
+        String sortString = page.getSort().toString();
+        if(!"UNSORTED".equals(sortString)){
+            String[] split = sortString.split(":");
+            pageInfo.setSidx(split[0].trim());//排序字段
+            pageInfo.setSord(split[1].trim().toLowerCase());//排序方式
+        }
         pageInfo.setRows(CopyUtil.copyList(page.getContent(), entityModelClass));//分页结果
         pageInfo.setRecords(records);//总记录数
         pageInfo.setTotal(total);//总页数
