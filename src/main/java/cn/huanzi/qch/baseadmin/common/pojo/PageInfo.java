@@ -5,11 +5,13 @@ import lombok.Data;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 分页对象（参考JqGrid插件）
@@ -36,6 +38,9 @@ public class PageInfo<M> {
         PageInfo<M> pageInfo = new PageInfo<>();
         pageInfo.setPage(page.getNumber() + 1);//页码
         pageInfo.setPageSize(pageSize);//页面大小
+        String[] split = page.getSort().toString().split(":");
+        pageInfo.setSidx(split[0].trim());//排序字段
+        pageInfo.setSord(split[1].trim().toLowerCase());//排序方式
         pageInfo.setRows(CopyUtil.copyList(page.getContent(), entityModelClass));//分页结果
         pageInfo.setRecords(records);//总记录数
         pageInfo.setTotal(total);//总页数
