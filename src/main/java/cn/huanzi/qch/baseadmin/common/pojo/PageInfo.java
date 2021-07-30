@@ -38,6 +38,7 @@ public class PageInfo<M> {
         PageInfo<M> pageInfo = new PageInfo<>();
         pageInfo.setPage(page.getNumber() + 1);//页码
         pageInfo.setPageSize(pageSize);//页面大小
+
         String sortString = page.getSort().toString();
         if(!"UNSORTED".equals(sortString)){
             String[] split = sortString.split(":");
