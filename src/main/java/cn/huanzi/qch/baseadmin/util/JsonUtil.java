@@ -2,6 +2,7 @@ package cn.huanzi.qch.baseadmin.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +21,12 @@ public class JsonUtil {
         //设置日期格式
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+        //禁用空对象转换json
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        //设置null值不参与序列化(字段不被显示)
+//        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     /**

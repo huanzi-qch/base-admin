@@ -18,6 +18,7 @@ import cn.huanzi.qch.baseadmin.util.SqlUtil;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -71,6 +72,9 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
 
     @Override
     public Result<PageInfo<SysUserVo>> page(SysUserVo entityVo) {
+        //这里可以直接调父类的page方法，当然也可以像下面这样自定义SQL
+        //Result<PageInfo<SysUserVo>> result = super.page(entityVo);
+
         //根据实体、Vo直接拼接全部SQL
         StringBuilder sql = SqlUtil.joinSqlByEntityAndVo(SysUser.class,entityVo);
 
@@ -78,10 +82,10 @@ public class SysUserServiceImpl extends CommonServiceImpl<SysUserVo, SysUser, St
         Query query = em.createNativeQuery(sql.toString(), SysUser.class);
 
         //分页设置，page从0开始
-        PageRequest pageRequest = PageRequest.of(entityVo.getPage() - 1, entityVo.getRows());
+        PageRequest pageRequest = entityVo.getPageable();
 
         //获取最终分页结果
-        Result<PageInfo<SysUserVo>> result = Result.of(PageInfo.of(PageInfo.getJpaPage(query,pageRequest,em), SysUserVo.class));
+        Result<PageInfo<SysUserVo>> result = Result.of(PageInfo.of(PageInfo.getJpaPage(query, pageRequest,em), SysUserVo.class));
 
         //置空密码
         result.getData().getRows().forEach((sysUserVo) -> sysUserVo.setPassword(null));

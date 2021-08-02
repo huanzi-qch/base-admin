@@ -1,8 +1,8 @@
 package cn.huanzi.qch.baseadmin.common.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.thymeleaf.util.StringUtils;
@@ -12,15 +12,16 @@ import org.thymeleaf.util.StringUtils;
  */
 @Data
 public class PageCondition {
-    private int page = 1;//当前页码
-    private int rows = 10;//页面大小
+    private int page;//当前页码
+    private int rows;//页面大小
     private String sidx;//排序字段
     private String sord;//排序方式
 
     /**
      * 获取JPA的分页查询对象
      */
-    public Pageable getPageable() {
+    @JsonIgnore
+    public PageRequest getPageable() {
         //处理非法页码
         if (page <= 0) {
             page = 1;

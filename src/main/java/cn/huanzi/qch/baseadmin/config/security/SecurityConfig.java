@@ -1,8 +1,10 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
+import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SecurityMetadataSourceEventSource;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.service.SysAuthorityService;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.vo.SysAuthorityVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.RoleVoter;
@@ -47,6 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyFilterInvocationSecurityMetadataSource myFilterInvocationSecurityMetadataSource;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     private DataSource dataSource;
@@ -131,8 +136,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DynamicallyUrlInterceptor dynamicallyUrlInterceptor(){
         //首次获取
-        List<SysAuthorityVo> authorityVoList = sysAuthorityService.list(new SysAuthorityVo()).getData();
-        myFilterInvocationSecurityMetadataSource.setRequestMap(authorityVoList);
+        myFilterInvocationSecurityMetadataSource.setRequestMap(sysAuthorityService.list(new SysAuthorityVo()).getData());
         //初始化拦截器并添加数据源
         DynamicallyUrlInterceptor interceptor = new DynamicallyUrlInterceptor();
         interceptor.setSecurityMetadataSource(myFilterInvocationSecurityMetadataSource);

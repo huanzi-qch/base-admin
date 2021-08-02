@@ -1,7 +1,7 @@
 package cn.huanzi.qch.baseadmin.eventlistener;
 
 import cn.huanzi.qch.baseadmin.limiter.RateLimiter;
-import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingEventSource;
+import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SysSettingEventSource;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class SysSettingEventListener {
     private RateLimiter rateLimiter;
 
     /**
-     * 系统设置，更新/保存事件监听
+     * 系统设置，更新/保存 事件监听
      * 更新sysSettingMap、OpenAPI限流
      */
     @EventListener(SysSettingEventSource.class)

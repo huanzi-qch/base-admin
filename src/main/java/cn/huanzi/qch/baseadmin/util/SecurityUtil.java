@@ -3,6 +3,7 @@ package cn.huanzi.qch.baseadmin.util;
 import cn.huanzi.qch.baseadmin.config.security.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Spring Security工具类
@@ -36,6 +37,9 @@ public class SecurityUtil {
 
     @Autowired
     private PersistentTokenRepository persistentTokenRepository;
+
+    //认证数据源，URL/权限映射缓存
+    public static Map<String, HashSet<ConfigAttribute>> urlAuthorityMap = new ConcurrentHashMap<>(150);
 
     /**
      * 从ThreadLocal获取其自己的SecurityContext，从而获取在Security上下文中缓存的登录用户

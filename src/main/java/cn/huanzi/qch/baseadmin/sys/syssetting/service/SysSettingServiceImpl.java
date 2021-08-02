@@ -4,7 +4,7 @@ import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
 import cn.huanzi.qch.baseadmin.sys.syssetting.pojo.SysSetting;
 import cn.huanzi.qch.baseadmin.sys.syssetting.repository.SysSettingRepository;
-import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingEventSource;
+import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SysSettingEventSource;
 import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

@@ -1,5 +1,6 @@
-package cn.huanzi.qch.baseadmin.sys.syssetting.vo;
+package cn.huanzi.qch.baseadmin.eventlistener.eventsource;
 
+import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingVo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
