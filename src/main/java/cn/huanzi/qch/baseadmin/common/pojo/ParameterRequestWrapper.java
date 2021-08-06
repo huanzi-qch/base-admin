@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ParameterRequestWrapper extends HttpServletRequestWrapper {
 
-    private Map<String , String[]> params = new HashMap<String, String[]>();
+    private Map<String , String[]> params = new HashMap<>(4);
 
     public ParameterRequestWrapper(HttpServletRequest request) {
         super(request);

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
 /**
@@ -68,12 +67,7 @@ public class CaptchaFilterConfig implements Filter {
             //当前URL是否允许访问，同时没有remember me
             if(!SecurityUtil.checkUrl(requestUri.replaceFirst(contextPath,"")) && StringUtils.isEmpty(token)){
                 //直接输出js脚本跳转强制用户下线
-                response.setContentType("text/html;charset=UTF-8");
-                PrintWriter out = response.getWriter();
-                out.print("<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
-                out.flush();
-                out.close();
-                response.flushBuffer();
+                HttpServletResponseUtil.print(response,"<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
                 return;
             }
 
@@ -112,13 +106,7 @@ public class CaptchaFilterConfig implements Filter {
                 }
 
                 //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("application/json; charset=utf-8");
-                PrintWriter out = response.getWriter();
-                out.print(dataString);
-                out.flush();
-                out.close();
-                response.flushBuffer();
+                HttpServletResponseUtil.print(response,dataString);
                 return;
             }
         }
