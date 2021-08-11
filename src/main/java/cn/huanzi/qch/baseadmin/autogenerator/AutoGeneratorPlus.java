@@ -64,7 +64,7 @@ public class AutoGeneratorPlus {
 
         //for循环标识
         boolean forFlag = false;
-        StringBuilder forContent = new StringBuilder();
+        StringBuilder forContent = new StringBuilder(1024);
 
         //驼峰标识映射后的表名
         String replacement = StringUtil.captureName(StringUtil.camelCaseName(tableName));
@@ -82,7 +82,7 @@ public class AutoGeneratorPlus {
             BufferedReader reader = new BufferedReader(fileReader)) {
             //生成文件
             File file = FileUtil.createFile(outputFile);
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder(1024);
 
             //读取模板文件，拼接文件内容
             Object[] lines = reader.lines().toArray();
@@ -281,7 +281,7 @@ public class AutoGeneratorPlus {
          * 驼峰转换为下划线
          */
         private static String underscoreName(String camelCaseName) {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(1024);
             if (camelCaseName != null && camelCaseName.length() > 0) {
                 result.append(camelCaseName.substring(0, 1).toLowerCase());
                 for (int i = 1; i < camelCaseName.length(); i++) {
@@ -311,7 +311,7 @@ public class AutoGeneratorPlus {
          * 下划线转换为驼峰
          */
         private static String camelCaseName(String underscoreName) {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(1024);
             if (underscoreName != null && underscoreName.length() > 0) {
                 boolean flag = false;
                 for (int i = 0; i < underscoreName.length(); i++) {

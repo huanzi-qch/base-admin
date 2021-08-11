@@ -48,9 +48,9 @@ public class CommonServiceImpl<V, E, T> implements CommonService<V, E, T> {
 
     @Override
     public Result<PageInfo<V>> page(V entityVo) {
-        //实体类缺失分页信息
+        //缺失分页信息
         if (!(entityVo instanceof PageCondition)) {
-            throw new RuntimeException("实体类" + entityVoClass.getName() + "未继承PageCondition。");
+            throw new RuntimeException("缺失分页参数！");
         }
         PageCondition pageCondition = (PageCondition) entityVo;
         //先entityVo转entity，再调用findAll（传多一个分页参数），结果集再转回entityVo

@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 public class RateLimiter {
 
     //桶的大小，即峰值可处理请求数量
-    private Integer limit = 10;
+    private int limit = 10;
 
     //每秒新增speed个令牌，即每秒可处理请求数量
-    private Integer speed = 3;
+    private int speed = 3;
 
     //桶当前的token数，使用volatile修饰
-    private static volatile Integer tokens = 0;
+    private static volatile int tokens = 0;
 
     //状态标识
     private static boolean asyncTaskFlag = false;

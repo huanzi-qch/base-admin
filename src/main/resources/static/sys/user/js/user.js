@@ -176,6 +176,7 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate', 'tree', 'util'], func
 
     //日期选择器
     laydate.render({
+        trigger: 'click',
         elem: '#expiredTimeDate',
         format: "yyyy-MM-dd HH:mm:ss"
     });

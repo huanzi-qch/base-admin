@@ -56,7 +56,7 @@ public class AutoGenerator {
         File file = FileUtil.createFile(filePath + "pojo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + ".java");
 
         //拼接文件内容
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(1024);
         stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "pojo;\n" +
                         "\n" +
@@ -93,7 +93,7 @@ public class AutoGenerator {
      */
     private void createVo(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "vo\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Vo.java");
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(1024);
         stringBuilder.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "vo;\n" +
                         "\n" +
@@ -118,7 +118,7 @@ public class AutoGenerator {
      */
     private void createRepository(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "repository\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Repository.java");
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(1024);
         String t = "String";
         //遍历属性
         for (TableInfo tableInfo : tableInfos) {
@@ -147,7 +147,7 @@ public class AutoGenerator {
      */
     private void createService(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Service.java");
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(1024);
         String t = "String";
         //遍历属性
         for (TableInfo tableInfo : tableInfos) {
@@ -171,7 +171,7 @@ public class AutoGenerator {
 
         //Impl
         File file1 = FileUtil.createFile(filePath + "service\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "ServiceImpl.java");
-        StringBuilder stringBuilder1 = new StringBuilder();
+        StringBuilder stringBuilder1 = new StringBuilder(1024);
         stringBuilder1.append(
                 "package " + filePackage.replaceAll("\\\\", ".") + "service;\n" +
                         "\n" +
@@ -206,7 +206,7 @@ public class AutoGenerator {
      */
     private void createController(List<TableInfo> tableInfos) {
         File file = FileUtil.createFile(filePath + "controller\\" + StringUtil.captureName(StringUtil.camelCaseName(tableName)) + "Controller.java");
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(1024);
         String t = "String";
         //遍历属性
         for (TableInfo tableInfo : tableInfos) {
@@ -318,7 +318,7 @@ public class AutoGenerator {
          * 驼峰转换为下划线
          */
         private static String underscoreName(String camelCaseName) {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(1024);
             if (camelCaseName != null && camelCaseName.length() > 0) {
                 result.append(camelCaseName.substring(0, 1).toLowerCase());
                 for (int i = 1; i < camelCaseName.length(); i++) {
@@ -348,7 +348,7 @@ public class AutoGenerator {
          * 下划线转换为驼峰
          */
         private static String camelCaseName(String underscoreName) {
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder(1024);
             if (underscoreName != null && underscoreName.length() > 0) {
                 boolean flag = false;
                 for (int i = 0; i < underscoreName.length(); i++) {

@@ -22,7 +22,7 @@ public class AesUtil {
      * key的长度，Wrong key size: must be equal to 128, 192 or 256
      * 传入时需要16、24、36
      */
-    private static final Integer KEY_LENGTH = 16 * 8;
+    private static final int KEY_LENGTH = 16 * 8;
 
     /**
      * 算法名称/加密模式/数据填充方式

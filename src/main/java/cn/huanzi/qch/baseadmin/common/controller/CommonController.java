@@ -55,7 +55,7 @@ public class CommonController<V, E, T> {
     }
 
     @DeleteMapping("delete/{id}")
-    public Result<T> delete( @PathVariable("id") T id) {
+    public Result<T> delete(@PathVariable("id") T id) {
         /*
         批量删除
         @DeleteMapping("deleteBatch")

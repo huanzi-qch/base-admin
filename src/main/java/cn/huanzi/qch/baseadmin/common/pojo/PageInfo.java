@@ -5,16 +5,14 @@ import lombok.Data;
 import org.hibernate.query.internal.NativeQueryImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
- * 分页对象（参考JqGrid插件）
+ * 分页对象
  */
 @Data
 public class PageInfo<M> {

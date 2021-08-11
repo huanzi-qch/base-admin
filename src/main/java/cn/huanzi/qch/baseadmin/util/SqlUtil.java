@@ -252,7 +252,7 @@ public class SqlUtil {
         if (str == null) {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(str.length());
         for (int i = 0; i < str.length(); i++) {
             char src = str.charAt(i);
             switch (src) {

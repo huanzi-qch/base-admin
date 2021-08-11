@@ -162,7 +162,7 @@ public class SystemMonitorUtil {
      * @return 字符串结果
      */
     private static String runCommand(String cmd) {
-        StringBuilder info = new StringBuilder();
+        StringBuilder info = new StringBuilder(50);
         InputStreamReader isr = null;
         LineNumberReader lnr = null;
         try {

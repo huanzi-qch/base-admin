@@ -18,17 +18,17 @@ import java.util.List;
 public class CopyUtil {
 
     /**
-     * 类型转换：实体Vo <->实体  例如：UserVo <-> User
+     * 类型转换：实体Vo <-> 实体  例如：UserVo <-> User
      * 默认支持1层复杂对象复制
      */
     public static <T> T copy(Object src, Class<T> targetType) {
-        return CopyUtil.copy(src,targetType,1);
+        return CopyUtil.copy(src,targetType, (byte) 1);
     }
 
     /**
      * 同上，支持count多层复杂对象复制
      */
-    public static <T> T copy(Object src, Class<T> targetType,Integer count) {
+    public static <T> T copy(Object src, Class<T> targetType,byte count) {
         //执行一层，自减1
         count--;
 
@@ -83,7 +83,7 @@ public class CopyUtil {
     }
 
     /**
-     * 类型转换：实体Vo <->实体  例如：List<UserVo> <-> List<User>
+     * 类型转换：实体Vo <-> 实体  例如：List<UserVo> <-> List<User>
      */
     public static <T> List<T> copyList(List srcList, Class<T> targetType) {
         List<T> newList = new ArrayList<>(srcList.size());

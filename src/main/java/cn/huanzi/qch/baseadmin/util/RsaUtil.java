@@ -63,7 +63,7 @@ public class RsaUtil {
     /**
      * 后端RSA的密钥对(公钥和私钥)Map，由静态代码块赋值
      */
-    private static Map<String, Object> genKeyPair = new LinkedHashMap<>();
+    private static Map<String, Object> genKeyPair = new LinkedHashMap<>(2);
 
     static {
         try {

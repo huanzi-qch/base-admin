@@ -110,7 +110,7 @@ public class VerifyCodeImageUtil {
         if (length <= 0) {
             return "";
         }
-        StringBuilder verifyCode = new StringBuilder();
+        StringBuilder verifyCode = new StringBuilder(length);
         int i = 0;
         Random random = new Random();
         switch (type) {
