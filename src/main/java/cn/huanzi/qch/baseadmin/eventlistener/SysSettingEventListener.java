@@ -1,7 +1,7 @@
 package cn.huanzi.qch.baseadmin.eventlistener;
 
 import cn.huanzi.qch.baseadmin.limiter.RateLimiter;
-import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SysSettingEventSource;
+import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingVo;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,11 @@ public class SysSettingEventListener {
      * 系统设置，更新/保存 事件监听
      * 更新sysSettingMap、OpenAPI限流
      */
-    @EventListener(SysSettingEventSource.class)
+    @EventListener
     @Order(1)
-    public void sysSettingSaveRegisterListener(SysSettingEventSource eventSourceEvent){
+    public void sysSettingSaveRegisterListener(SysSettingVo sysSettingVo){
         //更新系统设置时同步更新公用静态集合sysSettingMap
-        SysSettingUtil.setSysSettingMap(eventSourceEvent.getSysSettingVo());
+        SysSettingUtil.setSysSettingMap(sysSettingVo);
 
         //判断OpenAPI限流开启或关闭
         if(!rateLimiter.getStatus() && "Y".equals(SysSettingUtil.getSysSetting().getSysOpenApiLimiterEncrypt())){

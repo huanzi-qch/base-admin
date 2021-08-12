@@ -2,7 +2,6 @@ package cn.huanzi.qch.baseadmin.sys.sysauthority.service;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
-import cn.huanzi.qch.baseadmin.config.security.MyFilterInvocationSecurityMetadataSource;
 import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SecurityMetadataSourceEventSource;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.pojo.SysAuthority;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.repository.SysAuthorityRepository;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 @Service
 @Transactional

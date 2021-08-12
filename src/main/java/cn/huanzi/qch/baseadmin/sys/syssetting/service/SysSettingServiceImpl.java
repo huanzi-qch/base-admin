@@ -4,7 +4,6 @@ import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.common.service.CommonServiceImpl;
 import cn.huanzi.qch.baseadmin.sys.syssetting.pojo.SysSetting;
 import cn.huanzi.qch.baseadmin.sys.syssetting.repository.SysSettingRepository;
-import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SysSettingEventSource;
 import cn.huanzi.qch.baseadmin.sys.syssetting.vo.SysSettingVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,7 +31,7 @@ public class SysSettingServiceImpl extends CommonServiceImpl<SysSettingVo, SysSe
         Result<SysSettingVo> result = super.save(entityVo);
 
         //发布 系统设置，更新/保存事件
-        applicationEventPublisher.publishEvent(new SysSettingEventSource(result.getData()));
+        applicationEventPublisher.publishEvent(result.getData());
         return result;
     }
 }

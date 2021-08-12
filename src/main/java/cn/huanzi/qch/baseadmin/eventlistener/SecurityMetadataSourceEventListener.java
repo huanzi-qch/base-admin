@@ -25,7 +25,7 @@ public class SecurityMetadataSourceEventListener {
      * 认证数据源 事件监听
      * 置空URL/权限映射缓存、更新权限集合
      */
-    @EventListener(SecurityMetadataSourceEventSource.class)
+    @EventListener
     @Order(1)
     public void securityMetadataSourceRegisterListener(SecurityMetadataSourceEventSource eventSourceEvent) {
         //置空URL/权限映射缓存

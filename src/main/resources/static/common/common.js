@@ -115,11 +115,7 @@ jQueryExtend = {
         $.fn.form = function (data) {
             let form = $(this);
             for (let i in data) {
-                let name = i;
-                let value = data[i];
-                if (name !== "" && value !== "") {
-                    valuAtion(name, value);
-                }
+                valuAtion(i, data[i]);
             }
 
             function valuAtion(name, value) {
