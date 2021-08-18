@@ -75,7 +75,8 @@ public class VerifyCodeImageUtil {
      */
     public static Color generateRandomColor() {
         Random random = new Random();
-        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        //产生0-255的随机数
+        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
     /**
