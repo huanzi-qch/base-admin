@@ -36,6 +36,6 @@ public class LoginFailureHandlerConfig implements AuthenticationFailureHandler {
         }
 
         //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-        HttpServletResponseUtil.print(httpServletResponse,msg);
+        HttpServletResponseUtil.printJson(httpServletResponse,msg);
     }
 }

@@ -62,7 +62,7 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
 
     @DeleteMapping("forced/{loginName}")
     public Result<String> forced( @PathVariable("loginName") String loginName) {
-        securityUtil.sessionRegistryRemoveUserByLoginName(loginName);
+        securityUtil.sessionRegistryRemoveUserByUserName(loginName);
         return Result.of("操作成功");
     }
 }

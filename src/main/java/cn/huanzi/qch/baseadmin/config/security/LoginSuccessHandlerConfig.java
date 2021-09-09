@@ -1,8 +1,6 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
-import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
-import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Map;
 
 /**
  * 登录成功处理，登陆成功后还需要验证账号的有效性
@@ -28,48 +25,17 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
     @Autowired
     private SecurityUtil securityUtil;
 
-    @Autowired
-    private SysUserService sysUserService;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
 
         //查询当前与系统交互的用户，存储在本地线程安全上下文，校验账号有效性
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        SysUserVo sysUserVo = sysUserService.findByLoginName(user.getUsername()).getData();
 
-        //默认登陆成功
-        String msg = "{\"code\":\"300\",\"msg\":\"登录成功\",\"url\":\"/index\"}";
-        boolean flag = false;
-
-        //登陆IP不在白名单
-        String ipAddr = IpUtil.getIpAddr(httpServletRequest);
-        String limitedIp = sysUserVo.getLimitedIp();
-        if(!StringUtils.isEmpty(limitedIp) && !Arrays.asList(limitedIp.split(",")).contains(ipAddr)){
-            msg = "{\"code\":\"400\",\"msg\":\"登陆IP不在白名单，请联系管理员\"}";
-            flag = true;
-        }
-
-        //禁止多人在线
-        if("N".equals(sysUserVo.getLimitMultiLogin()) &&  securityUtil.sessionRegistryGetUserBySessionId(httpServletRequest.getRequestedSessionId()) != null){
-            msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
-            flag = true;
-        }
-
-        //超出有效时间
-        if(!StringUtils.isEmpty(sysUserVo.getExpiredTime()) && System.currentTimeMillis() > sysUserVo.getExpiredTime().getTime()){
-            msg = "{\"code\":\"400\",\"msg\":\"该账号已失效，请联系管理员\"}";
-            flag = true;
-        }
-
-        //禁止登陆系统
-        if("N".equals(sysUserVo.getValid())){
-            msg = "{\"code\":\"400\",\"msg\":\"该账号已被禁止登陆系统，请联系管理员\"}";
-            flag = true;
-        }
+        Map<String, Object> map = securityUtil.checkUserByUserData(httpServletRequest,user.getUsername());
+        String msg = map.get("msg").toString();
 
         //校验不通过
-        if(flag){
+        if(Boolean.valueOf(map.get("flag").toString())){
             //清除当前的上下文
             SecurityContextHolder.clearContext();
 
@@ -78,7 +44,7 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         }
         else{
             //校验通过，注册session
-            securityUtil.sessionRegistryAddUser(httpServletRequest.getSession().getId(),user);
+            securityUtil.sessionRegistryAddUser(httpServletRequest.getRequestedSessionId(),user);
         }
 
         //判断api加密开关是否开启
@@ -90,6 +56,6 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         }
 
         //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-        HttpServletResponseUtil.print(httpServletResponse,msg);
+        HttpServletResponseUtil.printJson(httpServletResponse,msg);
     }
 }

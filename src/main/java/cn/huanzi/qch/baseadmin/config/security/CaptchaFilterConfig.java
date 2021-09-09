@@ -58,17 +58,25 @@ public class CaptchaFilterConfig implements Filter {
             Cookie rememberMeCookie = SecurityUtil.getRememberMeCookie(request);
             PersistentRememberMeToken token = securityUtil.rememberMeGetTokenForSeries(rememberMeCookie);
 
-            if(!StringUtils.isEmpty(token)){
+            /*
+                不允许自动登录
+                查无token令牌
+                当前URL需要登录才能访问，但当前账号不满足登录限制（七天免登陆、禁止多人在线等登录限制有冲突）
+             */
+            boolean flag0 = StringUtils.isEmpty(token);
+            boolean flag1 = !SecurityUtil.checkUrl(requestUri.replaceFirst(contextPath, ""));
+            boolean flag2 = !flag0 && Boolean.valueOf(securityUtil.checkUserByUserData(request, token.getUsername()).get("flag").toString());
+            if(flag0 || (flag1 && flag2)){
+                log.info("尝试自动登录失败，查无token令牌或当前账号不满足登录限制...");
+                //直接输出js脚本跳转强制用户下线
+                HttpServletResponseUtil.printHtml(response,"<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
+                return;
+            }
+
+            if(flag1) {
                 log.info("当前session连接开启了免登陆，已自动登录！token：{},userName：{}，最后登录时间：{}",rememberMeCookie.getValue(),token.getUsername(),token.getDate());
                 //注册新的session
                 securityUtil.sessionRegistryAddUser(session.getId(), userDetailsServiceImpl.loadUserByUsername(token.getUsername()));
-            }
-
-            //当前URL是否允许访问，同时没有remember me
-            if(!SecurityUtil.checkUrl(requestUri.replaceFirst(contextPath,"")) && StringUtils.isEmpty(token)){
-                //直接输出js脚本跳转强制用户下线
-                HttpServletResponseUtil.print(response,"<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
-                return;
             }
 
         }
@@ -106,7 +114,7 @@ public class CaptchaFilterConfig implements Filter {
                 }
 
                 //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-                HttpServletResponseUtil.print(response,dataString);
+                HttpServletResponseUtil.printJson(response,dataString);
                 return;
             }
         }

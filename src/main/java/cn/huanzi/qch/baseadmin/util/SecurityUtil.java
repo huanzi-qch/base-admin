@@ -1,6 +1,8 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import cn.huanzi.qch.baseadmin.config.security.SecurityConfig;
+import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
+import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
@@ -37,6 +39,9 @@ public class SecurityUtil {
 
     @Autowired
     private PersistentTokenRepository persistentTokenRepository;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     //认证数据源，URL/权限映射缓存
     public static Map<String, HashSet<ConfigAttribute>> urlAuthorityMap = new ConcurrentHashMap<>(150);
@@ -100,15 +105,54 @@ public class SecurityUtil {
         return true;
     }
 
+    /**
+     * 检查用户登录限制
+     */
+    public Map<String,Object> checkUserByUserData(HttpServletRequest httpServletRequest,String userName){
+        SysUserVo sysUserVo = sysUserService.findByLoginName(userName).getData();
+
+        //默认登陆成功
+        String msg = "{\"code\":\"300\",\"msg\":\"登录成功\",\"url\":\"/index\"}";
+        boolean flag = false;
+
+        //登陆IP不在白名单
+        String ipAddr = IpUtil.getIpAddr(httpServletRequest);
+        String limitedIp = sysUserVo.getLimitedIp();
+        if(!StringUtils.isEmpty(limitedIp) && !Arrays.asList(limitedIp.split(",")).contains(ipAddr)){
+            msg = "{\"code\":\"400\",\"msg\":\"登陆IP不在白名单，请联系管理员\"}";
+            flag = true;
+        }
+
+        //禁止多人在线
+        if("N".equals(sysUserVo.getLimitMultiLogin()) &&  sessionRegistryGetUserByUserName(userName) != null){
+            msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
+            flag = true;
+        }
+
+        //超出有效时间
+        if(!StringUtils.isEmpty(sysUserVo.getExpiredTime()) && System.currentTimeMillis() > sysUserVo.getExpiredTime().getTime()){
+            msg = "{\"code\":\"400\",\"msg\":\"该账号已失效，请联系管理员\"}";
+            flag = true;
+        }
+
+        //禁止登陆系统
+        if("N".equals(sysUserVo.getValid())){
+            msg = "{\"code\":\"400\",\"msg\":\"该账号已被禁止登陆系统，请联系管理员\"}";
+            flag = true;
+        }
+
+        HashMap<String,Object> hashMap = new HashMap<>(2);
+        hashMap.put("flag",flag);
+        hashMap.put("msg",msg);
+        return hashMap;
+    }
+
 
 
     /*    remember-me相关操作     */
-
-
-
-
     /**
      * 清除remember-me持久化tokens
+     * PS：清除用户所有的token记录
      */
     public void rememberMeRemoveUserTokens(String userName){
         persistentTokenRepository.removeUserTokens(userName);
@@ -169,17 +213,6 @@ public class SecurityUtil {
 
 
     /*  SessionRegistry相关操作  */
-
-
-
-
-    /**
-     * 根据user从sessionRegistry获取SessionInformation
-     */
-    public List<SessionInformation> sessionRegistryGetSessionInformationList(User user){
-        return sessionRegistry.getAllSessions(user, true);
-    }
-
     /**
      * 根据sessionId从sessionRegistry获取用户
      */
@@ -192,10 +225,23 @@ public class SecurityUtil {
     }
 
     /**
-     * 从sessionRegistry中删除user
+     * 根据userName从sessionRegistry获取用户
      */
-    public void sessionRegistryRemoveUser(User user){
-        List<SessionInformation> allSessions = this.sessionRegistryGetSessionInformationList(user);
+    public User sessionRegistryGetUserByUserName(String userName){
+        for (Object principal : sessionRegistry.getAllPrincipals()) {
+            User user = (User) principal;
+            if(user.getUsername().equals(userName)){
+                return user;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 根据User从sessionRegistry剔除所有登录用户
+     */
+    public void sessionRegistryRemoveUserByUser(User user){
+        List<SessionInformation> allSessions = sessionRegistry.getAllSessions(user, true);
         if (allSessions != null) {
             for (SessionInformation sessionInformation : allSessions) {
                 sessionInformation.expireNow();
@@ -211,26 +257,32 @@ public class SecurityUtil {
     }
 
     /**
-     * 指定loginName从sessionRegistry中删除user
+     * 根据sessionId从sessionRegistry剔除当前登录用户
      */
-    public void sessionRegistryRemoveUserByLoginName(String loginName){
-        //清除remember-me持久化tokens
-        this.rememberMeRemoveUserTokens(loginName);
+    public void sessionRegistryRemoveUserBySessionId(String sessionId){
+        SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
 
-        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
-        for (Object allPrincipal : allPrincipals) {
-            User user = (User) allPrincipal;
-            if(user.getUsername().equals(loginName)){
-                List<SessionInformation> allSessions = sessionRegistry.getAllSessions(user, true);
-                if (allSessions != null) {
-                    for (SessionInformation sessionInformation : allSessions) {
-                        sessionInformation.expireNow();
-                        sessionRegistry.removeSessionInformation(sessionInformation.getSessionId());
-                    }
-                }
-                break;
-            }
+        if(sessionInformation == null){
+            return;
         }
+        sessionInformation.expireNow();
+        sessionRegistry.removeSessionInformation(sessionId);
+
+        //清除remember-me持久化tokens
+        User user = (User)sessionInformation.getPrincipal();
+        this.rememberMeRemoveUserTokens(user.getUsername());
+
+        //清除当前的上下文
+        SecurityContextHolder.clearContext();
+
+    }
+
+    /**
+     * 根据userName从sessionRegistry中删除user
+     */
+    public void sessionRegistryRemoveUserByUserName(String userName){
+        User user = sessionRegistryGetUserByUserName(userName);
+        sessionRegistryRemoveUserByUser(user);
     }
 
     /**
