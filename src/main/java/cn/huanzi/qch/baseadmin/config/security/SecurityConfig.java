@@ -1,8 +1,8 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
-import cn.huanzi.qch.baseadmin.eventlistener.eventsource.SecurityMetadataSourceEventSource;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.service.SysAuthorityService;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.vo.SysAuthorityVo;
+import cn.huanzi.qch.baseadmin.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -123,6 +123,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(604800)//七天免登陆
                 .tokenRepository(persistentTokenRepository())
                 .userDetailsService(userDetailsServiceImpl)
+                .rememberMeServices(myPersistentTokenBasedRememberMeServices())
                 .and();
     }
 
@@ -131,6 +132,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
         persistentTokenRepository.setDataSource(dataSource);
         return persistentTokenRepository;
+    }
+
+    @Bean()
+    public MyPersistentTokenBasedRememberMeServices myPersistentTokenBasedRememberMeServices() {
+        MyPersistentTokenBasedRememberMeServices rememberMeServices = new MyPersistentTokenBasedRememberMeServices(UUIDUtil.getUuid(), userDetailsServiceImpl,persistentTokenRepository());
+        rememberMeServices.setAlwaysRemember(true);
+        return rememberMeServices;
     }
 
     @Bean

@@ -6,8 +6,13 @@ import cn.huanzi.qch.baseadmin.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -52,10 +57,10 @@ public class CaptchaFilterConfig implements Filter {
             另外，虽然重启了服务，sessionRegistry.getAllSessions()为空，但之前的用户session未过期同样能访问系统，也是这个原因
          */
         User user = securityUtil.sessionRegistryGetUserBySessionId(session.getId());
-        if(user == null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null){
+        Cookie rememberMeCookie = SecurityUtil.getRememberMeCookie(request);
+        if(user == null && rememberMeCookie != null){
 
             //remember me？
-            Cookie rememberMeCookie = SecurityUtil.getRememberMeCookie(request);
             PersistentRememberMeToken token = securityUtil.rememberMeGetTokenForSeries(rememberMeCookie);
 
             /*
@@ -67,16 +72,27 @@ public class CaptchaFilterConfig implements Filter {
             boolean flag1 = !SecurityUtil.checkUrl(requestUri.replaceFirst(contextPath, ""));
             boolean flag2 = !flag0 && Boolean.valueOf(securityUtil.checkUserByUserData(request, token.getUsername()).get("flag").toString());
             if(flag0 || (flag1 && flag2)){
-                log.info("尝试自动登录失败，查无token令牌或当前账号不满足登录限制...");
-                //直接输出js脚本跳转强制用户下线
+                log.info("访问{}，尝试自动登录失败，查无token令牌或当前账号不满足登录限制...",requestUri);
                 HttpServletResponseUtil.printHtml(response,"<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
                 return;
             }
 
             if(flag1) {
-                log.info("当前session连接开启了免登陆，已自动登录！token：{},userName：{}，最后登录时间：{}",rememberMeCookie.getValue(),token.getUsername(),token.getDate());
+                log.info("访问{}，当前session连接开启了免登陆，已自动登录！token：{},userName：{}，最后登录时间：{}",requestUri,rememberMeCookie.getValue(),token.getUsername(),token.getDate());
                 //注册新的session
                 securityUtil.sessionRegistryAddUser(session.getId(), userDetailsServiceImpl.loadUserByUsername(token.getUsername()));
+
+                //保存登录信息
+                user = securityUtil.sessionRegistryGetUserBySessionId(session.getId());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user,user.getPassword(),user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetails(request));
+
+                SecurityContext securityContext = SecurityContextHolder.getContext();
+                securityContext.setAuthentication(authentication);
+                session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,securityContext);
+
+                //更新token信息
+                securityUtil.updateRememberMeByToken(request,response,token);
             }
 
         }
@@ -95,8 +111,7 @@ public class CaptchaFilterConfig implements Filter {
                     parameterRequestWrapper.addParameter(String.valueOf(key),  hashMap.get(key));
                 }
 
-                servletRequest = parameterRequestWrapper;
-                request = (HttpServletRequest) servletRequest;
+                request = parameterRequestWrapper;
             }
 
             //从session中获取生成的验证码
@@ -119,6 +134,6 @@ public class CaptchaFilterConfig implements Filter {
             }
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(request, response);
     }
 }

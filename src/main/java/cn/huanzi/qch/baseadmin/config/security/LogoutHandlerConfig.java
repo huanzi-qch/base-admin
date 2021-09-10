@@ -19,6 +19,8 @@ public class LogoutHandlerConfig implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
-        securityUtil.sessionRegistryRemoveUserBySessionId(httpServletRequest.getRequestedSessionId());
+        securityUtil.sessionRegistryRemoveUserByRequest(httpServletRequest);
+
+        securityUtil.removeRememberMeCookie(httpServletRequest,httpServletResponse);
     }
 }

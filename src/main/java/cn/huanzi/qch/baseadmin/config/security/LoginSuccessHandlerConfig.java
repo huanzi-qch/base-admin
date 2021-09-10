@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -34,17 +35,15 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         Map<String, Object> map = securityUtil.checkUserByUserData(httpServletRequest,user.getUsername());
         String msg = map.get("msg").toString();
 
-        //校验不通过
-        if(Boolean.valueOf(map.get("flag").toString())){
-            //清除当前的上下文
-            SecurityContextHolder.clearContext();
-
-            //清除remember-me持久化tokens
-            securityUtil.rememberMeRemoveUserTokens(user.getUsername());
-        }
-        else{
-            //校验通过，注册session
+        //校验通过
+        if(!Boolean.valueOf(map.get("flag").toString())){
+            //注册session
             securityUtil.sessionRegistryAddUser(httpServletRequest.getRequestedSessionId(),user);
+
+            if(Boolean.valueOf(httpServletRequest.getParameter(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY))){
+                //创建remember-me相关数据
+                securityUtil.addRememberMe(httpServletRequest,httpServletResponse,user.getUsername());
+            }
         }
 
         //判断api加密开关是否开启
