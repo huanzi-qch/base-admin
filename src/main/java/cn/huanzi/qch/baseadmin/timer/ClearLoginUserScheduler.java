@@ -28,7 +28,7 @@ public class ClearLoginUserScheduler {
     /**
      * 每天凌晨3点
      */
-    @Scheduled(cron="0 0 3 ? * *")
+    @Scheduled(cron="0 0 3 * * ?")
     private void test(){
         Date date = new Date();
         int time = 1000 * 60 * 60;
