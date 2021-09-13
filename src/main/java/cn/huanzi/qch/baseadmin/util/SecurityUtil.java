@@ -68,7 +68,7 @@ public class SecurityUtil {
      */
     public static boolean checkUrl(String requestUri){
         //对/进行特殊处理
-        if("/".equals(requestUri)){
+        if("/".equals(requestUri) && !Arrays.asList(SecurityConfig.MATCHERS_PERMITALL_URL).contains(requestUri)){
             return false;
         }
 

@@ -29,6 +29,8 @@ public class SysUser implements Serializable {
 
     private Date lastChangePwdTime;//最近修改密码时间，超出时间间隔，提示用户修改密码
 
+    private Date lastLoginTime;//最近登录时间，最后活跃时间
+
     private String limitMultiLogin;//是否允许账号同一个时刻多人在线，Y/N
 
     private Date createTime;//创建时间

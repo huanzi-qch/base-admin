@@ -2,6 +2,8 @@ package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.ParameterRequestWrapper;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
+import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
+import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -42,6 +45,9 @@ public class CaptchaFilterConfig implements Filter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -93,6 +99,11 @@ public class CaptchaFilterConfig implements Filter {
 
                 //更新token信息
                 securityUtil.updateRememberMeByToken(request,response,token);
+
+                //最后登录时间
+                SysUserVo sysUserVo = sysUserService.findByLoginName(user.getUsername()).getData();
+                sysUserVo.setLastLoginTime(new Date());
+                sysUserService.save(sysUserVo);
             }
 
         }

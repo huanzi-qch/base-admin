@@ -46,9 +46,9 @@ public class SysUserController extends CommonController<SysUserVo, SysUser, Stri
         List<Object> allPrincipals = securityUtil.sessionRegistryGetAllPrincipals();
         ArrayList<SysUserVo> sysUserVoList = new ArrayList<>(allPrincipals.size());
         for (Object allPrincipal : allPrincipals) {
-            SysUserVo userVo = new SysUserVo();
             User user = (User) allPrincipal;
-            userVo.setLoginName(user.getUsername());
+            SysUserVo userVo = sysUserService.findByLoginName(user.getUsername()).getData();
+            userVo.setPassword(null);
             sysUserVoList.add(userVo);
         }
         PageInfo<SysUserVo> pageInfo = new PageInfo<>();

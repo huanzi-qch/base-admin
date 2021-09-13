@@ -1,6 +1,8 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
+import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
+import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -25,6 +28,9 @@ import java.util.Map;
 public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
     @Autowired
     private SecurityUtil securityUtil;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
@@ -44,6 +50,11 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
                 //创建remember-me相关数据
                 securityUtil.addRememberMe(httpServletRequest,httpServletResponse,user.getUsername());
             }
+
+            //最后登录时间
+            SysUserVo sysUserVo = sysUserService.findByLoginName(user.getUsername()).getData();
+            sysUserVo.setLastLoginTime(new Date());
+            sysUserService.save(sysUserVo);
         }
 
         //判断api加密开关是否开启

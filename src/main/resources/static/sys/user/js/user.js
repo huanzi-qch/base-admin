@@ -89,6 +89,7 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate', 'tree', 'util'], func
         , cols: [[
             {field: 'loginName', title: '', hide: true}
             , {field: 'loginName', title: '登录名'}
+            , {field: 'lastLoginTime', title: '最后登录时间'}
             , {fixed: 'right', title: '操作', toolbar: '#userOnLineTableBarDemo'}
         ]]
         , defaultToolbar: ['', '', '']

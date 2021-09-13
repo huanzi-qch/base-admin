@@ -4,7 +4,6 @@ import cn.huanzi.qch.baseadmin.sys.sysauthority.service.SysAuthorityService;
 import cn.huanzi.qch.baseadmin.sys.sysauthority.vo.SysAuthorityVo;
 import cn.huanzi.qch.baseadmin.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.RoleVoter;
@@ -49,9 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyFilterInvocationSecurityMetadataSource myFilterInvocationSecurityMetadataSource;
-
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     private DataSource dataSource;
