@@ -31,14 +31,14 @@ public class ClearLoginUserScheduler {
     @Scheduled(cron="0 0 3 ? * *")
     private void test(){
         Date date = new Date();
-        int TIME = 1000 * 60 * 60;
+        int time = 1000 * 60 * 60;
         List<Object> allPrincipals = securityUtil.sessionRegistryGetAllPrincipals();
         for (Object allPrincipal : allPrincipals) {
             User user = (User) allPrincipal;
             Date lastLoginTime = sysUserService.findByLoginName(user.getUsername()).getData().getLastLoginTime();
 
             //当前时间 - 最后登录时间 >= 1个小时
-            if(date.getTime() - lastLoginTime.getTime() >= TIME){
+            if(date.getTime() - lastLoginTime.getTime() >= time){
                 securityUtil.sessionRegistryRemoveUserByUserName(user.getUsername());
                 log.info("清理：{}，最后登录时间{}",user.getUsername(),lastLoginTime);
             }
