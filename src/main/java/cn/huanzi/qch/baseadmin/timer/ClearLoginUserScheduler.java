@@ -29,7 +29,7 @@ public class ClearLoginUserScheduler {
      * 每天凌晨3点
      */
     @Scheduled(cron="0 0 3 * * ?")
-    private void test(){
+    private void task(){
         Date date = new Date();
         int time = 1000 * 60 * 60;
         List<Object> allPrincipals = securityUtil.sessionRegistryGetAllPrincipals();

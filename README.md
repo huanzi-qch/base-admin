@@ -98,12 +98,15 @@ package pom.xml文件的同级目录下面的package
 
 ```
 ## AD广告位（长期招租，如有需要请私信）<br/> 
-[阿里云服务器（ECS）等，高性能服务器，就选阿里云](https://s.click.taobao.com/zb70Vtu)<br/> 
-[虚机+服务器，独享虚机服务 1c1g 3M带宽](https://s.click.taobao.com/q9rZYtu)<br/> 
-[云服务器，企业级云服务器特惠5折](https://s.click.taobao.com/2khzUtu)<br/> 
-[全民云计算，1核1G仅需293元/年](https://s.click.taobao.com/vLrzUtu)<br/> 
-[云服务器，低至323元/年](https://s.click.taobao.com/8PG0Vtu)<br/> 
-[云服务器，十倍性能提升,最佳性价比](https://s.click.taobao.com/L110Vtu)<br/> 
+[【阿里云专享特惠】新老用户同享，上云优化聚集地！](https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=ckkryd9h&utm_source=ckkryd9h)<br/>     
+[【最新活动页】上新必买抢先知，劲爆优惠不错过！](https://www.aliyun.com/activity?userCode=ckkryd9h)<br/>     
+[【上云季】轻量应用服务器2核2G 低至60元/年起！](https://www.aliyun.com/activity/daily/fy22sepmain?userCode=ckkryd9h)<br/>     
+[【云小站特惠】上云优惠聚集地，云小站专属代金券可叠加产品折扣使用！](https://www.aliyun.com/minisite/goods?taskCode=yds2021-09zy&recordId=null&userCode=ckkryd9h)<br/>     
+[【云服务器 精选特惠】新用户低至0.6折起，香港与海外服务器最低24元/月起！](https://www.aliyun.com/daily-act/ecs/activity_selection?userCode=ckkryd9h)<br/>     
+[【ECS升级续费】ECS实例升级、续费，享低至 6.3折 限时折扣！](https://www.aliyun.com/daily-act/ecs/care?userCode=ckkryd9h)<br/>     
+[【云服务器ECS】 精选特惠，老用户升级最低享6.5折，协助您选择最合适配置方案！](https://www.aliyun.com/product/ecs?userCode=ckkryd9h)<br/>     
+[【爆款特惠】精选全网爆款产品，爆品销量榜单，全场低至0元起，还有更多云产品免费试用，带你0门槛上云！](https://www.aliyun.com/activity/daily/bestoffer?userCode=ckkryd9h)<br/>     
+
 
 ## QQ群<br/>
 有事请加群，有问题进群大家一起交流！
