@@ -107,6 +107,7 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate', 'tree', 'util'], func
                 $("input[name='createTime']").val(nowTime);
                 $("input[name='updateTime']").val(nowTime);
                 $("input[name='lastChangePwdTime']").val(nowTime);
+                $("input[name='lastLoginTime']").val(nowTime);
 
                 $("input[name='loginName']").removeAttr("readonly");
 
@@ -197,14 +198,14 @@ function userFormSave() {
         }
 
         //保存用户菜单跟用户权限,只要userId，以及Id集合就可以了
-        let menuIdList = commonUtil.getChildrenByTree(tree.getChecked('userMenuTree')[0].children);
+        let menuIdList = commonUtil.getChildrenByTree(tree.getChecked('userMenuTree').length > 0 ? tree.getChecked('userMenuTree')[0].children : []);
         let postData = {
             userId: data.data.userId,
             menuIdList: menuIdList.join(",")
         };
         $.post(ctx + "/sys/sysUserMenu/saveAllByUserId", postData, function (data) {});
 
-        let authorityIdList = commonUtil.getChildrenByTree(tree.getChecked('userAuthorityTree')[0].children);
+        let authorityIdList = commonUtil.getChildrenByTree(tree.getChecked('userAuthorityTree').length > 0 ? tree.getChecked('userAuthorityTree')[0].children : []);
         let postData2 = {
             userId: data.data.userId,
             authorityIdList: authorityIdList.join(",")
