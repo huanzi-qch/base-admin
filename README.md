@@ -122,12 +122,9 @@ QQ群号：1015379123
 <br/>注：如果图片加载不出来请点击查看[这里](https://huanzi-qch.gitee.io/file-server/images/qq.png)
 
 ## 捐献<br/>
-请注意，作者五行缺钱，如果喜欢这个项目，请随意打赏！
+相应的资金支持能更好的持续项目的维护和开发，如果喜欢这个项目，请随意打赏！
 
-支付宝<br/>
-![](https://huanzi-qch.gitee.io/file-server/images/zhifubao.png) 
-<br/>注：如果图片加载不出来请点击查看[这里](https://huanzi-qch.gitee.io/file-server/images/zhifubao.png) 
+| 支付宝 | 微信 |
+|  ----  | ----  |
+| <img src="http://huanzi-qch.gitee.io/file-server/images/zhifubao.png"  width="150"> | <img src="http://huanzi-qch.gitee.io/file-server/images/weixin.png" width="150"> |
 
-微信<br/>
-![](https://huanzi-qch.gitee.io/file-server/images/weixin.png) 
-<br/>注：如果图片加载不出来请点击查看[这里](https://huanzi-qch.gitee.io/file-server/images/weixin.png) 
