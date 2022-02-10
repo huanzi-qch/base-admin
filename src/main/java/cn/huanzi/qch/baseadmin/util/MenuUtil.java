@@ -33,10 +33,6 @@ public class MenuUtil {
             nav.setChildren(getChildBySysMenuVo(nav.getMenuId(), allMenu));
         }
         childList.sort(orderBySysMenuVo()); //排序
-//        //如果节点下没有子节点，返回一个空List（递归退出）
-//        if (childList.size() == 0 ){
-//            return new ArrayList<>(0);
-//        }
         return childList;
     }
 
@@ -74,10 +70,6 @@ public class MenuUtil {
             nav.setChildren(getChildBySysShortcutMenuVo(nav.getShortcutMenuId(), allMenu));
         }
         childList.sort(orderBySysShortcutMenuVo()); //排序
-//        //如果节点下没有子节点，返回一个空List（递归退出）
-//        if (childList.size() == 0 ){
-//            return new ArrayList<>(0);
-//        }
         return childList;
     }
 
