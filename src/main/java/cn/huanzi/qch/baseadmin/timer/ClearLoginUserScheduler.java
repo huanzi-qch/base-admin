@@ -12,8 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 定时清除登录用户
- * 定时器
+ * 定时清除注册表，避免一直存在无效用户
  */
 @Slf4j
 @Component
@@ -31,13 +30,13 @@ public class ClearLoginUserScheduler {
     @Scheduled(cron="0 0 3 * * ?")
     private void task(){
         Date date = new Date();
-        int time = 1000 * 60 * 60;
+        int time = 1000 * 60 * 60;//PS：这里的值取session过期时间更合适
         List<Object> allPrincipals = securityUtil.sessionRegistryGetAllPrincipals();
         for (Object allPrincipal : allPrincipals) {
             User user = (User) allPrincipal;
             Date lastLoginTime = sysUserService.findByLoginName(user.getUsername()).getData().getLastLoginTime();
 
-            //当前时间 - 最后登录时间 >= 1个小时
+            //当前时间 - 最后登录时间 >= time
             if(date.getTime() - lastLoginTime.getTime() >= time){
                 securityUtil.sessionRegistryRemoveUserByUserName(user.getUsername());
                 log.info("清理：{}，最后登录时间{}",user.getUsername(),lastLoginTime);

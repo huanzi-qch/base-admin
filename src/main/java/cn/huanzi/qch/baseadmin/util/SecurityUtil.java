@@ -315,8 +315,6 @@ public class SecurityUtil {
                 sessionInformation.expireNow();
                 sessionRegistry.removeSessionInformation(sessionInformation.getSessionId());
             }
-            //清除remember-me持久化tokens
-            this.rememberMeRemoveUserTokensByUserName(user.getUsername());
         }
     }
 
@@ -324,8 +322,12 @@ public class SecurityUtil {
      * 根据sessionId从sessionRegistry剔除当前登录用户
      */
     public void sessionRegistryRemoveUserByRequest(HttpServletRequest request){
-        String sessionId = request.getRequestedSessionId();
+        sessionRegistryRemoveUserByRequest(request.getRequestedSessionId());
 
+        //清除当前的上下文
+        SecurityContextHolder.clearContext();
+    }
+    public void sessionRegistryRemoveUserByRequest(String sessionId){
         SessionInformation sessionInformation = sessionRegistry.getSessionInformation(sessionId);
 
         if(sessionInformation == null){
@@ -334,13 +336,16 @@ public class SecurityUtil {
         sessionInformation.expireNow();
         sessionRegistry.removeSessionInformation(sessionId);
 
-        //清除当前的上下文
-        SecurityContextHolder.clearContext();
     }
 
     /**
      * 根据userName从sessionRegistry中删除user
      */
+    public void sessionRegistryRemoveUserAndRemoveUserTokensByUserName(String userName){
+        sessionRegistryRemoveUserByUserName(userName);
+        //清除remember-me持久化tokens
+        this.rememberMeRemoveUserTokensByUserName(userName);
+    }
     public void sessionRegistryRemoveUserByUserName(String userName){
         User user = sessionRegistryGetUserByUserName(userName);
         sessionRegistryRemoveUserByUser(user);
