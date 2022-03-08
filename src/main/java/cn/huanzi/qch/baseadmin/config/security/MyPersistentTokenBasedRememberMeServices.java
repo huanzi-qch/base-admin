@@ -38,6 +38,8 @@ public class MyPersistentTokenBasedRememberMeServices extends AbstractRememberMe
             if (token == null) {
                 throw new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);
             } else if (!presentedToken.equals(token.getTokenValue())) {
+                //这里不再数据操作，交由LogoutHandlerConfig处理
+
 //                this.tokenRepository.removeUserTokens(token.getUsername());
                 throw new CookieTheftException(this.messages.getMessage("PersistentTokenBasedRememberMeServices.cookieStolen", "Invalid remember-me token (Series/token) mismatch. Implies previous cookie theft attack."));
             } else if (token.getDate().getTime() + (long)this.getTokenValiditySeconds() * 1000L < System.currentTimeMillis()) {
@@ -46,7 +48,7 @@ public class MyPersistentTokenBasedRememberMeServices extends AbstractRememberMe
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug("Refreshing persistent login token for user '" + token.getUsername() + "', series '" + token.getSeries() + "'");
                 }
-                //这里不再进行数据处理，交由
+                //这里不再数据操作，交由LogoutHandlerConfig处理
 
 //                PersistentRememberMeToken newToken = new PersistentRememberMeToken(token.getUsername(), token.getSeries(), this.generateTokenData(), new Date());
 //

@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.user.service;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
+import cn.huanzi.qch.baseadmin.config.security.PasswordConfig;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.MD5Util;
@@ -18,12 +19,23 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SysUserService sysUserService;
 
+    @Autowired
+    private PasswordConfig passwordConfig;
+
     @Override
     public Result<SysUserVo> updatePassword(String oldPassword, String newPassword) {
         SysUserVo sysUserVo = sysUserService.findByLoginName(SecurityUtil.getLoginUser().getUsername()).getData();
         Result<SysUserVo> result = Result.of(null,false,"修改失败，你输入的原密码错误！");
         //确认旧密码
         if(sysUserVo.getPassword().equals(MD5Util.getMd5(oldPassword))){
+
+            //弱口令限制
+            String msg = passwordConfig.password(newPassword);
+            if(!"1".equals(msg)){
+                result = Result.of(null,false,msg);
+                return result;
+            }
+
             //新密码
             sysUserVo.setPassword(MD5Util.getMd5(newPassword));
 

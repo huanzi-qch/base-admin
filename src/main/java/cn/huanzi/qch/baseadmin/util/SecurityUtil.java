@@ -137,8 +137,14 @@ public class SecurityUtil {
 
         //禁止多人在线
         if("N".equals(sysUserVo.getLimitMultiLogin()) &&  sessionRegistryGetUserByUserName(userName) != null){
+            //这里选择合适自己的方案
+
+            //方案一：禁止新用户登陆
             msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
             flag = true;
+
+            //方案二：新用户顶掉旧用户
+//            this.sessionRegistryRemoveUserByUserName(userName);
         }
 
         //超出有效时间

@@ -152,6 +152,15 @@
         //获取api加密开关并存到sessionStorage
         sessionStorage.setItem('sysApiEncrypt', [[${sys.sysApiEncrypt}]]);
 
+        //如果开启了检查密码复杂度且最近修改密码时间 > 90天则弹窗提示
+        sessionStorage.setItem('sysCheckPwdEncrypt', [[${sys.sysCheckPwdEncrypt}]]);
+        if("Y" === [[${sys.sysCheckPwdEncrypt}]] && new Date() - new Date([[${loginUser.lastChangePwdTime}]]) > 1000 * 60 * 60 * 24 * 90){
+            layui.use(['layer'], function () {
+                let layer = layui.layer;
+                layer.alert("距离上次修改密码已经超过90天，为了您的账号安全请及时更新密码！");
+            });
+        }
+
         //重写jq的ajax加密
         jQueryExtend.ajaxExtend();
     </script>

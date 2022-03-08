@@ -29,6 +29,7 @@ layui.use(['colorpicker','form'], function () {
     //radio checkbox
     $("#sysForm").find("[name='sysApiEncrypt'][value='" + $("#sysApiEncrypt").val() + "']").attr("checked", true);
     $("#sysForm").find("[name='sysOpenApiLimiterEncrypt'][value='" + $("#sysOpenApiLimiterEncrypt").val() + "']").attr("checked", true);
+    $("#sysForm").find("[name='sysCheckPwdEncrypt'][value='" + $("#sysCheckPwdEncrypt").val() + "']").attr("checked", true);
     form.render();
 });
 

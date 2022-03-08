@@ -16,6 +16,10 @@ function userFormSave() {
  * 修改密码
  */
 function updatePassword() {
+    let msg = "新密码";
+    if("Y" === sessionStorage.getItem('sysCheckPwdEncrypt')){
+        msg = "至少六位数，数字 + 大小写字母 + 特殊字符";
+    }
     let html = "<form id=\"updatePassword\" class=\"layui-form layui-form-pane\">\n" +
         "\t<div class=\"layui-form-item\">\n" +
         "\t\t<label class=\"layui-form-label\" style='width: 110px !important;'>原密码</label>\n" +
@@ -28,7 +32,7 @@ function updatePassword() {
         "\t\t<label class=\"layui-form-label\"  style='width: 110px !important;'>新密码</label>\n" +
         "\t\t<div class=\"layui-input-block\">\n" +
         "\t\t\t<input type=\"text\" name=\"newPassword\" autocomplete=\"off\"\n" +
-        "\t\t\t\t   placeholder=\"新密码\" class=\"layui-input\">\n" +
+        "\t\t\t\t   placeholder=\""+msg+"\" class=\"layui-input\">\n" +
         "\t\t</div>\n" +
         "\t</div>\n" +
         "\t<div class=\"layui-form-item\">\n" +
@@ -51,7 +55,7 @@ function updatePassword() {
     layer.open({
         title: '修改密码',
         type: 1,
-        area: ['400px', '250px'],
+        area: ['430px', '250px'],
         fixed: false, //不固定
         maxmin: true,
         content: html

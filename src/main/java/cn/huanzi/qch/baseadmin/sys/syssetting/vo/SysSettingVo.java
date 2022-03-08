@@ -22,6 +22,8 @@ public class SysSettingVo extends PageCondition implements Serializable {
 
     private String sysOpenApiLimiterEncrypt;//OpenAPI限流 Y/N
 
+    private String sysCheckPwdEncrypt;//检查密码复杂度 Y/N
+
     private Date createTime;//创建时间
 
     private Date updateTime;//修改时间
