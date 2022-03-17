@@ -100,7 +100,7 @@ GitHub地址：https://github.com/huanzi-qch/fast-scaffold
 package pom.xml文件的同级目录下面的package
 
 ```
-## AD广告位（长期招租，如有需要请私信）<br/> 
+## [AD广告位](https://huanzi-qch.gitee.io/file-server/ad/adservice.html) （长期招租，如有需要请私信）<br/> 
 [【基塔后台】免费后台管理系统，低代码快速搭建管理后台](https://www.jeata.com/?hmsr=promotion&hmpl=huanzi-qch) <br/>
 <br/>
 [【阿里云】阿里云最全的优惠活动聚集地！](https://www.aliyun.com/activity?userCode=ckkryd9h) <br/>
