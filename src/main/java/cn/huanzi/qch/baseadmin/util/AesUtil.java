@@ -100,6 +100,7 @@ public class AesUtil {
      */
     public static String decrypt(String encryptStr, String decryptKey) throws Exception {
         //base64格式的key字符串转byte
+        //底层使用utf-8进行转换，StringUtils.getBytesUtf8()
         byte[] decodeBase64 = Base64.decodeBase64(encryptStr);
 
         //设置Cipher对象
@@ -107,7 +108,8 @@ public class AesUtil {
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), KEY_ALGORITHM));
 
         //调用doFinal解密
-        return new String(cipher.doFinal(decodeBase64));
+        //同样需要使用utf-8转换回来，StringUtils.newStringUtf8()或者直接new String()
+        return new String(cipher.doFinal(decodeBase64),StandardCharsets.UTF_8);
     }
 
 }

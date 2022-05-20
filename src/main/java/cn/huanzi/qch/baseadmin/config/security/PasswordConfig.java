@@ -31,13 +31,11 @@ public class PasswordConfig implements PasswordEncoder {
 
     /**
      * 密码复杂度限制
-     * code
-     *  0无限制
-     *  1一般
-     *  2中等
-     *  3复杂
-     *
-     * 返回1满足复杂度要求，否则不满足要求
+     *  返回1满足复杂度要求，否则不满足要求
+     */
+    /*
+        强密码(必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 8-10 之间)：^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,10}$
+        强密码(必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间)：^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,10}$
      */
     public String password(String password){
         String sysCheckPwdEncrypt = SysSettingUtil.getSysSetting().getSysCheckPwdEncrypt();
