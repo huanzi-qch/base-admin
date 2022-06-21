@@ -11,12 +11,9 @@ import cn.huanzi.qch.baseadmin.util.MenuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -37,7 +34,7 @@ public class SysMenuServiceImpl extends CommonServiceImpl<SysMenuVo, SysMenu, St
         SysMenuVo sysMenuVo = new SysMenuVo();
         sysMenuVo.setMenuParentId(id);
         super.list(sysMenuVo).getData().forEach((menuVo)->{
-            super.delete(menuVo.getMenuId());
+            delete(menuVo.getMenuId());
         });
 
         //后删除所有用户菜单表关联信息

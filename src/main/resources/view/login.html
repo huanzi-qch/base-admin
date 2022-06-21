@@ -91,12 +91,14 @@
         if($("input[name='rememberMe']:checked").length <= 0){
             rememberMe = false;
         }
+        layer.load(2);
         $.post(ctx + "/login", {
             "username": $("#username").val(),
             "password": $("#password").val(),
             "captcha": $("#captcha").val(),
             "remember-me": rememberMe,
         }, function (data) {
+            layer.closeAll();
             if (data.code == 300) {
                 layer.msg(data.msg, {icon: 1,time: 1000}, function () {
                     window.location.href = ctx + data.url;
