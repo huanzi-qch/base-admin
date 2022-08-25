@@ -4,13 +4,29 @@ import cn.huanzi.qch.baseadmin.util.MD5Util;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+/**
+ * 密码安全策略
+ * https://www.cnblogs.com/huanzi-qch/p/16613636.html
+ */
 @Component
 public class PasswordConfig implements PasswordEncoder {
+    // 用户连续密码输入错误次数
+    private final static ConcurrentHashMap<String,Integer> pwdFailedMap = new ConcurrentHashMap<>(10);
+    // 用户连续密码输入错误次数达上限后锁定时长
+    private final static ConcurrentHashMap<String, Date> banTimeMap = new ConcurrentHashMap<>(10);
+    // 允许连续密码输入错误次数
+    private final static Integer maxTryLogin = 3;
+    // 连续失败后锁定时长（分钟）
+    private final static Integer banMinute = 5;
+    // 密码长度限制：[最少,最多]
+    private final static Integer[] passwordLength = {6,12};
 
     /**
      * 加密
@@ -30,53 +46,167 @@ public class PasswordConfig implements PasswordEncoder {
     }
 
     /**
-     * 密码复杂度限制
-     *  返回1满足复杂度要求，否则不满足要求
+     * 密码复杂度校验
+     * 满足要求返回1
      */
-    /*
-        强密码(必须包含大小写字母和数字的组合，不能使用特殊字符，长度在 8-10 之间)：^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,10}$
-        强密码(必须包含大小写字母和数字的组合，可以使用特殊字符，长度在8-10之间)：^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,10}$
-     */
-    public String password(String password){
+    public String pwdCheck(String password){
+
         String sysCheckPwdEncrypt = SysSettingUtil.getSysSetting().getSysCheckPwdEncrypt();
 
-        if(StringUtils.isEmpty(password)){
+        //空校验
+        if(password == null || "".equals(password)){
             return "密码不能为空！";
         }
 
+        //是否开启密码安全策略
         if(!"Y".equals(sysCheckPwdEncrypt)){
             return "1";
         }
 
-        //密码长度需大于或等于六位数
-        if(password.length() < 6){
-            return  "密码长度需大于或等于六位数！";
+        //密码长度限制
+        if(password.length() < passwordLength[0]){
+            return "密码长度不能小于"+passwordLength[0]+"位数！";
+        }
+        if(password.length() > passwordLength[1]){
+            return "密码长度不能大于"+passwordLength[1]+"位数！";
         }
 
         //数字
         Pattern pat = Pattern.compile("[0-9]+");
-
-        //字母
-        Pattern pat1 = Pattern.compile("[a-zA-Z]+");
-
-        //大写字母
-        Pattern pat2 = Pattern.compile("[A-Z]+");
+        if(!pat.matcher(password).find()){
+            return "密码需包含数字！";
+        }
 
         //小写字母
-        Pattern pat3 = Pattern.compile("[a-z]+");
+        Pattern pat2 = Pattern.compile("[a-z]+");
+        if(!pat2.matcher(password).find()){
+            return "密码需包含小写字母！";
+        }
+
+        //大写字母
+        Pattern pat3 = Pattern.compile("[A-Z]+");
+        if(!pat3.matcher(password).find()){
+            return "密码需包含大写字母！";
+        }
 
         //特殊字符：~!@#$%^&*()_+/-[]{}\|;':"<>?,.
         Pattern pat4 = Pattern.compile("[~!@#$%^&*()_+/\\-\\[\\]{}\\\\|;':\"<>?,.]+");
-
-        //密码需包含数字 + 大写字母 + 小写字母 + 特殊字符！
-        if(!pat.matcher(password).find() ||
-                !pat1.matcher(password).find() ||
-                !pat2.matcher(password).find() ||
-                !pat3.matcher(password).find() ||
-                !pat4.matcher(password).find()){
-            return  "密码需包含数字 + 大写字母 + 小写字母 + 特殊字符！";
+        if(!pat4.matcher(password).find()){
+            return "密码需包含特殊字符！";
         }
+
+
+        /*
+            也可以直接使用下面这个正则，效果一样，只是错误提示没那么详细
+         */
+        //数字：(?=.*\d)
+        //小写字母：(?=.*[a-z])
+        //大写字母：(?=.*[A-Z])
+        //特殊字符：(?=.*[~!@#$%^&*()_+/\-\[\]{}\\|;':"<>?,.])
+        //长度限制：.{6,12}
+        //Pattern pat5 = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_+/\\-\\[\\]{}\\\\|;':\"<>?,.]).{"+passwordLength[0]+","+passwordLength[1]+"}$");
+        //if(!pat5.matcher(password).find()){
+        //    return "密码需包含数字、小写字母、大写字母、特殊字符且长度在"+passwordLength[0]+"-"+passwordLength[1]+"之间！";
+        //}
+
         return "1";
+    }
+
+    /**
+     * 密码错误一次，并返回可剩余次数提示
+     */
+    public String addPwdFailedCount(String username) {
+        String sysCheckPwdEncrypt = SysSettingUtil.getSysSetting().getSysCheckPwdEncrypt();
+
+        //是否开启密码安全策略
+        if(!"Y".equals(sysCheckPwdEncrypt)){
+            return "1";
+        }
+
+        Integer result = 0;
+        if (pwdFailedMap.containsKey(username)) {
+            result = pwdFailedMap.get(username);
+
+            //校验锁定时间是否到期
+            if (banTimeMap.containsKey(username)) {
+                Date banTime = banTimeMap.get(username);
+                long diff = banTime.getTime() - new Date().getTime();
+
+                if(diff <= 0){
+                    banTimeMap.remove(username);
+                    pwdFailedMap.remove(username);
+                    result = 0;
+                }
+            }
+        }
+
+        ++result;
+
+        if (result >= maxTryLogin) {
+            //当前时间 + banMinute
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MINUTE, banMinute);
+            Date banTime = cal.getTime();
+            banTimeMap.put(username, banTime);
+
+            return "密码已经输错" + maxTryLogin + "次，" + checkBanTimeByUser(username);
+        } else {
+            pwdFailedMap.put(username, result);
+
+            return "密码已经输错" + result + "次，输错" + (maxTryLogin - result) + "次后帐号将会被锁定！";
+        }
+    }
+
+    /**
+     * 检查用户是否已经被锁定
+     * 未被锁定返回1
+     */
+    public String checkBanTimeByUser(String username) {
+        String sysCheckPwdEncrypt = SysSettingUtil.getSysSetting().getSysCheckPwdEncrypt();
+
+        //是否开启密码安全策略
+        if(!"Y".equals(sysCheckPwdEncrypt)){
+            return "1";
+        }
+
+        if (banTimeMap.containsKey(username)) {
+            Date banTime = banTimeMap.get(username);
+            long diff = banTime.getTime() - new Date().getTime();
+
+            //校验锁定时间是否到期
+            if(diff <= 0){
+                banTimeMap.remove(username);
+                pwdFailedMap.remove(username);
+                return "1";
+            }
+
+            //毫秒转分钟 1000 * 60
+            long minute = (long)Math.ceil((double)diff / 60000);
+            return "帐号已被锁定，请" + minute + "分钟后，再登录系统！";
+        }
+
+        return "1";
+    }
+
+    /**
+     * 清除对应集合内容
+     */
+    public void removeMapDataByUser(String username){
+        String sysCheckPwdEncrypt = SysSettingUtil.getSysSetting().getSysCheckPwdEncrypt();
+
+        //是否开启密码安全策略
+        if("Y".equals(sysCheckPwdEncrypt)){
+            pwdFailedMap.remove(username);
+            banTimeMap.remove(username);
+        }
+    }
+
+    /**
+     * 清除所有集合内容
+     */
+    public void removeMapDataByAll(){
+        pwdFailedMap.clear();
+        banTimeMap.clear();
     }
 
     /**
@@ -99,25 +229,4 @@ public class PasswordConfig implements PasswordEncoder {
                 char4[random.nextInt(char4.length - 1)];
     }
 
-//    public static void main(String[] args) {
-//        System.out.println(password("",0));//密码不能为空！
-//        System.out.println(password("sa",0));//1
-//
-//        System.out.println(password("12345",1));//密码长度需大于或等于六位数！
-//        System.out.println(password("12345A",1));//1
-//
-//        System.out.println(password("12345",2));//密码长度需大于或等于六位数！
-//        System.out.println(password("123456",2));//密码需包含数字 + 字母！
-//        System.out.println(password("BB23456",2));//1
-//
-//        System.out.println(password("12345",3));//密码长度需大于或等于六位数！
-//        System.out.println(password("BB23456",3));//密码需包含数字 + 大写字母 + 小写字母 + 特殊字符！
-//        System.out.println(password("B23dfa",3));//密码需包含数字 + 大写字母 + 小写字母 + 特殊字符！
-//        System.out.println(password("BB23^5a",3));//1
-//
-//        System.out.println("六位数随机密码测试：");
-//        for (int i = 0; i < 10; i++) {
-//            System.out.println(randomPassword());
-//        }
-//    }
 }

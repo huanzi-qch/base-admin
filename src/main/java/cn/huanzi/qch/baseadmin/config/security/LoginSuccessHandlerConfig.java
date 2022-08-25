@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -32,8 +31,11 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
     @Autowired
     private SysUserService sysUserService;
 
+    @Autowired
+    private PasswordConfig passwordConfig;
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
 
         //查询当前与系统交互的用户，存储在本地线程安全上下文，校验账号有效性
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -42,11 +44,11 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         String msg = map.get("msg").toString();
 
         //校验通过
-        if(!Boolean.valueOf(map.get("flag").toString())){
+        if(!Boolean.parseBoolean(map.get("flag").toString())){
             //注册session
             securityUtil.sessionRegistryAddUser(httpServletRequest.getRequestedSessionId(),user);
 
-            if(Boolean.valueOf(httpServletRequest.getParameter(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY))){
+            if(Boolean.parseBoolean(httpServletRequest.getParameter(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY))){
                 //创建remember-me相关数据
                 securityUtil.addRememberMe(httpServletRequest,httpServletResponse,user.getUsername());
             }
@@ -55,6 +57,9 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
             SysUserVo sysUserVo = sysUserService.findByLoginName(user.getUsername()).getData();
             sysUserVo.setLastLoginTime(new Date());
             sysUserService.save(sysUserVo);
+
+            //密码安全策略，登录成功后清除错误次数
+            passwordConfig.removeMapDataByUser(user.getUsername());
         }
 
         //判断api加密开关是否开启

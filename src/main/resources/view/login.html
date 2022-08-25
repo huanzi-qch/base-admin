@@ -87,6 +87,19 @@
      * 登录
      */
     function formSubmit() {
+        if(!$("#username").val()){
+            layer.msg("账号不能为空！", {icon: 2,time: 2000});
+            return;
+        }
+        if(!$("#password").val()){
+            layer.msg("密码不能为空！", {icon: 2,time: 2000});
+            return;
+        }
+        if(!$("#captcha").val()){
+            layer.msg("验证码不能为空！", {icon: 2,time: 2000});
+            return;
+        }
+
         let rememberMe = true;
         if($("input[name='rememberMe']:checked").length <= 0){
             rememberMe = false;
@@ -104,7 +117,7 @@
                     window.location.href = ctx + data.url;
                 });
             } else {
-                layer.msg(data.msg, {icon: 2,time: 2000}, function () {});
+                layer.msg(data.msg, {icon: 2,time: 3000});
             }
         })
     }

@@ -68,7 +68,7 @@
                         </div>
                     </div>
                     <div class="layui-form-item  layui-form-text">
-                        <label class="layui-form-label">是否开启检查密码复杂度，至少六位数，数字 + 大小写字母 + 特殊字符（仅在用户修改密码是做检查）</label>
+                        <label class="layui-form-label">是否开启密码安全策略（密码复杂度仅在用户修改密码是做检查）</label>
                         <div class="layui-input-block">
                             <input id="sysCheckPwdEncrypt" th:value="${sys.sysCheckPwdEncrypt}"  hidden="hidden"/>
                             <input type="radio" name="sysCheckPwdEncrypt" value="Y" title="是">

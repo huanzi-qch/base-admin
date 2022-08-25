@@ -29,8 +29,8 @@ public class UserServiceImpl implements UserService {
         //确认旧密码
         if(sysUserVo.getPassword().equals(MD5Util.getMd5(oldPassword))){
 
-            //弱口令限制
-            String msg = passwordConfig.password(newPassword);
+            //密码安全策略，弱口令限制
+            String msg = passwordConfig.pwdCheck(newPassword);
             if(!"1".equals(msg)){
                 result = Result.of(null,false,msg);
                 return result;

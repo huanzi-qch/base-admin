@@ -3,6 +3,7 @@ package cn.huanzi.qch.baseadmin.config.security;
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
 import cn.huanzi.qch.baseadmin.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,20 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class LoginFailureHandlerConfig implements AuthenticationFailureHandler {
+
+    @Autowired
+    private PasswordConfig passwordConfig;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-        String msg = "{\"code\":\"400\",\"msg\":\"用户名或密码错误\"}";
+        String msg = "{\"code\":\"400\",\"msg\":\"账号或密码错误\"}";
+
+        //密码错误次数+1
+        String username = httpServletRequest.getParameter("username");
+        String addPwdFailedCount = passwordConfig.addPwdFailedCount(username);
+        if(!"1".equals(addPwdFailedCount)){
+            msg = "{\"code\":\"400\",\"msg\":\""+addPwdFailedCount+"\"}";
+        }
 
         //判断api加密开关是否开启
         if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){

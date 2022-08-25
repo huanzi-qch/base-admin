@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import cn.huanzi.qch.baseadmin.config.security.MyPersistentTokenBasedRememberMeServices;
+import cn.huanzi.qch.baseadmin.config.security.PasswordConfig;
 import cn.huanzi.qch.baseadmin.config.security.SecurityConfig;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
@@ -49,6 +50,9 @@ public class SecurityUtil {
 
     //认证数据源，URL/权限映射缓存
     public static Map<String, HashSet<ConfigAttribute>> urlAuthorityMap = new ConcurrentHashMap<>(150);
+
+    @Autowired
+    private PasswordConfig passwordConfig;
 
     /**
      * 从ThreadLocal获取其自己的SecurityContext，从而获取在Security上下文中缓存的登录用户
@@ -121,34 +125,35 @@ public class SecurityUtil {
      * 检查用户登录限制
      */
     public Map<String,Object> checkUserByUserData(HttpServletRequest httpServletRequest,String userName){
-        SysUserVo sysUserVo = sysUserService.findByLoginName(userName).getData();
-
         //默认登陆成功
         String msg = "{\"code\":\"300\",\"msg\":\"登录成功\",\"url\":\"/index\"}";
         boolean flag = false;
 
-        //登陆IP不在白名单
-        String ipAddr = IpUtil.getIpAddr(httpServletRequest);
-        String limitedIp = sysUserVo.getLimitedIp();
-        if(!StringUtils.isEmpty(limitedIp) && !Arrays.asList(limitedIp.split(",")).contains(ipAddr)){
-            msg = "{\"code\":\"400\",\"msg\":\"登陆IP不在白名单，请联系管理员\"}";
+        //密码安全策略，校验是否已被锁定（密码错误次数达上限）
+        String checkBanTime = passwordConfig.checkBanTimeByUser(userName);
+        if(!"1".equals(checkBanTime)){
+            msg = "{\"code\":\"400\",\"msg\":\""+checkBanTime+"\"}";
             flag = true;
         }
 
-        //禁止多人在线
-        if("N".equals(sysUserVo.getLimitMultiLogin()) &&  sessionRegistryGetUserByUserName(userName) != null){
-            //这里选择合适自己的方案
+        //如果flag标识已经为true，可以跳过一些无用步骤以节省性能开支
 
-            //方案一：禁止新用户登陆
-            msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
+        SysUserVo sysUserVo = null;
+        if(!flag){
+            sysUserVo = sysUserService.findByLoginName(userName).getData();
+        }
+
+        //禁止登陆系统
+        if(!flag && "N".equals(sysUserVo.getValid())){
+            msg = "{\"code\":\"400\",\"msg\":\"该账号已被禁止登陆系统，请联系管理员\"}";
             flag = true;
 
-            //方案二：新用户顶掉旧用户
-//            this.sessionRegistryRemoveUserByUserName(userName);
+            //清除remember-me持久化token，删除所有
+            this.rememberMeRemoveUserTokensByUserName(userName);
         }
 
         //超出有效时间
-        if(!StringUtils.isEmpty(sysUserVo.getExpiredTime()) && System.currentTimeMillis() > sysUserVo.getExpiredTime().getTime()){
+        if(!flag && !StringUtils.isEmpty(sysUserVo.getExpiredTime()) && System.currentTimeMillis() > sysUserVo.getExpiredTime().getTime()){
             msg = "{\"code\":\"400\",\"msg\":\"该账号已失效，请联系管理员\"}";
             flag = true;
 
@@ -156,13 +161,22 @@ public class SecurityUtil {
             this.rememberMeRemoveUserTokensByUserName(userName);
         }
 
-        //禁止登陆系统
-        if("N".equals(sysUserVo.getValid())){
-            msg = "{\"code\":\"400\",\"msg\":\"该账号已被禁止登陆系统，请联系管理员\"}";
+        //禁止多人在线
+        if(!flag && "N".equals(sysUserVo.getLimitMultiLogin()) &&  sessionRegistryGetUserByUserName(userName) != null){
+            //这里选择合适自己的方案
+
+            //方案一：禁止新用户登陆
+            msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
             flag = true;
 
-            //清除remember-me持久化token，删除所有
-            this.rememberMeRemoveUserTokensByUserName(userName);
+            //方案二：新用户顶掉旧用户
+            //this.sessionRegistryRemoveUserByUserName(userName);
+        }
+
+        //登陆IP不在白名单
+        if(!flag && !StringUtils.isEmpty(sysUserVo.getLimitedIp()) && !Arrays.asList(sysUserVo.getLimitedIp().split(",")).contains(IpUtil.getIpAddr(httpServletRequest))){
+            msg = "{\"code\":\"400\",\"msg\":\"登陆IP不在白名单，请联系管理员\"}";
+            flag = true;
         }
 
         //校验不通过
