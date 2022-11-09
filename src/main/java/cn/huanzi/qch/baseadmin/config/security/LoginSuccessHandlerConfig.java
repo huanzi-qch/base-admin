@@ -1,6 +1,7 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
+import cn.huanzi.qch.baseadmin.exceptionhandler.LoginException;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.*;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +36,9 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
     @Autowired
     private PasswordConfig passwordConfig;
 
+    @Autowired
+    private HandlerExceptionResolver handlerExceptionResolver;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
 
@@ -41,7 +46,7 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Map<String, Object> map = securityUtil.checkUserByUserData(httpServletRequest,user.getUsername());
-        String msg = map.get("msg").toString();
+        Result result = Result.of(null,true,map.get("msg").toString());
 
         //校验通过
         if(!Boolean.parseBoolean(map.get("flag").toString())){
@@ -60,17 +65,20 @@ public class LoginSuccessHandlerConfig implements AuthenticationSuccessHandler {
 
             //密码安全策略，登录成功后清除错误次数
             passwordConfig.removeMapDataByUser(user.getUsername());
+        }else{
+            //Filter抛出的异常无法被我们的全局异常捕获，需要转移异常才能交由全局异常处理
+            handlerExceptionResolver.resolveException(httpServletRequest,httpServletResponse,null,new LoginException(String.valueOf(result.getMsg())));
+            return;
         }
+
 
         //判断api加密开关是否开启
         if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())) {
             //api加密
-            Result encrypt = ApiSecurityUtil.encrypt(msg);
-
-            msg = JsonUtil.stringify(encrypt);
+            result = ApiSecurityUtil.encrypt(result);
         }
 
         //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-        HttpServletResponseUtil.printJson(httpServletResponse,msg);
+        HttpServletResponseUtil.printJson(httpServletResponse,JsonUtil.stringify(result));
     }
 }

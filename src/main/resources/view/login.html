@@ -112,9 +112,9 @@
             "remember-me": rememberMe,
         }, function (data) {
             layer.closeAll();
-            if (data.code == 300) {
+            if (data.flag) {
                 layer.msg(data.msg, {icon: 1,time: 1000}, function () {
-                    window.location.href = ctx + data.url;
+                    window.location.href = ctx + "/index";
                 });
             } else {
                 layer.msg(data.msg, {icon: 2,time: 3000});

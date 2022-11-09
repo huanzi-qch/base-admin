@@ -107,6 +107,11 @@ layui.use(['element', 'form', 'table', 'layer', 'laydate','tree', 'util'], funct
 function authorityFormSave() {
     let authorityForm = $("#authorityForm").serializeObject();
     $.post(ctx + "/sys/sysAuthority/save", authorityForm, function (data) {
+        if(!data.flag){
+            layer.msg(data.msg, {icon: 2, time: 2000}, function () {});
+            return;
+        }
+
         layer.msg("保存成功", {icon: 1,time: 2000}, function () {});
         tableIns.reload();
     });

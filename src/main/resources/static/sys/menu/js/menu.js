@@ -85,6 +85,11 @@ function menuFormSave() {
         menuForm.sortWeight = 0;
     }
     $.post(ctx + "/sys/sysMenu/save", menuForm, function (data) {
+        if(!data.flag){
+            layer.msg(data.msg, {icon: 2, time: 2000}, function () {});
+            return;
+        }
+
         layer.msg("保存成功", {icon: 1,time: 2000}, function () {});
 
         //更新树组件

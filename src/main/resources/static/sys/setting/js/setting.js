@@ -41,6 +41,10 @@ function sysFormSave() {
     //获取编辑器内容
     serializeObject.sysNoticeText = sysNoticeTextEdit.getContent();
     $.post(ctx + "/sys/sysSetting/save", serializeObject, function (data) {
+        if(!data.flag){
+            layer.msg(data.msg, {icon: 2, time: 2000}, function () {});
+            return;
+        }
         layer.msg("修改成功！", {icon: 1, time: 2000}, function () {});
         $("#sysForm").form(data.data);
         $("#sysApiEncrypt").val(data.data.sysApiEncrypt)

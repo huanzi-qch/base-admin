@@ -146,8 +146,10 @@
         jQueryExtend.ajaxExtend();
     </script>
     <script>
-        layui.use('element', function () {
+        let layer;
+        layui.use(['layer','element'], function () {
             let element = layui.element;
+            layer = layui.layer;
 
             //首页内容高度
             $("#indexTabContent").css("height",($(".layui-body")[0].offsetHeight - 94) + "px");

@@ -126,13 +126,13 @@ public class SecurityUtil {
      */
     public Map<String,Object> checkUserByUserData(HttpServletRequest httpServletRequest,String userName){
         //默认登陆成功
-        String msg = "{\"code\":\"300\",\"msg\":\"登录成功\",\"url\":\"/index\"}";
+        String msg = "登录成功";
         boolean flag = false;
 
         //密码安全策略，校验是否已被锁定（密码错误次数达上限）
         String checkBanTime = passwordConfig.checkBanTimeByUser(userName);
         if(!"1".equals(checkBanTime)){
-            msg = "{\"code\":\"400\",\"msg\":\""+checkBanTime+"\"}";
+            msg = checkBanTime;
             flag = true;
         }
 
@@ -145,7 +145,7 @@ public class SecurityUtil {
 
         //禁止登陆系统
         if(!flag && "N".equals(sysUserVo.getValid())){
-            msg = "{\"code\":\"400\",\"msg\":\"该账号已被禁止登陆系统，请联系管理员\"}";
+            msg = "该账号已被禁止登陆系统，请联系管理员";
             flag = true;
 
             //清除remember-me持久化token，删除所有
@@ -154,7 +154,7 @@ public class SecurityUtil {
 
         //超出有效时间
         if(!flag && !StringUtils.isEmpty(sysUserVo.getExpiredTime()) && System.currentTimeMillis() > sysUserVo.getExpiredTime().getTime()){
-            msg = "{\"code\":\"400\",\"msg\":\"该账号已失效，请联系管理员\"}";
+            msg = "该账号已失效，请联系管理员";
             flag = true;
 
             //清除remember-me持久化token，删除所有
@@ -166,7 +166,7 @@ public class SecurityUtil {
             //这里选择合适自己的方案
 
             //方案一：禁止新用户登陆
-            msg = "{\"code\":\"400\",\"msg\":\"该账号禁止多人在线，请联系管理员\"}";
+            msg = "该账号禁止多人在线，请联系管理员";
             flag = true;
 
             //方案二：新用户顶掉旧用户
@@ -175,7 +175,7 @@ public class SecurityUtil {
 
         //登陆IP不在白名单
         if(!flag && !StringUtils.isEmpty(sysUserVo.getLimitedIp()) && !Arrays.asList(sysUserVo.getLimitedIp().split(",")).contains(IpUtil.getIpAddr(httpServletRequest))){
-            msg = "{\"code\":\"400\",\"msg\":\"登陆IP不在白名单，请联系管理员\"}";
+            msg = "登陆IP不在白名单，请联系管理员";
             flag = true;
         }
 

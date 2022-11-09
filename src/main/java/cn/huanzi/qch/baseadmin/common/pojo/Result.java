@@ -1,5 +1,6 @@
 package cn.huanzi.qch.baseadmin.common.pojo;
 
+import cn.huanzi.qch.baseadmin.exceptionhandler.ErrorEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -36,6 +37,10 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> of(T data, boolean flag, String msg) {
         return new Result<>(data, flag, msg);
+    }
+
+    public static <T> Result<T> error(ErrorEnum errorEnum) {
+        return new Result(errorEnum.getCode(), false, errorEnum.getMsg());
     }
 
     @Deprecated

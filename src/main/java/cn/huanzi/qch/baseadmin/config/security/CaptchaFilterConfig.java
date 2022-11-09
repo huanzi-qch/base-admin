@@ -1,7 +1,7 @@
 package cn.huanzi.qch.baseadmin.config.security;
 
 import cn.huanzi.qch.baseadmin.common.pojo.ParameterRequestWrapper;
-import cn.huanzi.qch.baseadmin.common.pojo.Result;
+import cn.huanzi.qch.baseadmin.exceptionhandler.LoginException;
 import cn.huanzi.qch.baseadmin.sys.sysuser.service.SysUserService;
 import cn.huanzi.qch.baseadmin.sys.sysuser.vo.SysUserVo;
 import cn.huanzi.qch.baseadmin.util.*;
@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -48,6 +49,9 @@ public class CaptchaFilterConfig implements Filter {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -128,19 +132,10 @@ public class CaptchaFilterConfig implements Filter {
             //从session中获取生成的验证码
             String verifyCode = session.getAttribute("verifyCode").toString();
 
-            if (captchaEnable && !verifyCode.toLowerCase().equals(request.getParameter("captcha").toLowerCase())) {
-                String dataString = "{\"code\":\"400\",\"msg\":\"验证码错误\"}";
-
-                //判断api加密开关是否开启
-                if("Y".equals(SysSettingUtil.getSysSetting().getSysApiEncrypt())){
-                    //api加密
-                    Result encrypt = ApiSecurityUtil.encrypt(dataString);
-
-                    dataString = JsonUtil.stringify(encrypt);
-                }
-
-                //转json字符串并转成Object对象，设置到Result中并赋值给返回值o
-                HttpServletResponseUtil.printJson(response,dataString);
+            if (captchaEnable && !verifyCode.equalsIgnoreCase(request.getParameter("captcha"))) {
+                String msg = "验证码错误";
+                //Filter抛出的异常无法被我们的全局异常捕获，需要转移异常才能交由全局异常处理
+                handlerExceptionResolver.resolveException(request,response,null,new LoginException(msg));
                 return;
             }
         }

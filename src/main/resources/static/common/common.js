@@ -86,6 +86,11 @@ jQueryExtend = {
      */
     ajaxExtendFlag : false,
     /**
+     * jq的ajax备份
+     */
+    jqAjax : $.ajax,
+
+    /**
      * 扩展jquery对象方法
      */
     fnExtend : function(){
@@ -161,7 +166,7 @@ jQueryExtend = {
         //判断api加密开关
         if(sessionStorage.getItem('sysApiEncrypt') === "Y" && !jQueryExtend.ajaxExtendFlag){
             jQueryExtend.ajaxExtendFlag = true;
-            let _ajax = $.ajax;//首先备份下jquery的ajax方法
+            let _ajax = $.ajax;
             $.ajax = function (opt) {
                 //默认值
                 // opt = {
@@ -208,9 +213,15 @@ jQueryExtend = {
                     //成功回调方法增强处理
                     success: function (data, textStatus) {
                         if (opt.type.toLowerCase() === "post") {
+                            //先获取明文aesKey，再用明文key去解密数据
                             data = aesUtil.decrypt(data.data.data, rsaUtil.decrypt(data.data.aesKey, window.jsPrivateKey));
                         }
-                        //先获取明文aesKey，再用明文key去解密数据
+
+                        //统一异常提示（仅控制台，页面处理业务自己决定）
+                        if(!data.flag){
+                            console.error(data.msg);
+                        }
+
                         fn.success(data, textStatus);
                     }
                 });

@@ -4,10 +4,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>403</title>
-    <link rel="shortcut icon" th:href='${sysLogo}' th:mce_href='${sysLogo}' type="image/x-icon">
+    <title>ERROR-自定义错误页面</title>
 </head>
 <body>
-    抱歉，你无权访问，请联系管理员！
+    <p th:text="${msg}"></p>
 </body>
 </html>

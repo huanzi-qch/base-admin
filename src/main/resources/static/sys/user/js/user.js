@@ -193,7 +193,7 @@ function userFormSave() {
     $.post(ctx + "/sys/sysUser/save", userForm, function (data) {
 
         if(!data.flag){
-            layer.msg(data.msg, {icon: 2,time: 2000}, function () {});
+            layer.msg(data.msg, {icon: 2, time: 2000}, function () {});
             return;
         }
 
@@ -236,6 +236,8 @@ function resetPassword() {
         $.post(ctx + "/sys/sysUser/resetPassword", userForm, function (data) {
             if (data.flag) {
                 layer.msg("密码重置成功，请尽快通知用户登录系统修改密码！", {icon: 1, time: 2000}, function () {});
+            }else{
+                layer.msg("密码重置失败："+data.msg, {icon: 2, time: 2000}, function () {});
             }
             layer.close(index);
         });
@@ -249,6 +251,11 @@ function loadMenuTree() {
     let userForm = $("#userForm").serializeObject();
     //获取菜单数据
     $.post(ctx + "/sys/sysUserMenu/findUserMenuAndAllSysMenuByUserId", userForm, function (data) {
+        if(!data.flag){
+            layer.msg(data.msg, {icon: 2, time: 2000}, function () {});
+            return;
+        }
+
         //数据说明：id对应id，title对应menuName，href对应menuPath
         let treeData = commonUtil.updateKeyForLayuiTree(data.data.sysMenuVoList);
 
@@ -278,6 +285,11 @@ function loadAuthorityTree() {
     let userForm = $("#userForm").serializeObject();
     //获取菜单数据
     $.post(ctx + "/sys/sysUserAuthority/findUserAuthorityAndAllSysAuthorityByUserId", userForm, function (data) {
+        if(!data.flag){
+            layer.msg(data.msg, {icon: 2, time: 2000}, function () {});
+            return;
+        }
+
         //数据说明：id对应id，title对应menuName，href对应menuPath
         let treeData = [];
         let userTreeString = JSON.stringify(data.data.sysUserAuthorityVoList);

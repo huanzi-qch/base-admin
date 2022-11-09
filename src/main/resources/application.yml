@@ -5,8 +5,9 @@ server:
   port: 8888
   servlet:
     #应用路径，配置应用路径，可方便进行反向代理
-    context-path:
-#    context-path: /baseadmin
+    context-path: /baseadmin
+    session:
+      timeout: 30m #默认（分钟）：30m
 #基础配置
 spring:
   profiles:
@@ -42,10 +43,22 @@ spring:
 
   #数据库配置
   datasource:
-    url: jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/base_admin?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  #文件上传配置
+  servlet:
+    multipart:
+      #单个文件大小
+      max-file-size: 50MB
+      #总大小
+      max-request-size: 500MB
+
+#附件存储路径
+file:
+  upload-path: E:\\fj\\
 
 #是否需要输入验证码
 captcha:
@@ -58,10 +71,22 @@ spring:
 
   #数据库配置
   datasource:
-    url: jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/base_admin?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  #文件上传配置
+  servlet:
+    multipart:
+      #单个文件大小
+      max-file-size: 50MB
+      #总大小
+      max-request-size: 500MB
+
+#附件存储路径
+file:
+  upload-path: E:\\fj\\
 
 #是否需要输入验证码
 captcha:

@@ -24,6 +24,6 @@ public class ${entity}Controller extends CommonController<${entity}Vo, ${entity}
 
     @GetMapping("index")
     public ModelAndView index() {
-        return new ModelAndView("sys/${entityToLowerCase}/index");
+        return new ModelAndView("sys/${entityToLowerCase}//${entityToLowerCase}");
     }
 }

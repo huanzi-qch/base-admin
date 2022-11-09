@@ -2,3 +2,11 @@ body {
     padding: 20px;
     background-color: #F2F2F2;
 }
+
+.layui-form-label {
+    width: 280px !important;
+}
+
+.layui-input-block {
+    display: -webkit-box !important;
+}

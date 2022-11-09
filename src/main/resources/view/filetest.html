@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传、下载、显示</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="common/head::static"></script>
+</head>
+<body>
+<div style="padding: 50px;">
+    <input id="file" type="file">
+    <button onclick="fun1()">上传</button>
+    <p>查看：<span id="s1" onclick="fun2()" data-fileid="" style="color: blue;cursor: pointer;"></span></p>
+    <p>下载:<span id="s2" onclick="fun3()" data-fileid="" style="color: blue;cursor: pointer;"></span></p>
+    <p>删除:<span id="s3" onclick="fun4()" data-fileid="" style="color: blue;cursor: pointer;"></span></p>
+    <br/>
+
+</div>
+</body>
+<script>
+    layui.use('layer');
+
+    function fun1(){
+        //构造请求头参数
+        let formData = new FormData();
+        formData.append("file",document.getElementById("file").files[0]);
+
+        //执行上传
+        jQueryExtend.jqAjax({
+            url: ctx + "/sys/sysFile/upload",
+            type: "post",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log('附件上传成功：', data);
+                $("#s1").text(data.data.fileName + "." + data.data.fileType);
+                $("#s1").data("fileid",data.data.id);
+
+                $("#s2").text(data.data.fileName + "." + data.data.fileType);
+                $("#s2").data("fileid",data.data.id);
+
+                $("#s3").text(data.data.fileName + "." + data.data.fileType);
+                $("#s3").data("fileid",data.data.id);
+            },
+            error: function (e) {
+                console.log('附件上传失败');
+                throw e;
+            }
+        });
+    }
+    function fun2(){
+        let fileid = $("#s1").data("fileid");
+        window.open(ctx + "/sys/sysFile/show/"+fileid);
+    }
+    function fun3(){
+        let fileid = $("#s2").data("fileid");
+        //创建临时的、隐藏的form表单，post提交，数据在请求体里，相对安全
+        let $form = $(document.createElement('form')).css({display: 'none'}).attr("method", "POST").attr("action", ctx + "/sys/sysFile/download/"+fileid);
+        $("body").append($form);
+        $form.submit();
+        //过河拆桥，提交完成后remove掉
+        $form.remove();
+    }
+    function fun4(){
+        let fileid = $("#s3").data("fileid");
+
+        //执行删除
+        //向服务端发送删除指令
+        $.delete(ctx + "/sys/sysFile/delete/"+fileid, {}, function (data) {
+            layer.msg(data.msg);
+        })
+    }
+</script>
+</html>

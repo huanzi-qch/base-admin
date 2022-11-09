@@ -30,12 +30,12 @@
         UEDITOR_HOME_URL: URL
 
         // 服务器统一请求接口路径
-        , serverUrl: URL + "php/controller.php"
+        , serverUrl: ctx + "/sys/sysFile/ueditor"
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
         , toolbars: [
 			[
-				// 'anchor', //锚点
+				'anchor', //锚点
 				'undo', //撤销
 				'redo', //重做
 				'bold', //加粗
@@ -52,7 +52,7 @@
 				'blockquote', //引用
 				'pasteplain', //纯文本粘贴模式
 				'selectall', //全选
-				// 'print', //打印
+				'print', //打印
 				'preview', //预览
 				'horizontal', //分隔线
 				'removeformat', //清除格式
@@ -78,7 +78,7 @@
 				'fontfamily', //字体
 				'fontsize', //字号
 				'paragraph', //段落格式
-				// 'simpleupload', //单图上传
+				'simpleupload', //单图上传
 				// 'insertimage', //多图上传
 				'edittable', //表格属性
 				'edittd', //单元格属性
@@ -86,9 +86,9 @@
 				'emotion', //表情
 				'spechars', //特殊字符
 				'searchreplace', //查询替换
-				// 'map', //Baidu地图
+				'map', //Baidu地图
 				// 'gmap', //Google地图
-				// 'insertvideo', //视频
+				'insertvideo', //视频
 				'help', //帮助
 				'justifyleft', //居左对齐
 				'justifyright', //居右对齐
@@ -110,7 +110,7 @@
 				'imageright', //右浮动
 				// 'attachment', //附件
 				'imagecenter', //居中
-				// 'wordimage', //图片转存
+				'wordimage', //图片转存
 				'lineheight', //行间距
 				'edittip ', //编辑提示
 				'customstyle', //自定义标题
@@ -118,24 +118,24 @@
 				// 'webapp', //百度应用
 				'touppercase', //字母大写
 				'tolowercase', //字母小写
-				// 'background', //背景
-				// 'template', //模板
-				// 'scrawl', //涂鸦
+				'background', //背景
+				'template', //模板
+				'scrawl', //涂鸦
 				// 'music', //音乐
 				'inserttable', //插入表格
 				'drafts', // 从草稿箱加载
-				// 'charts', // 图表
+				'charts', // 图表
 			]
 		]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
-        //,labelMap:{
-        //    'anchor':'', 'undo':''
-        //}
+        ,labelMap:{
+           'anchor':'', 'undo':''
+        }
 
         //语言配置项,默认是zh-cn。有需要的话也可以使用如下这样的方式来自动多语言切换，当然，前提条件是lang文件夹下存在对应的语言文件：
         //lang值也可以通过自动获取 (navigator.language||navigator.browserLanguage ||navigator.userLanguage).toLowerCase()
-        //,lang:"zh-cn"
-        //,langPath:URL +"lang/"
+        ,lang:"zh-cn"
+        ,langPath:URL +"lang/"
 
         //主题配置项,默认是default。有需要的话也可以使用如下这样的方式来自动多主题切换，当然，前提条件是themes文件夹下存在对应的主题文件：
         //现有如下皮肤:default

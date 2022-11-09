@@ -1,6 +1,8 @@
 package cn.huanzi.qch.baseadmin.util;
 
 import cn.huanzi.qch.baseadmin.common.pojo.Result;
+import cn.huanzi.qch.baseadmin.exceptionhandler.ErrorEnum;
+import cn.huanzi.qch.baseadmin.exceptionhandler.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -36,9 +38,7 @@ public class ApiSecurityUtil {
             //AES解密得到明文data数据
             return AesUtil.decrypt(data, aesKey);
         } catch (Throwable e) {
-            //输出到日志文件中
-            log.error(ErrorUtil.errorInfoToString(e));
-            throw new RuntimeException("ApiSecurityUtil.decrypt：解密异常！");
+            throw new ServiceException(ErrorEnum.DECRYPT_FAILURE);
         }
     }
 
@@ -72,9 +72,7 @@ public class ApiSecurityUtil {
 
             return Result.of(JsonUtil.parse("{\"data\":\"" + data + "\",\"aesKey\":\"" + aesKey + "\"}", Object.class));
         } catch (Throwable e) {
-            //输出到日志文件中
-            log.error(ErrorUtil.errorInfoToString(e));
-            throw new RuntimeException("ApiSecurityUtil.encrypt：加密异常！");
+            throw new ServiceException(ErrorEnum.ENCRYPT_FAILURE);
         }
     }
 }

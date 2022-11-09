@@ -74,6 +74,9 @@ class IndexController {
     @Autowired
     private RateLimiter rateLimiter;
 
+    /**
+     * 应用路径
+     */
     @Value("${server.servlet.context-path:}")
     private String contextPath;
 
@@ -133,7 +136,7 @@ class IndexController {
     public void index1(HttpServletResponse response){
         //内部重定向
         try {
-            response.sendRedirect("/index");
+            response.sendRedirect(contextPath + "/index");
         } catch (IOException e) {
             //输出到日志文件中
             log.error(ErrorUtil.errorInfoToString(e));
