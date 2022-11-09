@@ -7,6 +7,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 附件Config配置
+ *
+ * 详情请戳：https://www.cnblogs.com/huanzi-qch/p/15294673.html
  */
 @Component
 public class FilesUploadConfig implements WebMvcConfigurer {

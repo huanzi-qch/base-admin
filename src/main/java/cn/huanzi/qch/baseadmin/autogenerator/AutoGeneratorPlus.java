@@ -25,7 +25,7 @@ public class AutoGeneratorPlus {
     /**
      * 数据连接相关，需要手动设置
      */
-    private static final String URL = "jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8&characterEncoding=utf-8";
+    private static final String URL = "jdbc:mysql://localhost:3306/base_admin?serverTimezone=GMT%2B8&characterEncoding=utf-8";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "123456";
     private static final String DRIVER_CLASSNAME = "com.mysql.cj.jdbc.Driver";
@@ -530,8 +530,7 @@ public class AutoGeneratorPlus {
     }
 
 //    public static void main(String[] args) {
-////        String[] tables = {"sys_user","sys_menu","sys_authority","sys_user_menu","sys_user_authority","sys_shortcut_menu","sys_setting"};
-//        String[] tables = {"tb_user"};
+//        String[] tables = {"sys_user","sys_menu","sys_authority","sys_user_menu","sys_user_authority","sys_shortcut_menu","sys_setting","sys_file"};
 //        for (String table : tables) {
 //            String msg = new AutoGeneratorPlus(table).create();
 //            System.out.println(msg);
