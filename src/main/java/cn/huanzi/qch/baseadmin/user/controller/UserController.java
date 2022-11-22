@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("shortcMenu")
     public ModelAndView shortcMenu() {
-        return new ModelAndView("user/shortcMenu");
+        return new ModelAndView("user/shortcmenu");
     }
 
     /**
