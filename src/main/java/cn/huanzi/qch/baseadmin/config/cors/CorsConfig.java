@@ -23,7 +23,9 @@ public class CorsConfig {
                         .allowedOrigins("*")
                         //接口调用方式，POST、GET等
                         .allowedMethods("*")
+                        //允许header属性
                         .allowedHeaders("*")
+                        //允许cookie
                         .allowCredentials(true);
             }
         };

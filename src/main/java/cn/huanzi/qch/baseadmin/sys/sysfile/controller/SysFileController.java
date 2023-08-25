@@ -75,10 +75,8 @@ public class SysFileController {
      */
     @RequestMapping("ueditor")
     public HashMap<String,String> ueditor(HttpServletRequest request,HttpServletResponse response,@RequestParam("action") String action) throws IOException, ServletException {
-        //获取上传配置
+        //获取上传配置，转发静态资源文件
         if("config".equals(action)){
-            //转发
-            response.setContentType("application/json");
             request.getRequestDispatcher("/common/ueditor/config.json").forward(request,response);
             return null;
         }
@@ -94,6 +92,7 @@ public class SysFileController {
             //封装ueditor上传成功返回值
             HashMap<String,String> hashMap = new HashMap<>();
             hashMap.put("state","SUCCESS");
+            //前缀，根据实际情况设置
             String prefix =  "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port + contextPath;
             hashMap.put("url",prefix+"/sys/sysFile/show/"+upload.getId());
             hashMap.put("type",upload.getFileType());

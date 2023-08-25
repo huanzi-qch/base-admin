@@ -5,6 +5,7 @@ import cn.huanzi.qch.baseadmin.util.ApiSecurityUtil;
 import cn.huanzi.qch.baseadmin.util.ErrorUtil;
 import cn.huanzi.qch.baseadmin.util.SysSettingUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -69,11 +70,11 @@ public class ExceptionHandlerConfig{
         HttpServletRequest request = requestAttributes.getRequest();
         HttpServletResponse response = requestAttributes.getResponse();
 
-        //设置http响应状态
-        response.setStatus(200);
-
         //判断是否为ajax请求
         if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))){
+            //重新设置http响应状态
+            response.setStatus(200);
+
             //http请求方法  post get
             String httpMethod = request.getMethod().toLowerCase();
 
@@ -83,7 +84,10 @@ public class ExceptionHandlerConfig{
             }
             return errorResult;
         }else{
-            return new ModelAndView("common/error","msg",errorResult.getMsg());
+            ModelAndView modelAndView = new ModelAndView("common/error", "msg", errorResult.getMsg());
+            //重新设置状态码，例如：404
+            modelAndView.setStatus(HttpStatus.valueOf(response.getStatus()));
+            return modelAndView;
         }
     }
 }

@@ -13,11 +13,20 @@
 
     <!--配置日志文件(File)-->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--设置策略-->
+        <!-- 设置策略
+            按大小跟时间
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/${APP_NAME}.%i.log</FileNamePattern>
+                <MaxHistory>15</MaxHistory>
+                <maxFileSize>100MB</maxFileSize>
+            </rollingPolicy>
+
+            只按时间
+        -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!--日志文件路径：这里%d{yyyyMMdd}表示按天分类日志-->
+            <!-- 日志文件路径 -->
             <FileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/${APP_NAME}.log</FileNamePattern>
-            <!--日志保留天数-->
+            <!-- 日志文件保留天数 -->
             <MaxHistory>15</MaxHistory>
         </rollingPolicy>
         <!--设置格式-->

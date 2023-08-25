@@ -48,10 +48,6 @@ public class ErrorPageConfig extends BasicErrorController {
         //抛出ErrorPageException异常，方便被ExceptionHandlerConfig处理
         String path = model.get("path").toString();
         String status = model.get("status").toString();
-
-        //静态资源文件发生404，无需抛出异常
-        if(!path.contains("/common/") && !path.contains(".")){
-            throw new ErrorPageException(status, path);
-        }
+        throw new ErrorPageException(status, path);
     }
 }

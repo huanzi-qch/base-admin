@@ -80,6 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and();
+        http
+                //跨域
+                .cors();
 
         http
                 //登录处理

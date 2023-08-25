@@ -68,9 +68,16 @@ public class CaptchaFilterConfig implements Filter {
          */
         User user = securityUtil.sessionRegistryGetUserBySessionId(session.getId());
         Cookie rememberMeCookie = SecurityUtil.getRememberMeCookie(request);
-        if(user == null && rememberMeCookie != null){
+
+        //免登陆url除外
+        if(!SecurityUtil.checkUrl(requestUri.replaceFirst(contextPath, "")) && user == null){
 
             //remember me？
+            if(rememberMeCookie == null){
+                HttpServletResponseUtil.printHtml(response,"<script type='text/javascript'>window.location.href = '" + contextPath + "/logout'</script>");
+                return;
+            }
+
             PersistentRememberMeToken token = securityUtil.rememberMeGetTokenForSeries(rememberMeCookie);
 
             /*
