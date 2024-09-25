@@ -40,6 +40,6 @@ public class SysShortcutMenuServiceImpl extends CommonServiceImpl<SysShortcutMen
     @Override
     public Result<List<SysShortcutMenuVo>> findByUserId(String userId) {
         List<SysShortcutMenuVo> sysShortcutMenuVoList = CopyUtil.copyList(sysShortcutMenuRepository.findByUserId(userId), SysShortcutMenuVo.class);
-        return Result.of(MenuUtil.getChildBySysShortcutMenuVo("",sysShortcutMenuVoList));
+        return Result.of(MenuUtil.getSysShortcutMenuChildByPid("",sysShortcutMenuVoList));
     }
 }

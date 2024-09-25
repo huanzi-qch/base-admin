@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
     <!--日志文件主目录：这里${user.home}为当前服务器用户主目录-->
-    <property name="LOG_HOME" value="${user.home}/log"/>
+    <property name="LOG_HOME" value="logs/"/>
+    <property name="FILESIZE" value="5MB" />
+    <property name="MAXHISTORY" value="30" />
     <!--日志文件名称：这里spring.application.name表示工程名称-->
     <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
 
@@ -25,9 +27,13 @@
         -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志文件路径 -->
-            <FileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/${APP_NAME}.log</FileNamePattern>
+            <FileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/${APP_NAME}.%i.log</FileNamePattern>
             <!-- 日志文件保留天数 -->
-            <MaxHistory>15</MaxHistory>
+            <maxHistory>${MAXHISTORY}</maxHistory>
+            <!-- 日志文件最大大小 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${FILESIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <!--设置格式-->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

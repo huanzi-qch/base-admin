@@ -51,6 +51,6 @@ public class SysMenuServiceImpl extends CommonServiceImpl<SysMenuVo, SysMenu, St
     @Override
     public Result<List<SysMenuVo>> listByTier(SysMenuVo entityVo) {
         List<SysMenuVo> sysMenuVoList = super.list(entityVo).getData();
-        return Result.of(MenuUtil.getChildBySysMenuVo("",sysMenuVoList));
+        return Result.of(MenuUtil.getSysMenuChildByPid("",sysMenuVoList));
     }
 }

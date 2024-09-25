@@ -11,12 +11,10 @@ import cn.huanzi.qch.baseadmin.util.MenuUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -35,7 +33,7 @@ public class SysUserMenuServiceImpl extends CommonServiceImpl<SysUserMenuVo, Sys
         sysUserMenuVoList.forEach((sysUserMenuVo) -> {
             menuVoList.add(sysUserMenuVo.getSysMenu());
         });
-        return Result.of(MenuUtil.getChildBySysMenuVo("",menuVoList));
+        return Result.of(MenuUtil.getSysMenuChildByPid("",menuVoList));
 
     }
 

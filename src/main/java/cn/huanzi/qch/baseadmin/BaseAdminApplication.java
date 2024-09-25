@@ -91,6 +91,11 @@ class IndexController {
      */
     @Bean
     public ApplicationRunner applicationRunner() {
+        //shutdown监听
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("关闭成功");
+        }));
+
         return applicationArguments -> {
             try {
                 //系统启动时获取数据库数据，设置到公用静态集合sysSettingMap
