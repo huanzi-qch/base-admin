@@ -78,7 +78,7 @@ JPA：SpringBoot系列——Spring-Data-JPA（究极进化版） 自动生成单
 ```
 8、我想升级成前后端分离项目，麻烦吗？应当如何下手？
 ```text
-难度肯定还是有的，如何你对这个项目比较熟悉，相信你已早有思路，如果没有可以参考下面的博客文章
+难度肯定还是有的，如果你对这个项目比较熟悉，相信你已早有思路，如果没有可以参考下面的博客文章
 
 springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）（https://www.cnblogs.com/hetutu-5238/p/10022963.html）
 GitHub地址（https://github.com/hetutu5238/zmc_security_oauth2）
