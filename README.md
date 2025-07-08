@@ -117,4 +117,4 @@ package pom.xml文件的同级目录下面的package
 | <img src="http://huanzi-qch.gitee.io/file-server/images/zhifubao.png"  width="150"> | <img src="http://huanzi-qch.gitee.io/file-server/images/weixin.png" width="150"> |
 
 ## DartNode<br/>
-[![DartNode](https://dartnode.com/images/logo.png)](https://dartnode.com/)
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
