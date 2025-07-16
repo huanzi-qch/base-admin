@@ -1,5 +1,5 @@
 ## 官网<br/> 
-https://huanzi-qch.gitee.io/base-admin <br/> 
+[https://huanzi-qch.gitee.io/base-admin](http://huanzi.qzz.io/base-admin/#/) <br/> 
 
 ## 简介<br/> 
 Base Admin一套简单通用的后台管理系统<br/> 
@@ -10,7 +10,7 @@ Base Admin一套简单通用的后台管理系统<br/>
 java后端：SpringBoot + Thymeleaf + WebSocket + Spring Security + SpringData-Jpa + MySql<br/> 
 
 ## 运行效果图<br/> 
-![](https://huanzi-qch.gitee.io/file-server/images/base-admin.png) 
+![](http://huanzi.qzz.io/file-server/images/base-admin.png) 
 
 ## 仓库地址<br/> 
 国外：https://github.com/huanzi-qch/base-admin<br/> 
@@ -107,14 +107,14 @@ package pom.xml文件的同级目录下面的package
 
 ## QQ群<br/>
 有事请加群，有问题进群大家一起交流！<br/>
-![](https://huanzi-qch.gitee.io/file-server/images/qq.png) 
+![](http://huanzi.qzz.io/file-server/images/qq.png) 
 
 ## 捐献<br/>
 相应的资金支持能更好的持续项目的维护和开发，如果喜欢这个项目，请随意打赏！
 
 | 支付宝 | 微信 |
 |  ----  | ----  |
-| <img src="http://huanzi-qch.gitee.io/file-server/images/zhifubao.png"  width="150"> | <img src="http://huanzi-qch.gitee.io/file-server/images/weixin.png" width="150"> |
+| <img src="http://huanzi.qzz.io/file-server/images/zhifubao.png"  width="150"> | <img src="http://huanzi.qzz.io/file-server/images/weixin.png" width="150"> |
 
 ## DartNode<br/>
 [![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
