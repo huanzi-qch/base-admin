@@ -1,5 +1,5 @@
 ## 官网<br/> 
-[https://huanzi-qch.gitee.io/base-admin](http://huanzi.qzz.io/base-admin/#/) <br/> 
+http://huanzi.qzz.io/base-admin <br/> 
 
 ## 简介<br/> 
 Base Admin一套简单通用的后台管理系统<br/> 
@@ -100,7 +100,7 @@ GitHub地址：https://github.com/huanzi-qch/fast-scaffold
 package pom.xml文件的同级目录下面的package
 
 ```
-## [AD广告位](https://huanzi-qch.gitee.io/file-server/ad/adservice.html) （长期招租，如有需要请私信）<br/>
+## [AD广告位](http://huanzi.qzz.io/file-server/ad/adservice.html) （长期招租，如有需要请私信）<br/>
 [【阿里云】阿里云最全的优惠活动聚集地！](https://www.aliyun.com/activity?userCode=ckkryd9h) <br/>
 [【腾讯云】腾讯云当前最新优惠活动专区！](https://cloud.tencent.com/act/cps/redirect?redirect=11447&cps_key=e1c9db729edccd479fc902634492bf53) <br/>
 <br/>
