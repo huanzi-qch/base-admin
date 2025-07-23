@@ -105,9 +105,9 @@ package pom.xml文件的同级目录下面的package
 [【腾讯云】腾讯云当前最新优惠活动专区！](https://cloud.tencent.com/act/cps/redirect?redirect=11447&cps_key=e1c9db729edccd479fc902634492bf53) <br/>
 <br/>
 
-## QQ群<br/>
+## 交流群<br/>
 有事请加群，有问题进群大家一起交流！<br/>
-![](http://huanzi.qzz.io/file-server/images/qq.png) 
+![](http://38.134.43.210/file-server/images/qq.png) 
 
 ## 捐献<br/>
 相应的资金支持能更好的持续项目的维护和开发，如果喜欢这个项目，请随意打赏！
